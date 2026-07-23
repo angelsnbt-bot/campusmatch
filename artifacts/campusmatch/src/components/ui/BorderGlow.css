@@ -1,0 +1,28 @@
+.border-glow-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.border-glow-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--glow-radius);
+  padding: 1px;
+  background: radial-gradient(
+    300px circle at var(--glow-x) var(--glow-y),
+    var(--glow-color, rgba(59,130,246,0.5)),
+    transparent 60%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: var(--glow-active, 0);
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.border-glow-content {
+  position: relative;
+  z-index: 1;
+}

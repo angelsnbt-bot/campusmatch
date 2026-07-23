@@ -76,6 +76,7 @@
     "zod": "catalog:"
   },
   "dependencies": {
+    "postprocessing": "^6.39.3",
     "three": "^0.185.1"
   }
 }

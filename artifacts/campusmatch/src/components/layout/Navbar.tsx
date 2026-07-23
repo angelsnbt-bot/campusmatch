@@ -12,6 +12,7 @@ import { CommandPalette } from '@/components/ui/CommandPalette';
 import { NotificationCenter } from '@/components/ui/NotificationCenter';
 import { ProfileCompletionRing } from '@/components/ui/ProfileCompletionRing';
 import { LiveActivityIndicator } from '@/components/ui/LiveActivityIndicator';
+import { GradientText } from '@/components/ui/GradientText';
 
 const navLinks = [
   { label: 'Dashboard', href: '/dashboard' },
@@ -114,8 +115,10 @@ export const Navbar = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
               <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="text-lg font-bold text-white tracking-tight">
-              Campus<span className="text-gradient-blue">Match</span>
+            <span className="text-lg font-bold tracking-tight">
+              <GradientText colors={['#40ffaa', '#4079ff', '#40ffaa', '#4079ff', '#40ffaa']} speed={3} className="text-lg font-bold tracking-tight">
+                CampusMatch
+              </GradientText>
             </span>
           </Link>
 

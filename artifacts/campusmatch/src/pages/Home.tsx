@@ -8,6 +8,7 @@ import {
   Sparkles, Award, Clock, MapPin, ArrowUpRight, Quote, Play,
   Eye, Search, Bell, Smartphone, BookOpen, Target, Flame
 } from 'lucide-react';
+import { BorderGlow } from '@/components/ui/BorderGlow';
 import { useGetModulesSummary, useGetStatsOverview } from '@workspace/api-client-react';
 
 const fadeUp = {
@@ -593,25 +594,29 @@ export default function Home() {
               { name: 'Premium', price: '₹99', period: '/month', features: ['Unlimited matches', 'See who viewed you', 'Priority in discover', 'Advanced filters', 'Read receipts'], cta: 'Go Premium', popular: true },
               { name: 'Lifetime', price: '₹499', period: 'one-time', features: ['Lifetime access', 'Exclusive badge', 'Priority support', 'Early feature access', 'Founding member'], cta: 'Get Lifetime', popular: false },
             ].map((plan, i) => (
-              <motion.div key={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i} className={`relative rounded-2xl p-[1px] ${plan.popular ? 'bg-gradient-to-b from-blue-500 to-indigo-500' : 'bg-white/10'}`}>
-                {plan.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-xs font-bold text-white shadow-lg shadow-blue-500/30">Most Popular</div>}
-                <div className={`rounded-[15px] p-7 h-full flex flex-col ${plan.popular ? 'bg-card' : 'bg-card/60'}`}>
-                  <h3 className="text-lg font-bold text-white mb-1">{plan.name}</h3>
-                  <div className="flex items-baseline gap-1 mb-1">
-                    <span className="text-4xl font-extrabold text-white">{plan.price}</span>
-                    <span className="text-sm text-white/40">{plan.period}</span>
+              <motion.div key={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i}>
+                <BorderGlow borderRadius={28} intensity={plan.popular ? 0.8 : 0.5} className="w-full">
+                  <div className={`relative rounded-2xl p-[1px] ${plan.popular ? 'bg-gradient-to-b from-blue-500 to-indigo-500' : 'bg-white/10'}`}>
+                    {plan.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-xs font-bold text-white shadow-lg shadow-blue-500/30">Most Popular</div>}
+                    <div className={`rounded-[15px] p-7 h-full flex flex-col ${plan.popular ? 'bg-card' : 'bg-card/60'}`}>
+                      <h3 className="text-lg font-bold text-white mb-1">{plan.name}</h3>
+                      <div className="flex items-baseline gap-1 mb-1">
+                        <span className="text-4xl font-extrabold text-white">{plan.price}</span>
+                        <span className="text-sm text-white/40">{plan.period}</span>
+                      </div>
+                      <ul className="space-y-2.5 my-6 flex-1">
+                        {plan.features.map((f, j) => (
+                          <li key={j} className="flex items-start gap-2 text-sm text-white/60">
+                            <CheckCircle2 className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />{f}
+                          </li>
+                        ))}
+                      </ul>
+                      <Link href="/register" className={`h-12 inline-flex items-center justify-center rounded-[10px] font-semibold transition-all ${plan.popular ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700' : 'bg-white/[0.06] text-white/90 border border-white/10 hover:bg-white/[0.1]'}`}>
+                        {plan.cta}
+                      </Link>
+                    </div>
                   </div>
-                  <ul className="space-y-2.5 my-6 flex-1">
-                    {plan.features.map((f, j) => (
-                      <li key={j} className="flex items-start gap-2 text-sm text-white/60">
-                        <CheckCircle2 className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />{f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href="/register" className={`h-12 inline-flex items-center justify-center rounded-[10px] font-semibold transition-all ${plan.popular ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700' : 'bg-white/[0.06] text-white/90 border border-white/10 hover:bg-white/[0.1]'}`}>
-                    {plan.cta}
-                  </Link>
-                </div>
+                </BorderGlow>
               </motion.div>
             ))}
           </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'wouter';
 import { Zap, Heart, Mail, Instagram, Twitter, Linkedin, Youtube, ExternalLink } from 'lucide-react';
+import Hyperspeed from '@/components/ui/Hyperspeed';
 
 const footerSections = [
   {
@@ -82,7 +83,15 @@ export const Footer = () => {
 
   return (
     <>
-      <footer className="relative z-10 border-t border-white/[0.04] mt-20">
+      <footer className="relative z-10 border-t border-white/[0.04] mt-20 overflow-hidden">
+        <Hyperspeed
+          className="absolute inset-0 opacity-30"
+          effectActive={true}
+          speed={0.4}
+          roadWidth={1.2}
+          colors={['#3b82f6', '#8b5cf6']}
+          quality="medium"
+        />
         <div className="max-w-6xl mx-auto px-6 py-16">
           {/* Top section */}
           <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-12">
