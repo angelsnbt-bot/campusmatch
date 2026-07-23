@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
-  ShieldCheck, Users, Zap, Lock, ChevronDown, ArrowRight,
-  CheckCircle2, GraduationCap, CreditCard, Rocket, BadgeCheck,
-  Heart, Globe, Crown, Star
+  ShieldCheck, ChevronDown, ArrowRight, CheckCircle2,
+  GraduationCap, CreditCard, Rocket, BadgeCheck, Heart, Globe, Lock
 } from 'lucide-react';
 import { useGetModulesSummary, useGetStatsOverview } from '@workspace/api-client-react';
 
@@ -21,23 +20,15 @@ const staggerContainer = {
   visible: { transition: { staggerChildren: 0.08 } }
 };
 
-function AnimatedCounter({ target, label }: { target: number; label: string }) {
+function LiveUserCounter() {
+  const { data: statsData } = useGetStatsOverview();
   const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
+  const target = statsData?.verifiedUsers || 0;
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) setInView(true);
-    }, { threshold: 0.3 });
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!inView) return;
+    if (!target) return;
     let start = 0;
-    const duration = 2000;
+    const duration = 1800;
     const step = (timestamp: number) => {
       if (!start) start = timestamp;
       const progress = Math.min((timestamp - start) / duration, 1);
@@ -45,27 +36,24 @@ function AnimatedCounter({ target, label }: { target: number; label: string }) {
       if (progress < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
-  }, [inView, target]);
+  }, [target]);
 
   return (
-    <div ref={ref} className="flex flex-col items-center">
-      <span className="text-3xl md:text-4xl font-black text-white tabular-nums" style={{ fontFamily: 'Space Grotesk' }}>
-        {count.toLocaleString()}+
+    <div className="flex items-baseline gap-1">
+      <span className="text-3xl font-black text-white tabular-nums" style={{ fontFamily: 'Space Grotesk' }}>
+        {count.toLocaleString()}
       </span>
-      <span className="text-xs text-pink-300/60 uppercase tracking-widest mt-1" style={{ fontFamily: 'Outfit', fontWeight: 500 }}>{label}</span>
+      <span className="text-sm font-semibold text-pink-300/70" style={{ fontFamily: 'Outfit' }}>+</span>
     </div>
   );
 }
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
-  const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -60]);
+  const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -40]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
 
-  const { data: statsData } = useGetStatsOverview();
   const { data: modulesData } = useGetModulesSummary();
-
-  const stats = statsData || { activeModules: 12, verifiedUsers: 0, erpVerifiedProfiles: '100%', verificationTime: '< 24h' };
 
   const modules = modulesData?.modules || [
     { id: 'dating', name: 'Dating', emoji: '💗', description: 'Verified-only matches, mutual likes, safe chat', isPopular: true },
@@ -85,65 +73,28 @@ export default function Home() {
         {/* Video background */}
         <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260210_031346_d87182fb-b0af-4273-84d1-c6fd17d6bf0f.mp4" />
 
-        <div className="relative z-10 w-full min-h-screen flex flex-col px-6 md:px-[80px] lg:px-[120px] py-20">
+        <div className="relative z-10 w-full min-h-screen flex items-center px-6 md:px-[80px] lg:px-[120px] py-24">
 
-          {/* TOP ROW: User Counter (left) + Animated Logo (right) */}
-          <div className="flex items-start justify-between w-full mb-auto pt-4">
-            {/* Left: User Counter */}
+          {/* LEFT: Text content */}
+          <motion.div style={{ y: heroY, opacity: heroOpacity }} className="flex-1 max-w-2xl z-10">
+            {/* Total Users counter — top left */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.8 }}
-              className="hidden md:flex flex-col gap-6"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mb-8 flex items-center gap-3"
             >
-              <AnimatedCounter target={1284} label="Total Users" />
-              <AnimatedCounter target={847} label="Verified" />
-              <AnimatedCounter target={326} label="Matches" />
-            </motion.div>
-
-            {/* Right: Animated CampusMatch text */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.5 }}
-              className="text-right"
-            >
-              <div className="cm-text-shimmer text-3xl md:text-4xl lg:text-5xl font-black tracking-tight" style={{ fontFamily: 'Space Grotesk' }}>
-                Campus
-              </div>
-              <div className="cm-text-shimmer text-3xl md:text-4xl lg:text-5xl font-black tracking-tight" style={{ fontFamily: 'Space Grotesk' }}>
-                Match
-              </div>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: '100%' }}
-                transition={{ duration: 1, delay: 1.2 }}
-                className="h-[2px] bg-gradient-to-r from-transparent via-pink-500 to-purple-500 ml-auto mt-2"
-              />
-              <p className="text-xs text-white/30 mt-2 uppercase tracking-[0.3em]" style={{ fontFamily: 'Outfit' }}>Your Campus. Verified.</p>
-            </motion.div>
-          </div>
-
-          {/* CENTER: Hero Content */}
-          <motion.div style={{ y: heroY, opacity: heroOpacity }} className="flex-1 flex flex-col items-center text-center max-w-4xl mx-auto mt-16">
-            {/* Glass pill */}
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="glass-pill rounded-full h-[38px] flex items-center gap-2.5 px-5 mb-8"
-            >
-              <span className="px-2 py-0.5 rounded-md bg-[#ec4899] text-[11px] font-bold text-white uppercase tracking-wider" style={{ fontFamily: 'Cabin' }}>New</span>
-              <span className="text-sm font-medium text-pink-100/80" style={{ fontFamily: 'Outfit' }}>Say Hello to CampusMatch v1.0</span>
+              <LiveUserCounter />
+              <span className="text-xs text-white/40 uppercase tracking-widest" style={{ fontFamily: 'Outfit', fontWeight: 500 }}>Real Users</span>
             </motion.div>
 
             {/* Headline */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.15 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
               className="text-white leading-[1.08] mb-6"
-              style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(42px, 7vw, 88px)' }}
+              style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(40px, 6vw, 80px)' }}
             >
               Your whole campus,<br />
               <span className="italic">one verified</span> app.
@@ -153,8 +104,8 @@ export default function Home() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.25 }}
-              className="text-white/60 max-w-[580px] mb-10 leading-relaxed"
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="text-white/60 max-w-[520px] mb-10 leading-relaxed"
               style={{ fontFamily: 'Inter', fontSize: '17px' }}
             >
               Find friends, study partners, dates, internships, and campus events — no fakes, no bots, just real ERP-verified students.
@@ -164,8 +115,8 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.35 }}
-              className="flex flex-col sm:flex-row items-center gap-4"
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="flex flex-col sm:flex-row items-start gap-4"
             >
               <Link href="/register" className="h-14 px-8 inline-flex items-center justify-center rounded-[10px] bg-[#ec4899] text-white font-semibold text-base hover:bg-[#db2777] transition-all shadow-lg shadow-pink-500/20 cm-button-glow" style={{ fontFamily: 'Cabin' }}>
                 Get Verified <ArrowRight className="ml-2 w-5 h-5" />
@@ -176,42 +127,47 @@ export default function Home() {
             </motion.div>
           </motion.div>
 
-          {/* RIGHT SIDE: Small animated profile card */}
+          {/* RIGHT: Animated profile card */}
           <motion.div
-            initial={{ opacity: 0, x: 50, scale: 0.85 }}
+            initial={{ opacity: 0, x: 60, scale: 0.9 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ duration: 0.9, delay: 0.7, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] }}
-            className="absolute right-6 md:right-[80px] lg:right-[120px] top-1/2 -translate-y-1/2 hidden lg:block"
+            transition={{ duration: 0.9, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] }}
+            className="hidden lg:flex items-center justify-center flex-shrink-0 ml-12"
           >
             <div className="cm-profile-float">
               {/* Small profile card */}
-              <div className="w-[260px] glass-card rounded-2xl p-4 cm-glow-border">
-                <div className="relative w-full h-32 rounded-xl overflow-hidden mb-3">
-                  <div className="absolute inset-0 bg-gradient-to-br from-pink-500/30 to-purple-600/40" />
+              <div className="w-[270px] glass-card rounded-2xl p-4 cm-glow-border">
+                <div className="relative w-full h-36 rounded-xl overflow-hidden mb-3">
+                  <div className="absolute inset-0 bg-gradient-to-br from-pink-500/25 to-purple-600/35" />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Priya&backgroundColor=ffdfbf" alt="Profile" className="w-20 h-20 rounded-full border-3 border-white/20 shadow-lg" />
+                    <img
+                      src="https://api.dicebear.com/7.x/adventurer/svg?seed=Aarav&backgroundColor=ffd5dc"
+                      alt="Demo profile"
+                      className="w-22 h-22 rounded-full border-[3px] border-white/20 shadow-lg"
+                      style={{ width: '88px', height: '88px' }}
+                    />
                   </div>
                   <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-[10px] text-green-300 flex items-center gap-1" style={{ fontFamily: 'Cabin' }}>
                     <BadgeCheck className="w-3 h-3" /> Verified
                   </div>
                 </div>
-                <h3 className="text-sm font-bold text-white mb-0.5" style={{ fontFamily: 'Outfit' }}>Priya Sharma</h3>
-                <p className="text-[11px] text-pink-300/60 mb-2" style={{ fontFamily: 'Inter' }}>B.Tech CSE • 3rd Year</p>
+                <h3 className="text-sm font-bold text-white mb-0.5" style={{ fontFamily: 'Outfit' }}>Aarav Mehta</h3>
+                <p className="text-[11px] text-pink-300/60 mb-2" style={{ fontFamily: 'Inter' }}>B.Tech CSE • 2nd Year • VGU</p>
                 <div className="flex gap-1.5 mb-3 flex-wrap">
-                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-white/60 border border-white/5">🎨 UI/UX</span>
-                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-white/60 border border-white/5">💻 React</span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-white/60 border border-white/5">🤖 AI/ML</span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-white/60 border border-white/5">🎮 Gaming</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="rounded-lg bg-white/[0.03] border border-white/5 py-1.5">
-                    <div className="text-sm font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>128</div>
+                    <div className="text-sm font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>96</div>
                     <div className="text-[9px] text-white/35 uppercase tracking-wide">Friends</div>
                   </div>
                   <div className="rounded-lg bg-white/[0.03] border border-white/5 py-1.5">
-                    <div className="text-sm font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>42</div>
+                    <div className="text-sm font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>24</div>
                     <div className="text-[9px] text-white/35 uppercase tracking-wide">Matches</div>
                   </div>
                   <div className="rounded-lg bg-white/[0.03] border border-white/5 py-1.5">
-                    <div className="text-sm font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>8</div>
+                    <div className="text-sm font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>5</div>
                     <div className="text-[9px] text-white/35 uppercase tracking-wide">Events</div>
                   </div>
                 </div>
@@ -219,9 +175,9 @@ export default function Home() {
 
               {/* Floating notification - purple glow */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.7, x: -20 }}
-                animate={{ opacity: 1, scale: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 1.4 }}
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 1.3 }}
                 className="absolute -top-4 -left-14 w-44 glass-card rounded-xl p-2.5 cm-float-2 cm-purple-glow"
               >
                 <div className="flex items-center gap-1.5 mb-1">
@@ -230,14 +186,14 @@ export default function Home() {
                   </div>
                   <span className="text-[11px] font-semibold text-white" style={{ fontFamily: 'Outfit' }}>New Match!</span>
                 </div>
-                <p className="text-[10px] text-white/40">Rahul from CSE wants to connect</p>
+                <p className="text-[10px] text-white/40">Someone nearby likes you</p>
               </motion.div>
 
               {/* Floating ERP badge - purple glow */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.7, x: 20 }}
-                animate={{ opacity: 1, scale: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 1.7 }}
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 1.6 }}
                 className="absolute -bottom-3 -left-6 glass-card rounded-xl p-2.5 flex items-center gap-2 cm-float-1 cm-purple-glow"
               >
                 <div className="w-7 h-7 rounded-lg bg-purple-500/20 flex items-center justify-center">
@@ -392,7 +348,7 @@ export default function Home() {
           <div className="space-y-4">
             {[
               { q: 'Who can use CampusMatch?', a: 'Currently available for VGU students. You need a valid ERP number to register.' },
-              { q: 'How does ERP verification work?', a: 'Submit your ERP number and student ID. Our team verifies it against the university database within 24 hours.' },
+              { q: 'How does ERP verification work?', a: 'Submit your ERP number and student ID. Our team verifies against the university database within 24 hours.' },
               { q: 'Is CampusMatch free?', a: 'Yes! Completely free for verified students. Premium plans available for power users.' },
               { q: 'Is my data safe?', a: 'End-to-end encryption, no data selling, no ads. Your privacy is our priority.' },
               { q: 'Can I find study partners?', a: 'Yes! Dedicated modules for study groups, hackathons, career networking, and more.' },
