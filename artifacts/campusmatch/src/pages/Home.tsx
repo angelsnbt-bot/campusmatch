@@ -5,7 +5,7 @@ import {
   ShieldCheck, ChevronDown, ArrowRight, CheckCircle2,
   GraduationCap, CreditCard, Rocket, BadgeCheck, Heart, Globe, Lock,
   Users, CalendarDays, TrendingUp, Star, Zap, MessageCircle,
-  Sparkles, Award, Clock, MapPin, ArrowUpRight, Quote, Play,
+  Sparkles, Award, Clock, ArrowUpRight, Quote, Play,
   Eye, Search, Bell, Smartphone, BookOpen, Target, Flame
 } from 'lucide-react';
 import { BorderGlow } from '@/components/ui/BorderGlow';
@@ -85,20 +85,9 @@ const testimonials = [
   { name: 'Arjun Nair', role: 'B.Tech ME, 3rd Year', quote: 'The sports module is fantastic. Found teammates for our cricket tournament.', avatar: 'Arjun', rating: 5 },
 ];
 
-const upcomingEvents = [
-  { title: 'Annual Tech Fest 2026', date: 'Aug 15', location: 'Main Auditorium', attendees: 342, emoji: '💻', color: 'from-blue-500/20 to-indigo-500/20' },
-  { title: 'Campus Cricket League', date: 'Aug 20', location: 'Sports Complex', attendees: 128, emoji: '🏏', color: 'from-green-500/20 to-emerald-500/20' },
-  { title: 'Startup Pitch Night', date: 'Aug 25', location: 'Innovation Hub', attendees: 89, emoji: '🚀', color: 'from-orange-500/20 to-amber-500/20' },
-];
+const upcomingEvents = [];
 
-const campusPhotos = [
-  { emoji: '🏫', label: 'Main Campus', gradient: 'from-blue-500/20 to-indigo-500/30' },
-  { emoji: '📚', label: 'Library', gradient: 'from-purple-500/20 to-violet-500/30' },
-  { emoji: '⚽', label: 'Sports Ground', gradient: 'from-green-500/20 to-emerald-500/30' },
-  { emoji: '🎭', label: 'Auditorium', gradient: 'from-pink-500/20 to-rose-500/30' },
-  { emoji: '🍽️', label: 'Cafeteria', gradient: 'from-orange-500/20 to-amber-500/30' },
-  { emoji: '💻', label: 'Computer Lab', gradient: 'from-cyan-500/20 to-teal-500/30' },
-];
+const campusPhotos = [];
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -446,87 +435,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== CAMPUS LIFE GALLERY ===== */}
-      <section className="py-24 px-4 md:px-6 bg-background">
-        <div className="max-w-6xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-            <span className="inline-block text-xs font-bold text-blue-400 uppercase tracking-[0.2em] mb-4">Campus Life</span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Experience Your Campus</h2>
-            <p className="text-white/40 max-w-xl mx-auto">Explore the spaces, events, and moments that make campus life special.</p>
-          </motion.div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {campusPhotos.map((photo, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
-                className={`relative rounded-2xl overflow-hidden group cursor-pointer ${
-                  i === 0 ? 'md:col-span-2 md:row-span-2' : ''
-                }`}
-              >
-                <div className={`bg-gradient-to-br ${photo.gradient} aspect-[4/3] flex items-center justify-center`}>
-                  <span className={`${i === 0 ? 'text-8xl' : 'text-5xl'} group-hover:scale-110 transition-transform duration-500`}>{photo.emoji}</span>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
-                  <p className="text-sm font-semibold text-white">{photo.label}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* ===== UPCOMING EVENTS ===== */}
-      <section className="py-24 px-4 md:px-6 bg-white/[0.01] border-y border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex items-end justify-between mb-12">
-            <div>
-              <span className="inline-block text-xs font-bold text-blue-400 uppercase tracking-[0.2em] mb-4">Upcoming</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-white">Campus Events</h2>
-            </div>
-            <Link href="/events" className="hidden md:flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 transition-colors font-medium">
-              View all <ArrowRight className="w-4 h-4" />
-            </Link>
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {upcomingEvents.map((event, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="card-premium rounded-2xl overflow-hidden group"
-              >
-                <div className={`h-32 bg-gradient-to-br ${event.color} flex items-center justify-center`}>
-                  <span className="text-5xl group-hover:scale-110 transition-transform duration-500">{event.emoji}</span>
-                </div>
-                <div className="p-5">
-                  <h3 className="text-base font-bold text-white mb-2">{event.title}</h3>
-                  <div className="flex items-center gap-4 text-xs text-white/40">
-                    <span className="flex items-center gap-1"><CalendarDays className="w-3 h-3" /> {event.date}</span>
-                    <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {event.location}</span>
-                  </div>
-                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/[0.04]">
-                    <div className="flex items-center gap-1.5">
-                      <div className="flex -space-x-2">
-                        {[1,2,3].map(j => (
-                          <div key={j} className="w-5 h-5 rounded-full border border-[hsl(235,22%,8%)] bg-white/10" />
-                        ))}
-                      </div>
-                      <span className="text-[11px] text-white/30">+{event.attendees}</span>
-                    </div>
-                    <Link href="/events" className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors">RSVP →</Link>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ===== TRUST / SECURITY ===== */}
       <section className="py-20 px-4 md:px-6 bg-background">
