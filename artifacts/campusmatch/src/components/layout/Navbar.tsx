@@ -116,7 +116,7 @@ export const Navbar = () => {
               <Zap className="w-4 h-4 text-white" />
             </div>
             <span className="text-lg font-bold tracking-tight">
-              <GradientText colors={['#40ffaa', '#4079ff', '#40ffaa', '#4079ff', '#40ffaa']} speed={3} className="text-lg font-bold tracking-tight">
+              <GradientText colors={['#f472b6', '#c084fc', '#f472b6', '#c084fc', '#f472b6']} speed={1.5} className="text-lg font-bold tracking-tight">
                 CampusMatch
               </GradientText>
             </span>
