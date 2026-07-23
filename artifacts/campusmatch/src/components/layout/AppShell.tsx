@@ -32,7 +32,7 @@ export const AppShell: React.FC<{ children: React.ReactNode; requireAuth?: boole
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground relative selection:bg-[#7b39fc]/30 selection:text-white flex flex-col">
+    <div className="min-h-screen bg-background text-foreground relative selection:bg-pink-500/30 selection:text-white flex flex-col">
       <Navbar />
       <main className="relative z-10 flex-1">
         {children}

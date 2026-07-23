@@ -38,7 +38,7 @@ const queryClient = new QueryClient();
 function PageLoader() {
   return (
     <div className="flex items-center justify-center min-h-[50vh]">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7b39fc]" />
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500" />
     </div>
   );
 }

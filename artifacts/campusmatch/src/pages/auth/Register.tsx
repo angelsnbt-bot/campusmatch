@@ -133,7 +133,7 @@ export default function Register() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-lg glass-card p-8 rounded-2xl relative overflow-hidden"
       >
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7b39fc] to-[#a78bfa]" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-500" />
 
         <div className="flex flex-col items-center mb-6">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
