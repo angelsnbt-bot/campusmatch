@@ -5,9 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, ArrowLeft, Mail, Key, Lock, Eye, EyeOff, RefreshCw, Heart } from 'lucide-react';
+import { Loader2, ArrowLeft, Mail, Key, Lock, Eye, EyeOff, RefreshCw, Zap } from 'lucide-react';
 import { Link } from 'wouter';
 import { useForgotPasswordRequest, useVerifyForgotOtpCode, useResetPasswordSubmit } from '@workspace/api-client-react';
+import LightPillar from '@/components/ui/LightPillar';
 
 type Step = 'email' | 'otp' | 'reset' | 'done';
 
@@ -102,13 +103,17 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md card-premium p-8 rounded-2xl relative overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden" style={{ background: 'linear-gradient(135deg, #050510 0%, #0a0a1a 40%, #0d0d24 100%)' }}>
+      <div className="absolute inset-0 z-0"><LightPillar topColor="#8b5cf6" bottomColor="#3b82f6" intensity={0.5} rotationSpeed={0.15} glowAmount={0.003} pillarWidth={3.0} pillarHeight={0.3} noiseIntensity={0.3} pillarRotation={-10} interactive={false} mixBlendMode="screen" quality="medium" /></div>
+      <div className="absolute inset-0 pointer-events-none z-[1]">
+        <div className="absolute w-[500px] h-[500px] rounded-full opacity-15" style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%)', top: '10%', right: '15%', filter: 'blur(80px)' }} />
+      </div>
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="relative z-10 w-full max-w-md glass-card p-8 rounded-2xl overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500" />
 
         <div className="flex flex-col items-center mb-8">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20">
-            <Heart className="w-6 h-6 text-white fill-white" />
+            <Zap className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">
             {step === 'email' && 'Reset Password'}

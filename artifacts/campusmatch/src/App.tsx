@@ -33,6 +33,20 @@ const AdminAuditLogs = lazy(() => import('@/pages/admin/AdminAuditLogs'));
 
 const TermsOfService = lazy(() => import('@/pages/legal/TermsOfService'));
 const PrivacyPolicy = lazy(() => import('@/pages/legal/PrivacyPolicy'));
+const AboutPage = lazy(() => import('@/pages/legal/AboutPage'));
+const MissionPage = lazy(() => import('@/pages/legal/MissionPage'));
+const CareersPage = lazy(() => import('@/pages/legal/CareersPage'));
+const PressKitPage = lazy(() => import('@/pages/legal/PressKitPage'));
+const BlogPage = lazy(() => import('@/pages/legal/BlogPage'));
+const FaqPage = lazy(() => import('@/pages/legal/FaqPage'));
+const CookiePolicyPage = lazy(() => import('@/pages/legal/CookiePolicyPage'));
+const GdprPage = lazy(() => import('@/pages/legal/GdprPage'));
+const RefundPolicyPage = lazy(() => import('@/pages/legal/RefundPolicyPage'));
+const AccessibilityPage = lazy(() => import('@/pages/legal/AccessibilityPage'));
+const CommunityGuidelinesPage = lazy(() => import('@/pages/legal/CommunityGuidelinesPage'));
+const DocumentationPage = lazy(() => import('@/pages/legal/DocumentationPage'));
+const ReleaseNotesPage = lazy(() => import('@/pages/legal/ReleaseNotesPage'));
+const SafetyCenterPage = lazy(() => import('@/pages/legal/SafetyCenterPage'));
 
 const queryClient = new QueryClient();
 
@@ -120,6 +134,48 @@ function Router() {
       </Route>
       <Route path="/privacy">
         <AppShell><Suspense fallback={<PageLoader />}><PrivacyPolicy /></Suspense></AppShell>
+      </Route>
+      <Route path="/about">
+        <AppShell><Suspense fallback={<PageLoader />}><AboutPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/mission">
+        <AppShell><Suspense fallback={<PageLoader />}><MissionPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/careers">
+        <AppShell><Suspense fallback={<PageLoader />}><CareersPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/press">
+        <AppShell><Suspense fallback={<PageLoader />}><PressKitPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/blog">
+        <AppShell><Suspense fallback={<PageLoader />}><BlogPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/faq">
+        <AppShell><Suspense fallback={<PageLoader />}><FaqPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/cookies">
+        <AppShell><Suspense fallback={<PageLoader />}><CookiePolicyPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/gdpr">
+        <AppShell><Suspense fallback={<PageLoader />}><GdprPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/refunds">
+        <AppShell><Suspense fallback={<PageLoader />}><RefundPolicyPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/accessibility">
+        <AppShell><Suspense fallback={<PageLoader />}><AccessibilityPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/guidelines">
+        <AppShell><Suspense fallback={<PageLoader />}><CommunityGuidelinesPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/docs">
+        <AppShell><Suspense fallback={<PageLoader />}><DocumentationPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/releases">
+        <AppShell><Suspense fallback={<PageLoader />}><ReleaseNotesPage /></Suspense></AppShell>
+      </Route>
+      <Route path="/safety">
+        <AppShell><Suspense fallback={<PageLoader />}><SafetyCenterPage /></Suspense></AppShell>
       </Route>
 
       <Route>

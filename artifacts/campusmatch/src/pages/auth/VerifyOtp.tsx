@@ -5,9 +5,10 @@ import { useVerifyEmail, useResendOtp } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, MailCheck, RefreshCw } from 'lucide-react';
+import { Loader2, MailCheck, RefreshCw, Zap } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { getGetMeQueryKey } from '@workspace/api-client-react';
+import LightPillar from '@/components/ui/LightPillar';
 
 export default function VerifyOtp() {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
@@ -93,8 +94,12 @@ export default function VerifyOtp() {
   if (!user) return null;
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md card-premium p-8 rounded-2xl relative overflow-hidden text-center">
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden" style={{ background: 'linear-gradient(135deg, #050510 0%, #0a0a1a 40%, #0d0d24 100%)' }}>
+      <div className="absolute inset-0 z-0"><LightPillar topColor="#3b82f6" bottomColor="#8b5cf6" intensity={0.5} rotationSpeed={0.15} glowAmount={0.003} pillarWidth={3.0} pillarHeight={0.3} noiseIntensity={0.3} pillarRotation={10} interactive={false} mixBlendMode="screen" quality="medium" /></div>
+      <div className="absolute inset-0 pointer-events-none z-[1]">
+        <div className="absolute w-[500px] h-[500px] rounded-full opacity-15" style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%)', top: '10%', left: '20%', filter: 'blur(80px)' }} />
+      </div>
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="relative z-10 w-full max-w-md glass-card p-8 rounded-2xl text-center overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500" />
         
         <AnimatePresence mode="wait">
