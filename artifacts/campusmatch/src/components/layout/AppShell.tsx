@@ -1,37 +1,27 @@
 import React, { useEffect } from 'react';
 import { Navbar } from './Navbar';
-import { FloatingHearts } from '@/components/ui/floating-hearts';
+import { Footer } from './Footer';
 import { useAuth } from '@/hooks/use-auth';
 import { useLocation } from 'wouter';
 import { Loader2 } from 'lucide-react';
 
-export const AppShell: React.FC<{ children: React.ReactNode; requireAuth?: boolean; requireVerification?: boolean }> = ({ 
-  children, 
+export const AppShell: React.FC<{ children: React.ReactNode; requireAuth?: boolean; requireVerification?: boolean; requireAdmin?: boolean }> = ({
+  children,
   requireAuth = false,
-  requireVerification = false 
+  requireVerification = false,
+  requireAdmin = false
 }) => {
   const { user, isLoading } = useAuth();
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
     if (isLoading) return;
-
-    if (requireAuth && !user) {
-      setLocation('/login');
-    }
-
+    if (requireAuth && !user) setLocation('/login');
     if (requireAuth && user && requireVerification) {
-      // If user needs to verify email
-      if (!user.emailVerified && location !== '/verify-otp') {
-        setLocation('/verify-otp');
-      } 
-      // If user needs to verify ERP
-      else if (user.emailVerified && user.verificationStatus === 'unverified' && location !== '/verify') {
-        setLocation('/verify');
-      }
-      // If verification is pending, they can still access /verify where they see "Under Review" status
+      if (user.verificationStatus !== 'approved' && location !== '/verify') setLocation('/verify');
     }
-  }, [user, isLoading, requireAuth, requireVerification, location, setLocation]);
+    if (requireAuth && user && requireAdmin && user.role !== 'admin' && user.role !== 'super_admin') setLocation('/dashboard');
+  }, [user, isLoading, requireAuth, requireVerification, requireAdmin, location, setLocation]);
 
   if (isLoading) {
     return (
@@ -42,12 +32,12 @@ export const AppShell: React.FC<{ children: React.ReactNode; requireAuth?: boole
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground relative selection:bg-primary/30 selection:text-white">
-      <FloatingHearts />
+    <div className="min-h-screen bg-background text-foreground relative selection:bg-[#7b39fc]/30 selection:text-white flex flex-col">
       <Navbar />
-      <main className="relative z-10 pt-20">
+      <main className="relative z-10 flex-1">
         {children}
       </main>
+      <Footer />
     </div>
   );
 };

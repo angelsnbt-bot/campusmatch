@@ -13,91 +13,57 @@ import { Link } from 'wouter';
 export default function Login() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [isError, setIsError] = React.useState(false);
   const { setToken, user } = useAuth();
   const [location, setLocation] = useLocation();
   const loginMutation = useLogin();
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (user) {
-      setLocation('/dashboard');
-    }
-  }, [user, setLocation]);
+  useEffect(() => { if (user) setLocation('/dashboard'); }, [user, setLocation]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    loginMutation.mutate(
-      { data: { email, password } },
-      {
-        onSuccess: (data) => {
-          setToken(data.token);
-          toast({ title: 'Welcome back!', description: 'Successfully logged in.' });
-          setLocation('/dashboard');
-        },
-        onError: (err) => {
-          toast({ 
-            title: 'Login failed', 
-            description: (err?.data as any)?.error || err?.message || 'Invalid credentials.',
-            variant: 'destructive'
-          });
-        }
-      }
-    );
+    setIsError(false);
+    loginMutation.mutate({ data: { email, password } }, {
+      onSuccess: (data) => { setToken(data.token); toast({ title: 'Welcome back!', description: 'Successfully logged in.' }); setLocation('/dashboard'); },
+      onError: (err) => { setIsError(true); setTimeout(() => setIsError(false), 500); toast({ title: 'Login failed', description: (err?.data as any)?.error || err?.message || 'Invalid credentials.', variant: 'destructive' }); }
+    });
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
-      <motion.div 
+    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4 relative">
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={isError ? { x: [-10, 10, -10, 10, -5, 5, 0] } : { opacity: 1, y: 0 }}
+        transition={isError ? { duration: 0.4 } : { duration: 0.5 }}
         className="w-full max-w-md glass-card p-8 rounded-2xl relative overflow-hidden"
       >
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary" />
-        
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7b39fc] to-[#a78bfa]" />
         <div className="flex flex-col items-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
+          <div className="w-12 h-12 rounded-xl bg-[#7b39fc] flex items-center justify-center mb-4 shadow-lg shadow-[#7b39fc]/20">
             <Heart className="w-6 h-6 text-white fill-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-white/60 text-sm text-center">Enter your credentials to access your campus.</p>
+          <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Manrope' }}>Welcome Back</h1>
+          <p className="text-white/60 text-sm text-center" style={{ fontFamily: 'Inter' }}>Enter your credentials to access your campus.</p>
         </div>
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-white/80">College Email</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="name.branch@vgu.ac.in" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-primary"
-            />
+            <Label htmlFor="email" className="text-white/80" style={{ fontFamily: 'Manrope' }}>College Email</Label>
+            <Input id="email" type="email" placeholder="name.branch@vgu.ac.in" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#7b39fc]" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-white/80">Password</Label>
-            <Input 
-              id="password" 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-primary"
-            />
+            <div className="flex justify-between items-center">
+              <Label htmlFor="password" className="text-white/80" style={{ fontFamily: 'Manrope' }}>Password</Label>
+              <Link href="/forgot-password" className="text-xs text-[#a78bfa] hover:text-[#7b39fc] transition-colors" style={{ fontFamily: 'Manrope' }}>Forgot password?</Link>
+            </div>
+            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#7b39fc]" />
           </div>
-          
-          <Button 
-            type="submit" 
-            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white border-0 py-6 mt-4 shadow-lg shadow-primary/25"
-            disabled={loginMutation.isPending}
-          >
-            {loginMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign In"}
+          <Button type="submit" className="w-full bg-[#7b39fc] hover:bg-[#6a2ee0] text-white border-0 py-6 mt-4 shadow-lg shadow-[#7b39fc]/25" style={{ fontFamily: 'Cabin', borderRadius: '10px' }} disabled={loginMutation.isPending}>
+            {loginMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
           </Button>
         </form>
-
-        <div className="mt-6 text-center text-sm text-white/60">
-          Don't have an account? <Link href="/register" className="text-primary hover:text-primary/80 transition-colors">Apply for verification</Link>
+        <div className="mt-6 text-center text-sm text-white/60" style={{ fontFamily: 'Manrope' }}>
+          Don't have an account? <Link href="/register" className="text-[#a78bfa] hover:text-[#7b39fc] transition-colors">Apply for verification</Link>
         </div>
       </motion.div>
     </div>

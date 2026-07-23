@@ -25,10 +25,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [_, setLocation] = useLocation();
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading, isError } = useGetMe({
+  const { data: user, isLoading, isError, failureCount } = useGetMe({
     query: {
       enabled: !!token,
-      retry: false,
+      retry: 3,
+      retryDelay: 2000,
       queryKey: ['auth/me', token],
     }
   });
@@ -45,8 +46,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logoutUser = async () => {
     try {
       await logout({ headers: { Authorization: `Bearer ${token}` } });
-    } catch (error) {
-      console.error('Logout failed on server', error);
+    } catch {
+      // Logout failed on server — clear local state anyway
     } finally {
       setToken(null);
       queryClient.clear();
@@ -54,11 +55,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Only clear token on persistent auth failures (like 401), not transient network errors
   useEffect(() => {
-    if (isError) {
+    if (isError && failureCount >= 3) {
       setToken(null);
     }
-  }, [isError]);
+  }, [isError, failureCount]);
 
   return (
     <AuthContext.Provider value={{ user: user || null, token, setToken, logoutUser, isLoading: isLoading && !!token }}>
