@@ -1,6 +1,5 @@
 import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
-import pinoHttp from "pino-http";
 import crypto from "crypto";
 import path from "path";
 import router from "./routes";
@@ -14,26 +13,14 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   next();
 });
 
-app.use(
-  (pinoHttp as any)({
-    logger,
-    genReqId: (req: any) => req.id as string,
-    serializers: {
-      req(req: any) {
-        return {
-          id: req.id,
-          method: req.method,
-          url: req.url?.split("?")[0],
-        };
-      },
-      res(res: any) {
-        return {
-          statusCode: res.statusCode,
-        };
-      },
-    },
-  }),
-);
+app.use((_req: Request, res: Response, next: NextFunction) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    const ms = Date.now() - start;
+    logger.info({ method: _req.method, url: _req.url?.split("?")[0], status: res.statusCode, ms });
+  });
+  next();
+});
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",").map((s) => s.trim())
@@ -71,7 +58,7 @@ if (process.env.STORAGE_DRIVER !== "s3") {
 }
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  logger.error({ err }, "Unhandled error");
+  logger.error({ err: err.message }, "Unhandled error");
   if (res.headersSent) return;
   res.status(500).json({ error: "Internal server error" });
 });
