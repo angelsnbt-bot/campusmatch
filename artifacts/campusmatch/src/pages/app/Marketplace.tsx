@@ -228,7 +228,7 @@ export default function Marketplace() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search books, cycles, electronics…"
-            className="w-full h-11 pl-10 pr-10 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder:text-white/25 outline-none focus:ring-1 focus:ring-primary focus:border-primary/50 transition-all"
+            className="w-full h-11 pl-10 pr-10 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder:text-white/25 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500/50 transition-all"
           />
           {search && (
             <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60">
@@ -271,7 +271,7 @@ export default function Marketplace() {
 
       {/* All / filtered listings */}
       {isLoading ? (
-        <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 text-primary animate-spin" /></div>
+        <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
       ) : displayItems.length === 0 ? (
         <div className="text-center py-20">
           <div className="text-4xl mb-4">🛒</div>
@@ -342,7 +342,7 @@ function ListingCard({ item, onContact, highlight }: { item: any; onContact: () 
           <Button
             size="sm"
             onClick={onContact}
-            className="h-7 px-3 text-xs bg-gradient-to-r from-primary/80 to-secondary/80 hover:opacity-90 text-white border-0 rounded-lg font-medium"
+            className="h-7 px-3 text-xs bg-gradient-to-r from-blue-500/80 to-indigo-500/80 hover:opacity-90 text-white border-0 rounded-lg font-medium"
           >
             Contact
           </Button>

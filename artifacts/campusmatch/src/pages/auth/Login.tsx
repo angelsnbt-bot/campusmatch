@@ -32,33 +32,33 @@ export default function Login() {
 
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4 relative">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={isError ? { x: [-10, 10, -10, 10, -5, 5, 0] } : { opacity: 1, y: 0 }} transition={isError ? { duration: 0.4 } : { duration: 0.5 }} className="w-full max-w-md glass-card p-8 rounded-2xl relative overflow-hidden cm-card-elevate">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-500" />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={isError ? { x: [-10, 10, -10, 10, -5, 5, 0] } : { opacity: 1, y: 0 }} transition={isError ? { duration: 0.4 } : { duration: 0.5 }} className="w-full max-w-md card-premium p-8 rounded-2xl relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500" />
         <div className="flex flex-col items-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-[#ec4899] flex items-center justify-center mb-4 shadow-lg shadow-pink-500/20">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20">
             <Heart className="w-6 h-6 text-white fill-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Outfit' }}>Welcome Back</h1>
-          <p className="text-white/60 text-sm text-center" style={{ fontFamily: 'Inter' }}>Enter your credentials to access your campus.</p>
+          <h1 className="text-2xl font-bold text-white mb-2">Welcome Back</h1>
+          <p className="text-white/60 text-sm text-center">Enter your credentials to access your campus.</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-white/80" style={{ fontFamily: 'Outfit' }}>College Email</Label>
-            <Input id="email" type="email" placeholder="name.branch@vgu.ac.in" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
+            <Label htmlFor="email" className="text-white/80">College Email</Label>
+            <Input id="email" type="email" placeholder="name.branch@vgu.ac.in" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-blue-500" />
           </div>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <Label htmlFor="password" className="text-white/80" style={{ fontFamily: 'Outfit' }}>Password</Label>
-              <Link href="/forgot-password" className="text-xs text-pink-300 hover:text-pink-200 transition-colors" style={{ fontFamily: 'Outfit' }}>Forgot password?</Link>
+              <Label htmlFor="password" className="text-white/80">Password</Label>
+              <Link href="/forgot-password" className="text-xs text-blue-300 hover:text-blue-200 transition-colors">Forgot password?</Link>
             </div>
-            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
+            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-blue-500" />
           </div>
-          <Button type="submit" className="w-full bg-[#ec4899] hover:bg-[#db2777] text-white border-0 py-6 mt-4 shadow-lg shadow-pink-500/25 cm-button-glow" style={{ fontFamily: 'Cabin', borderRadius: '10px' }} disabled={loginMutation.isPending}>
+          <Button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0 py-6 mt-4 shadow-lg shadow-blue-500/25" style={{ borderRadius: '10px' }} disabled={loginMutation.isPending}>
             {loginMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
           </Button>
         </form>
-        <div className="mt-6 text-center text-sm text-white/60" style={{ fontFamily: 'Outfit' }}>
-          Don't have an account? <Link href="/register" className="text-pink-300 hover:text-pink-200 transition-colors">Apply for verification</Link>
+        <div className="mt-6 text-center text-sm text-white/60">
+          Don't have an account? <Link href="/register" className="text-blue-300 hover:text-blue-200 transition-colors">Apply for verification</Link>
         </div>
       </motion.div>
     </div>

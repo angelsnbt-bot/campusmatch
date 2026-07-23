@@ -1,49 +1,84 @@
 import React from 'react';
 import { Link } from 'wouter';
-import { Heart, Instagram, Mail, Shield } from 'lucide-react';
+import { Zap, Github, Twitter, Heart } from 'lucide-react';
 
-export const Footer = () => (
-  <footer className="relative z-10 border-t border-white/5 bg-[#0d0810]/80 backdrop-blur-sm mt-auto">
-    <div className="container mx-auto px-4 md:px-6 py-12">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        <div className="md:col-span-1">
-          <Link href="/" className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-[#ec4899] flex items-center justify-center"><Heart className="w-4 h-4 text-white fill-white" /></div>
-            <span className="text-xl font-bold text-white" style={{ fontFamily: 'Outfit' }}>Campus<span className="text-[#ec4899]">Match</span></span>
-          </Link>
-          <p className="text-sm text-white/50 leading-relaxed" style={{ fontFamily: 'Inter' }}>The exclusive ERP-verified social network for college students.</p>
-          <div className="flex items-center gap-3 mt-4">
-            <a href="https://www.instagram.com/campusmatch.in/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-pink-400 hover:bg-pink-500/10 transition-all"><Instagram className="w-4 h-4" /></a>
-            <a href="mailto:hello@campusmatch.in" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-pink-400 hover:bg-pink-500/10 transition-all"><Mail className="w-4 h-4" /></a>
+export const Footer = () => {
+  return (
+    <footer className="relative z-10 border-t border-white/[0.04] mt-20">
+      <div className="max-w-6xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
+          {/* Brand */}
+          <div className="md:col-span-1">
+            <Link href="/" className="flex items-center gap-2.5 mb-4 group">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <Zap className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-lg font-bold text-white tracking-tight">
+                Campus<span className="text-gradient-blue">Match</span>
+              </span>
+            </Link>
+            <p className="text-white/30 text-sm leading-relaxed max-w-xs">
+              The verified campus network. Real students, real connections.
+            </p>
+          </div>
+
+          {/* Platform */}
+          <div>
+            <h4 className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-4">Platform</h4>
+            <div className="space-y-2.5">
+              {['Discover', 'Matches', 'Friends', 'Events', 'Marketplace'].map(item => (
+                <Link key={item} href={`/${item.toLowerCase()}`} className="block text-sm text-white/30 hover:text-white/70 transition-colors">
+                  {item}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h4 className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-4">Company</h4>
+            <div className="space-y-2.5">
+              {[
+                { label: 'About', href: '/#about' },
+                { label: 'Careers', href: '/' },
+                { label: 'Blog', href: '/' },
+                { label: 'Press', href: '/' },
+              ].map(item => (
+                <a key={item.label} href={item.href} className="block text-sm text-white/30 hover:text-white/70 transition-colors">
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h4 className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-4">Legal</h4>
+            <div className="space-y-2.5">
+              {[
+                { label: 'Privacy Policy', href: '/privacy' },
+                { label: 'Terms of Service', href: '/terms' },
+                { label: 'Cookie Policy', href: '/' },
+                { label: 'Security', href: '/' },
+              ].map(item => (
+                <Link key={item.label} href={item.href} className="block text-sm text-white/30 hover:text-white/70 transition-colors">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
-        <div>
-          <h4 className="text-sm font-bold text-white/80 uppercase tracking-wider mb-4" style={{ fontFamily: 'Outfit' }}>Platform</h4>
-          <ul className="space-y-3">
-            {[['Discover', '/discover'], ['Matches', '/matches'], ['Friends', '/friends'], ['Events', '/events'], ['Marketplace', '/marketplace']].map(([l, h]) => (
-              <li key={h}><Link href={h} className="text-sm text-white/50 hover:text-white transition-colors" style={{ fontFamily: 'Inter' }}>{l}</Link></li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h4 className="text-sm font-bold text-white/80 uppercase tracking-wider mb-4" style={{ fontFamily: 'Outfit' }}>Company</h4>
-          <ul className="space-y-3">
-            <li><Link href="/" className="text-sm text-white/50 hover:text-white transition-colors" style={{ fontFamily: 'Inter' }}>About Us</Link></li>
-            <li><a href="mailto:hello@campusmatch.in" className="text-sm text-white/50 hover:text-white transition-colors" style={{ fontFamily: 'Inter' }}>Contact</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="text-sm font-bold text-white/80 uppercase tracking-wider mb-4" style={{ fontFamily: 'Outfit' }}>Legal</h4>
-          <ul className="space-y-3">
-            <li><Link href="/terms" className="text-sm text-white/50 hover:text-white transition-colors" style={{ fontFamily: 'Inter' }}>Terms of Service</Link></li>
-            <li><Link href="/privacy" className="text-sm text-white/50 hover:text-white transition-colors" style={{ fontFamily: 'Inter' }}>Privacy Policy</Link></li>
-          </ul>
+
+        {/* Bottom bar */}
+        <div className="mt-16 pt-8 border-t border-white/[0.04] flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-white/20 text-xs">
+            &copy; {new Date().getFullYear()} CampusMatch. All rights reserved.
+          </p>
+          <div className="flex items-center gap-1 text-white/20 text-xs">
+            Built with <Heart className="w-3 h-3 text-blue-400 mx-1" fill="currentColor" /> for verified students
+          </div>
         </div>
       </div>
-      <div className="border-t border-white/5 mt-10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-        <p className="text-xs text-white/40" style={{ fontFamily: 'Inter' }}>&copy; {new Date().getFullYear()} CampusMatch. All rights reserved.</p>
-        <div className="flex items-center gap-2 text-xs text-white/40" style={{ fontFamily: 'Inter' }}><Shield className="w-3 h-3" /><span>ERP-Verified Student Community</span></div>
-      </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};

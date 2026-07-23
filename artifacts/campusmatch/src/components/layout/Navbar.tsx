@@ -1,84 +1,214 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Heart } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Zap } from 'lucide-react';
+import { motion, AnimatePresence, useMotionValueEvent, useScroll } from 'framer-motion';
+
+const navLinks = [
+  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Discover', href: '/discover' },
+  { label: 'Matches', href: '/matches' },
+  { label: 'Friends', href: '/friends' },
+  { label: 'Events', href: '/events' },
+  { label: 'Marketplace', href: '/marketplace' },
+];
 
 export const Navbar = () => {
   const { user, logoutUser } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    const direction = latest > lastScrollY ? 'down' : 'up';
+    if (latest > 60) {
+      setHidden(direction === 'down' && latest > 200);
+      setScrolled(true);
+    } else {
+      setHidden(false);
+      setScrolled(false);
+    }
+    setLastScrollY(latest);
+  });
 
   useEffect(() => { setMobileMenuOpen(false); }, [location]);
 
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
+  const activeLink = navLinks.find(l => l.href === location);
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-20 px-6 md:px-[80px] lg:px-[120px] py-[16px]">
+      <motion.nav
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: hidden ? -100 : 0, opacity: hidden ? 0 : 1 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+        className={`fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-24px)] max-w-5xl transition-all duration-300 ${
+          scrolled ? 'glass-nav rounded-2xl px-4 py-2.5' : 'px-6 py-3'
+        }`}
+        style={{ borderRadius: scrolled ? '16px' : '0' }}
+      >
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-[#ec4899] flex items-center justify-center shadow-lg shadow-pink-500/20">
-              <Heart className="w-4 h-4 text-white fill-white" />
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
+              <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="text-xl font-bold text-white" style={{ fontFamily: 'Outfit' }}>Campus<span className="text-[#ec4899]">Match</span></span>
+            <span className="text-lg font-bold text-white tracking-tight">
+              Campus<span className="text-gradient-blue">Match</span>
+            </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-1">
             {user ? (
-              <>
-                {[['Dashboard', '/dashboard'], ['Discover', '/discover'], ['Matches', '/matches'], ['Friends', '/friends'], ['Events', '/events'], ['Marketplace', '/marketplace']].map(([label, href]) => (
-                  <Link key={href} href={href} className="text-sm font-medium text-white/70 hover:text-white transition-colors" style={{ fontFamily: 'Outfit' }}>{label}</Link>
-                ))}
-                {isAdmin && <Link href="/admin" className="text-sm font-medium text-white/70 hover:text-white transition-colors" style={{ fontFamily: 'Outfit' }}>Admin</Link>}
-              </>
+              navLinks.map(link => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`relative px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location === link.href
+                      ? 'text-white bg-white/[0.08]'
+                      : 'text-white/50 hover:text-white/90 hover:bg-white/[0.04]'
+                  }`}
+                >
+                  {link.label}
+                  {location === link.href && (
+                    <motion.div
+                      layoutId="nav-indicator"
+                      className="absolute bottom-0 left-3 right-3 h-[2px] bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                </Link>
+              ))
             ) : (
               <>
-                <a href="/#features" className="text-sm font-medium text-white/70 hover:text-white transition-colors" style={{ fontFamily: 'Outfit' }}>Features</a>
-                <a href="/#how-it-works" className="text-sm font-medium text-white/70 hover:text-white transition-colors" style={{ fontFamily: 'Outfit' }}>Verification</a>
-                <a href="/#faq" className="text-sm font-medium text-white/70 hover:text-white transition-colors" style={{ fontFamily: 'Outfit' }}>FAQ</a>
+                <a href="/#features" className="px-3.5 py-2 rounded-lg text-sm font-medium text-white/50 hover:text-white/90 hover:bg-white/[0.04] transition-all">Features</a>
+                <a href="/#how-it-works" className="px-3.5 py-2 rounded-lg text-sm font-medium text-white/50 hover:text-white/90 hover:bg-white/[0.04] transition-all">Verification</a>
+                <a href="/#faq" className="px-3.5 py-2 rounded-lg text-sm font-medium text-white/50 hover:text-white/90 hover:bg-white/[0.04] transition-all">FAQ</a>
               </>
+            )}
+            {isAdmin && (
+              <Link href="/admin" className={`relative px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${location.startsWith('/admin') ? 'text-white bg-white/[0.08]' : 'text-white/50 hover:text-white/90 hover:bg-white/[0.04]'}`}>
+                Admin
+              </Link>
             )}
           </div>
 
-          <div className="hidden md:flex items-center gap-3">
+          {/* Right side */}
+          <div className="hidden md:flex items-center gap-2.5">
             {user ? (
-              <div className="flex items-center gap-3">
-                <Link href="/profile"><img src={user.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt={user.name} className="w-8 h-8 rounded-full border border-white/20" /></Link>
-                <Button variant="ghost" size="sm" onClick={logoutUser} className="text-white/70 hover:text-white hover:bg-white/10" style={{ fontFamily: 'Outfit' }}>Logout</Button>
+              <div className="flex items-center gap-2.5">
+                <Link href="/profile" className="relative group">
+                  <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 group-hover:border-white/20 transition-colors">
+                    <img
+                      src={user.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`}
+                      alt={user.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="absolute inset-0 rounded-full ring-2 ring-blue-500/0 group-hover:ring-blue-500/30 transition-all" />
+                </Link>
+                <Button variant="ghost" size="sm" onClick={logoutUser} className="text-white/40 hover:text-white/80 hover:bg-white/[0.06] text-xs">
+                  Logout
+                </Button>
               </div>
             ) : (
               <>
-                <Link href="/login" className="h-10 px-5 inline-flex items-center justify-center rounded-lg bg-white text-gray-900 font-semibold text-sm border border-gray-200 hover:bg-gray-100 transition-all" style={{ fontFamily: 'Outfit' }}>Sign In</Link>
-                <Link href="/register" className="h-10 px-5 inline-flex items-center justify-center rounded-lg bg-[#ec4899] text-white font-semibold text-sm shadow-lg shadow-pink-500/20 hover:bg-[#db2777] transition-all" style={{ fontFamily: 'Outfit' }}>Get Started</Link>
+                <Link href="/login" className="btn-premium btn-secondary h-9 px-4 text-xs">
+                  Sign In
+                </Link>
+                <Link href="/register" className="btn-premium btn-primary h-9 px-4 text-xs">
+                  Get Started
+                </Link>
               </>
             )}
           </div>
 
-          <button className="md:hidden text-white p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {/* Mobile toggle */}
+          <button
+            className="md:hidden text-white/60 hover:text-white p-2 rounded-lg hover:bg-white/[0.06] transition-all"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
-      </nav>
+      </motion.nav>
 
+      {/* Mobile menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col items-center justify-center gap-8 md:hidden">
-            <button className="absolute top-6 right-6 text-white p-2" onClick={() => setMobileMenuOpen(false)}><X className="w-6 h-6" /></button>
-            {user ? (
-              <>
-                {[['Dashboard', '/dashboard'], ['Discover', '/discover'], ['Matches', '/matches'], ['Friends', '/friends'], ['Events', '/events'], ['Marketplace', '/marketplace'], ['Profile', '/profile']].map(([label, href]) => (
-                  <Link key={href} href={href} className="text-2xl font-medium text-white" style={{ fontFamily: 'Outfit' }} onClick={() => setMobileMenuOpen(false)}>{label}</Link>
-                ))}
-                <button onClick={async () => { await logoutUser(); setMobileMenuOpen(false); }} className="mt-4 h-12 px-8 rounded-lg bg-white/10 text-white font-semibold" style={{ fontFamily: 'Outfit' }}>Logout</button>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="text-2xl font-medium text-white" style={{ fontFamily: 'Outfit' }} onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
-                <Link href="/register" className="h-14 px-10 inline-flex items-center justify-center rounded-lg bg-[#ec4899] text-white font-semibold text-lg shadow-lg" style={{ fontFamily: 'Outfit' }} onClick={() => setMobileMenuOpen(false)}>Get Started</Link>
-              </>
-            )}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl md:hidden"
+          >
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="absolute right-0 top-0 bottom-0 w-72 glass-surface p-6 pt-20"
+            >
+              <button
+                className="absolute top-5 right-5 text-white/60 hover:text-white p-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="space-y-1">
+                {user ? (
+                  <>
+                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/[0.06]">
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10">
+                        <img src={user.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt="" className="w-full h-full object-cover" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-white">{user.name}</p>
+                        <p className="text-xs text-white/40">{user.email}</p>
+                      </div>
+                    </div>
+                    {navLinks.map(link => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`block px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                          location === link.href ? 'text-white bg-white/[0.08]' : 'text-white/50 hover:text-white/90 hover:bg-white/[0.04]'
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                    {isAdmin && (
+                      <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-sm font-medium text-white/50 hover:text-white/90 hover:bg-white/[0.04]">
+                        Admin
+                      </Link>
+                    )}
+                    <div className="pt-4 mt-4 border-t border-white/[0.06]">
+                      <button onClick={async () => { await logoutUser(); setMobileMenuOpen(false); }} className="w-full px-4 py-3 rounded-xl text-sm font-medium text-white/50 hover:text-white/90 hover:bg-white/[0.04] text-left">
+                        Logout
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-sm font-medium text-white/50 hover:text-white/90 hover:bg-white/[0.04]">Sign In</Link>
+                    <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="block mt-2">
+                      <div className="btn-premium btn-primary w-full text-center">Get Started</div>
+                    </Link>
+                  </>
+                )}
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

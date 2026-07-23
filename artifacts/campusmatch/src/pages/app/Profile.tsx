@@ -34,7 +34,7 @@ export default function Profile() {
   }, [profile]);
 
   if (isLoading) {
-    return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 text-pink-500 animate-spin" /></div>;
+    return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>;
   }
 
   if (!profile) return null;
@@ -62,7 +62,7 @@ export default function Profile() {
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <div className="relative">
         {/* Cover */}
-        <div className="h-48 md:h-64 w-full rounded-3xl bg-gradient-to-br from-pink-500/30 via-purple-500/15 to-[#0d0810] overflow-hidden relative border border-white/5">
+        <div className="h-48 md:h-64 w-full rounded-3xl bg-gradient-to-br from-blue-500/30 via-purple-500/15 to-[#0d0810] overflow-hidden relative border border-white/5">
           <div className="absolute inset-0 opacity-20 mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px)' }}></div>
         </div>
 
@@ -73,12 +73,12 @@ export default function Profile() {
               {profile.avatarUrl ? (
                 <img src={profile.avatarUrl} alt={profile.name} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-4xl font-bold text-pink-400 bg-white/5" style={{ fontFamily: 'Outfit' }}>
+                <div className="w-full h-full flex items-center justify-center text-4xl font-bold text-blue-400 bg-white/5">
                   {profile.name.charAt(0)}
                 </div>
               )}
             </div>
-            <button className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-[#ec4899] flex items-center justify-center shadow-lg hover:bg-[#db2777] transition-colors z-10" title="Profile photo upload coming soon">
+            <button className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg hover:from-blue-600 to-indigo-700 transition-colors z-10" title="Profile photo upload coming soon">
               <Camera className="w-5 h-5 text-white" />
             </button>
           </div>
@@ -87,7 +87,7 @@ export default function Profile() {
         {/* Actions */}
         <div className="absolute right-4 -bottom-12">
           {!isEditing && (
-            <Button onClick={() => setIsEditing(true)} variant="outline" className="bg-card border-white/10 hover:bg-white/10 text-white rounded-full px-6" style={{ fontFamily: 'Cabin' }}>
+            <Button onClick={() => setIsEditing(true)} variant="outline" className="bg-card border-white/10 hover:bg-white/10 text-white rounded-full px-6">
               <Edit3 className="w-4 h-4 mr-2" /> Edit Profile
             </Button>
           )}
@@ -96,27 +96,27 @@ export default function Profile() {
 
       <div className="mt-20 px-2">
         <div className="flex items-center gap-3 mb-1">
-          <h1 className="text-3xl font-bold text-white tracking-tight" style={{ fontFamily: 'Outfit' }}>{profile.name}</h1>
+          <h1 className="text-3xl font-bold text-white tracking-tight">{profile.name}</h1>
           {profile.isVerified && (
-            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-pink-500/20 border border-pink-500/30 text-pink-300 text-xs font-medium" style={{ fontFamily: 'Cabin' }}>
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-xs font-medium">
               <ShieldCheck className="w-3 h-3" /> Verified Student
             </div>
           )}
         </div>
 
         {profile.isFirst100 && (
-          <div className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-yellow-500/20 to-yellow-600/10 border border-yellow-500/30 text-yellow-500 text-sm font-semibold" style={{ fontFamily: 'Cabin' }}>
+          <div className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-yellow-500/20 to-yellow-600/10 border border-yellow-500/30 text-yellow-500 text-sm font-semibold">
             <Trophy className="w-4 h-4" /> First 100 Member
           </div>
         )}
 
         <div className="flex flex-wrap gap-4 mt-6 text-white/60 text-sm">
           <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-            <Book className="w-4 h-4 text-pink-400" /> <span style={{ fontFamily: 'Inter' }}>{profile.branch}, Year {profile.year}</span>
+            <Book className="w-4 h-4 text-blue-400" /> <span>{profile.branch}, Year {profile.year}</span>
           </div>
           {profile.hostel && (
             <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-              <MapPin className="w-4 h-4 text-pink-400" /> <span style={{ fontFamily: 'Inter' }}>{profile.hostel} Hostel</span>
+              <MapPin className="w-4 h-4 text-blue-400" /> <span>{profile.hostel} Hostel</span>
             </div>
           )}
         </div>
@@ -124,23 +124,23 @@ export default function Profile() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
           <div className="md:col-span-2 space-y-8">
             {isEditing ? (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card p-6 rounded-2xl">
-                <h3 className="text-lg font-bold text-white mb-4" style={{ fontFamily: 'Outfit' }}>Edit Profile</h3>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="card-premium p-6 rounded-2xl">
+                <h3 className="text-lg font-bold text-white mb-4">Edit Profile</h3>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label className="text-white/80" style={{ fontFamily: 'Outfit' }}>Bio</Label>
+                    <Label className="text-white/80">Bio</Label>
                     <textarea 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:ring-1 focus:ring-[#ec4899] outline-none"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:ring-1 focus:ring-blue-500 outline-none"
                       rows={3}
                       value={formData.bio}
                       onChange={(e) => setFormData({...formData, bio: e.target.value})}
                       placeholder="Write something about yourself..."
-                      style={{ fontFamily: 'Inter' }}
+                     
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-white/80" style={{ fontFamily: 'Outfit' }}>Branch</Label>
+                      <Label className="text-white/80">Branch</Label>
                       <Input 
                         value={formData.branch}
                         onChange={(e) => setFormData({...formData, branch: e.target.value})}
@@ -148,7 +148,7 @@ export default function Profile() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-white/80" style={{ fontFamily: 'Outfit' }}>Year</Label>
+                      <Label className="text-white/80">Year</Label>
                       <Input 
                         type="number"
                         min="1" max="5"
@@ -159,7 +159,7 @@ export default function Profile() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-white/80" style={{ fontFamily: 'Outfit' }}>Hostel / Location</Label>
+                    <Label className="text-white/80">Hostel / Location</Label>
                     <Input 
                       value={formData.hostel}
                       onChange={(e) => setFormData({...formData, hostel: e.target.value})}
@@ -167,7 +167,7 @@ export default function Profile() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-white/80" style={{ fontFamily: 'Outfit' }}>Interests (comma separated)</Label>
+                    <Label className="text-white/80">Interests (comma separated)</Label>
                     <Input 
                       value={formData.interests}
                       onChange={(e) => setFormData({...formData, interests: e.target.value})}
@@ -176,8 +176,8 @@ export default function Profile() {
                     />
                   </div>
                   <div className="flex justify-end gap-3 pt-4">
-                    <Button type="button" variant="ghost" onClick={() => setIsEditing(false)} className="text-white/60" style={{ fontFamily: 'Cabin' }}>Cancel</Button>
-                    <Button type="submit" disabled={updateMutation.isPending} className="bg-[#ec4899] text-white hover:bg-[#db2777]" style={{ fontFamily: 'Cabin' }}>
+                    <Button type="button" variant="ghost" onClick={() => setIsEditing(false)} className="text-white/60">Cancel</Button>
+                    <Button type="submit" disabled={updateMutation.isPending} className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 to-indigo-700">
                       {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Changes'}
                     </Button>
                   </div>
@@ -186,18 +186,18 @@ export default function Profile() {
             ) : (
               <>
                 <div>
-                  <h3 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-3" style={{ fontFamily: 'Cabin' }}>About Me</h3>
-                  <p className="text-white/90 leading-relaxed bg-white/5 p-5 rounded-2xl border border-white/5" style={{ fontFamily: 'Inter' }}>
+                  <h3 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-3">About Me</h3>
+                  <p className="text-white/90 leading-relaxed bg-white/5 p-5 rounded-2xl border border-white/5">
                     {profile.bio || <span className="italic opacity-50">No bio written yet. Add one to get more matches!</span>}
                   </p>
                 </div>
 
                 {profile.interests && profile.interests.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-3" style={{ fontFamily: 'Cabin' }}>Interests</h3>
+                    <h3 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-3">Interests</h3>
                     <div className="flex flex-wrap gap-2">
                       {profile.interests.map(int => (
-                        <span key={int} className="px-4 py-2 bg-pink-500/10 border border-pink-500/20 rounded-xl text-white text-sm font-medium" style={{ fontFamily: 'Cabin' }}>
+                        <span key={int} className="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-xl text-white text-sm font-medium">
                           {int}
                         </span>
                       ))}
@@ -209,19 +209,19 @@ export default function Profile() {
           </div>
           
           <div className="md:col-span-1 space-y-4">
-            <div className="glass-card p-5 rounded-2xl cm-card-elevate">
-              <h3 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-4" style={{ fontFamily: 'Cabin' }}>Account Info</h3>
+            <div className="card-premium p-5 rounded-2xl ">
+              <h3 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-4">Account Info</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-white/60" style={{ fontFamily: 'Inter' }}>Status</span>
-                  <span className={`font-bold ${profile.isVerified ? 'text-pink-400' : 'text-yellow-400'}`} style={{ fontFamily: 'Space Grotesk' }}>
+                  <span className="text-white/60">Status</span>
+                  <span className={`font-bold ${profile.isVerified ? 'text-blue-400' : 'text-yellow-400'}`}>
                     {profile.isVerified ? 'Verified' : 'Pending'}
                   </span>
                 </div>
                 {profile.isFirst100 && (
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-white/60" style={{ fontFamily: 'Inter' }}>Badge</span>
-                    <span className="text-yellow-400 font-bold" style={{ fontFamily: 'Space Grotesk' }}>First 100</span>
+                    <span className="text-white/60">Badge</span>
+                    <span className="text-yellow-400 font-bold">First 100</span>
                   </div>
                 )}
               </div>

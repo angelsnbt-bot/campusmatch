@@ -94,18 +94,18 @@ export default function VerifyOtp() {
 
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md glass-card p-8 rounded-2xl relative overflow-hidden text-center cm-card-elevate">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-500" />
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md card-premium p-8 rounded-2xl relative overflow-hidden text-center">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500" />
         
         <AnimatePresence mode="wait">
           {!isSuccess ? (
             <motion.div key="otp-inputs" exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.3 }}>
-              <div className="w-16 h-16 rounded-full bg-pink-500/10 flex items-center justify-center mx-auto mb-6 border border-pink-500/20 shadow-lg shadow-pink-500/10">
-                <MailCheck className="w-8 h-8 text-pink-400" />
+              <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-6 border border-blue-500/20 shadow-lg shadow-blue-500/10">
+                <MailCheck className="w-8 h-8 text-blue-400" />
               </div>
               
-              <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Outfit' }}>Check your email</h1>
-              <p className="text-white/60 text-sm mb-8 leading-relaxed" style={{ fontFamily: 'Inter' }}>
+              <h1 className="text-2xl font-bold text-white mb-2">Check your email</h1>
+              <p className="text-white/60 text-sm mb-8 leading-relaxed">
                 We've sent a 6-digit code to <span className="text-white font-medium">{user.email}</span>. Please verify it below.
               </p>
 
@@ -119,18 +119,18 @@ export default function VerifyOtp() {
                     onKeyDown={(e) => handleKeyDown(i, e)}
                     onPaste={handlePaste}
                     whileFocus={{ scale: 1.05 }}
-                    className={`w-12 h-14 text-center text-2xl font-bold rounded-xl bg-white/5 border text-white transition-all focus:outline-none focus:ring-1 focus:ring-[#ec4899] ${isError ? 'border-pink-500 bg-pink-500/5' : 'border-white/10 hover:border-white/20 focus:border-[#ec4899] focus:bg-white/10'}`}
+                    className={`w-12 h-14 text-center text-2xl font-bold rounded-xl bg-white/5 border text-white transition-all focus:outline-none focus:ring-1 focus:ring-blue-500 ${isError ? 'border-red-500 bg-red-500/5' : 'border-white/10 hover:border-white/20 focus:border-blue-500 focus:bg-white/10'}`}
                   />
                 ))}
               </motion.div>
               
-              <Button onClick={() => triggerVerification(otp.join(''))} className="w-full bg-[#ec4899] hover:bg-[#db2777] text-white border-0 py-6 font-semibold shadow-lg shadow-pink-500/20 rounded-xl cm-button-glow" style={{ fontFamily: 'Cabin' }} disabled={verifyEmail.isPending || otp.join('').length !== 6}>
+              <Button onClick={() => triggerVerification(otp.join(''))} className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0 py-6 font-semibold shadow-lg shadow-blue-500/20 rounded-xl" disabled={verifyEmail.isPending || otp.join('').length !== 6}>
                 {verifyEmail.isPending ? <span className="flex items-center gap-2 justify-center"><Loader2 className="w-5 h-5 animate-spin" /> Verifying...</span> : "Verify Email"}
               </Button>
 
-              <div className="mt-8 text-sm text-white/50 flex items-center justify-center gap-2" style={{ fontFamily: 'Inter' }}>
+              <div className="mt-8 text-sm text-white/50 flex items-center justify-center gap-2">
                 <span>Didn't receive the code?</span>
-                <button onClick={handleResend} disabled={countdown > 0 || resendOtp.isPending} className="text-pink-300 hover:text-pink-200 transition-colors font-medium flex items-center gap-1 disabled:text-white/20 disabled:cursor-not-allowed" style={{ fontFamily: 'Outfit' }}>
+                <button onClick={handleResend} disabled={countdown > 0 || resendOtp.isPending} className="text-blue-300 hover:text-blue-200 transition-colors font-medium flex items-center gap-1 disabled:text-white/20 disabled:cursor-not-allowed">
                   {resendOtp.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : countdown > 0 ? `Resend in ${countdown}s` : <><RefreshCw className="w-3.5 h-3.5" /> Resend OTP</>}
                 </button>
               </div>
@@ -142,8 +142,8 @@ export default function VerifyOtp() {
                   <motion.path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.5, delay: 0.4 }} />
                 </motion.svg>
               </motion.div>
-              <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Outfit' }}>Verification Successful</h1>
-              <p className="text-white/60 text-sm" style={{ fontFamily: 'Inter' }}>Redirecting to onboarding portal...</p>
+              <h1 className="text-2xl font-bold text-white mb-2">Verification Successful</h1>
+              <p className="text-white/60 text-sm">Redirecting to onboarding portal...</p>
             </motion.div>
           )}
         </AnimatePresence>

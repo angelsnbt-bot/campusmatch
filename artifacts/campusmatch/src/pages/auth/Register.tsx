@@ -113,20 +113,20 @@ export default function Register() {
 
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-lg glass-card p-8 rounded-2xl relative overflow-hidden cm-card-elevate">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-500" />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-lg card-premium p-8 rounded-2xl relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500" />
 
         <div className="flex flex-col items-center mb-6">
-          <div className="w-12 h-12 rounded-xl bg-[#ec4899] flex items-center justify-center mb-4 shadow-lg shadow-pink-500/20">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20">
             <Heart className="w-6 h-6 text-white fill-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Outfit' }}>Join CampusMatch</h1>
-          <p className="text-white/60 text-sm text-center" style={{ fontFamily: 'Inter' }}>Exclusively for VGU students.</p>
+          <h1 className="text-2xl font-bold text-white mb-2">Join CampusMatch</h1>
+          <p className="text-white/60 text-sm text-center">Exclusively for VGU students.</p>
         </div>
 
         <div className="flex items-center justify-center gap-2 mb-6">
           {[1, 2, 3].map((s) => (
-            <div key={s} className={`h-1.5 rounded-full transition-all ${s === step ? 'w-8 bg-[#ec4899]' : s < step ? 'w-4 bg-[#ec4899]/50' : 'w-4 bg-white/20'}`} />
+            <div key={s} className={`h-1.5 rounded-full transition-all ${s === step ? 'w-8 bg-gradient-to-r from-blue-500 to-indigo-600' : s < step ? 'w-4 bg-blue-500/50' : 'w-4 bg-white/20'}`} />
           ))}
         </div>
 
@@ -134,22 +134,22 @@ export default function Register() {
           {step === 1 && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-white/80" style={{ fontFamily: 'Outfit' }}>Full Name *</Label>
-                <Input id="name" placeholder="As per student ID" value={name} onChange={(e) => setName(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
+                <Label htmlFor="name" className="text-white/80">Full Name *</Label>
+                <Input id="name" placeholder="As per student ID" value={name} onChange={(e) => setName(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-blue-500" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-white/80" style={{ fontFamily: 'Outfit' }}>College Email *</Label>
-                <Input id="email" type="email" placeholder="name.branch@vgu.ac.in" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
+                <Label htmlFor="email" className="text-white/80">College Email *</Label>
+                <Input id="email" type="email" placeholder="name.branch@vgu.ac.in" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-blue-500" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone" className="text-white/80" style={{ fontFamily: 'Outfit' }}>Phone Number *</Label>
-                <Input id="phone" type="tel" placeholder="+91" value={phone} onChange={(e) => setPhone(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
+                <Label htmlFor="phone" className="text-white/80">Phone Number *</Label>
+                <Input id="phone" type="tel" placeholder="+91" value={phone} onChange={(e) => setPhone(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-blue-500" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-white/80" style={{ fontFamily: 'Outfit' }}>Password *</Label>
-                <Input id="password" type="password" placeholder="Min 8 characters" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
+                <Label htmlFor="password" className="text-white/80">Password *</Label>
+                <Input id="password" type="password" placeholder="Min 8 characters" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-blue-500" />
               </div>
-              <Button type="button" onClick={() => canProceedStep1 && setStep(2)} className="w-full bg-[#ec4899] hover:bg-[#db2777] text-white border-0 py-6 mt-4 shadow-lg shadow-pink-500/25 cm-button-glow" style={{ fontFamily: 'Cabin' }} disabled={!canProceedStep1}>
+              <Button type="button" onClick={() => canProceedStep1 && setStep(2)} className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0 py-6 mt-4 shadow-lg shadow-blue-500/25" disabled={!canProceedStep1}>
                 Next <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </motion.div>
@@ -158,36 +158,36 @@ export default function Register() {
           {step === 2 && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="erp" className="text-white/80" style={{ fontFamily: 'Outfit' }}>ERP Number *</Label>
-                <Input id="erp" placeholder="Your ERP enrollment number" value={erpNumber} onChange={(e) => setErpNumber(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
+                <Label htmlFor="erp" className="text-white/80">ERP Number *</Label>
+                <Input id="erp" placeholder="Your ERP enrollment number" value={erpNumber} onChange={(e) => setErpNumber(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-blue-500" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="college" className="text-white/80" style={{ fontFamily: 'Outfit' }}>College *</Label>
-                <Input id="college" placeholder="e.g. VGU Jaipur" value={college} onChange={(e) => setCollege(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
+                <Label htmlFor="college" className="text-white/80">College *</Label>
+                <Input id="college" placeholder="e.g. VGU Jaipur" value={college} onChange={(e) => setCollege(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-blue-500" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="course" className="text-white/80" style={{ fontFamily: 'Outfit' }}>Course *</Label>
-                <Input id="course" placeholder="e.g. B.Tech, MBA, BCA" value={course} onChange={(e) => setCourse(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
+                <Label htmlFor="course" className="text-white/80">Course *</Label>
+                <Input id="course" placeholder="e.g. B.Tech, MBA, BCA" value={course} onChange={(e) => setCourse(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-blue-500" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="branch" className="text-white/80" style={{ fontFamily: 'Outfit' }}>Branch *</Label>
-                <Input id="branch" placeholder="e.g. CSE, ECE, ME" value={branch} onChange={(e) => setBranch(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
+                <Label htmlFor="branch" className="text-white/80">Branch *</Label>
+                <Input id="branch" placeholder="e.g. CSE, ECE, ME" value={branch} onChange={(e) => setBranch(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-blue-500" />
               </div>
               <div className="space-y-2">
-                <Label className="text-white/80" style={{ fontFamily: 'Outfit' }}>Year *</Label>
+                <Label className="text-white/80">Year *</Label>
                 <div className="flex gap-2">
                   {YEARS.map((y) => (
-                    <button key={y} type="button" onClick={() => setYear(y)} className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${year === y ? 'bg-[#ec4899] text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'}`} style={{ fontFamily: 'Cabin' }}>
+                    <button key={y} type="button" onClick={() => setYear(y)} className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${year === y ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}>
                       {y}{y === 1 ? 'st' : y === 2 ? 'nd' : y === 3 ? 'rd' : 'th'}
                     </button>
                   ))}
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button type="button" variant="outline" onClick={() => setStep(1)} className="flex-1 border-white/10 text-white hover:bg-white/10" style={{ fontFamily: 'Cabin' }}>
+                <Button type="button" variant="outline" onClick={() => setStep(1)} className="flex-1 border-white/10 text-white hover:bg-white/10">
                   <ChevronLeft className="w-4 h-4 mr-1" /> Back
                 </Button>
-                <Button type="button" onClick={() => canProceedStep2 && setStep(3)} className="flex-1 bg-[#ec4899] hover:bg-[#db2777] text-white border-0" style={{ fontFamily: 'Cabin' }} disabled={!canProceedStep2}>
+                <Button type="button" onClick={() => canProceedStep2 && setStep(3)} className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0" disabled={!canProceedStep2}>
                   Next <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               </div>
@@ -197,8 +197,8 @@ export default function Register() {
           {step === 3 && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-white/80" style={{ fontFamily: 'Outfit' }}>Profile Photo</Label>
-                <div onClick={() => fileInputRef.current?.click()} className="w-24 h-24 mx-auto rounded-full bg-white/5 border-2 border-dashed border-white/20 flex items-center justify-center cursor-pointer hover:border-pink-500/50 transition-colors overflow-hidden">
+                <Label className="text-white/80">Profile Photo</Label>
+                <div onClick={() => fileInputRef.current?.click()} className="w-24 h-24 mx-auto rounded-full bg-white/5 border-2 border-dashed border-white/20 flex items-center justify-center cursor-pointer hover:border-blue-500/50 transition-colors overflow-hidden">
                   {photoPreview ? (
                     <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
@@ -206,14 +206,14 @@ export default function Register() {
                   )}
                 </div>
                 <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhotoChange} className="hidden" />
-                <p className="text-white/40 text-xs text-center" style={{ fontFamily: 'Inter' }}>Click to upload (JPEG, PNG, WebP, max 5MB)</p>
+                <p className="text-white/40 text-xs text-center">Click to upload (JPEG, PNG, WebP, max 5MB)</p>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-white/80" style={{ fontFamily: 'Outfit' }}>Interests * ({interests.length} selected)</Label>
+                <Label className="text-white/80">Interests * ({interests.length} selected)</Label>
                 <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
                   {INTEREST_SUGGESTIONS.map((interest) => (
-                    <button key={interest} type="button" onClick={() => toggleInterest(interest)} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${interests.includes(interest) ? 'bg-[#ec4899] text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'}`} style={{ fontFamily: 'Cabin' }}>
+                    <button key={interest} type="button" onClick={() => toggleInterest(interest)} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${interests.includes(interest) ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}>
                       {interests.includes(interest) && <X className="w-3 h-3 inline mr-1" />}
                       {interest}
                     </button>
@@ -222,17 +222,17 @@ export default function Register() {
               </div>
 
               <div className="flex items-start gap-3 pt-2">
-                <Checkbox id="terms" checked={acceptTerms} onCheckedChange={(v) => setAcceptTerms(v === true)} className="mt-0.5 border-white/20 data-[state=checked]:bg-[#ec4899]" />
-                <Label htmlFor="terms" className="text-white/60 text-xs leading-relaxed cursor-pointer" style={{ fontFamily: 'Inter' }}>
-                  I accept the <a href="/terms" target="_blank" className="text-pink-300 hover:underline">Terms of Service</a> and <a href="/privacy" target="_blank" className="text-pink-300 hover:underline">Privacy Policy</a>. I confirm I am a current VGU student and the information provided is accurate.
+                <Checkbox id="terms" checked={acceptTerms} onCheckedChange={(v) => setAcceptTerms(v === true)} className="mt-0.5 border-white/20 data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-blue-500 data-[state=checked]:to-indigo-600" />
+                <Label htmlFor="terms" className="text-white/60 text-xs leading-relaxed cursor-pointer">
+                  I accept the <a href="/terms" target="_blank" className="text-blue-300 hover:underline">Terms of Service</a> and <a href="/privacy" target="_blank" className="text-blue-300 hover:underline">Privacy Policy</a>. I confirm I am a current VGU student and the information provided is accurate.
                 </Label>
               </div>
 
               <div className="flex gap-2">
-                <Button type="button" variant="outline" onClick={() => setStep(2)} className="flex-1 border-white/10 text-white hover:bg-white/10" style={{ fontFamily: 'Cabin' }}>
+                <Button type="button" variant="outline" onClick={() => setStep(2)} className="flex-1 border-white/10 text-white hover:bg-white/10">
                   <ChevronLeft className="w-4 h-4 mr-1" /> Back
                 </Button>
-                <Button type="submit" className="flex-1 bg-[#ec4899] hover:bg-[#db2777] text-white border-0 cm-button-glow" style={{ fontFamily: 'Cabin' }} disabled={!canSubmit || registerMutation.isPending}>
+                <Button type="submit" className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0" disabled={!canSubmit || registerMutation.isPending}>
                   {registerMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Create Account'}
                 </Button>
               </div>
@@ -240,8 +240,8 @@ export default function Register() {
           )}
         </form>
 
-        <div className="mt-6 text-center text-sm text-white/60" style={{ fontFamily: 'Outfit' }}>
-          Already have an account? <Link href="/login" className="text-pink-300 hover:text-pink-200 transition-colors">Sign in</Link>
+        <div className="mt-6 text-center text-sm text-white/60">
+          Already have an account? <Link href="/login" className="text-blue-300 hover:text-blue-200 transition-colors">Sign in</Link>
         </div>
       </motion.div>
     </div>

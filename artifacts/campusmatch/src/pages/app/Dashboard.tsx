@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'wouter';
-import { Heart, Send, Flame, Megaphone, Loader2 } from 'lucide-react';
+import { Heart, Send, Flame, Megaphone } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -74,14 +74,14 @@ export default function Dashboard() {
         <div className="flex-1 space-y-6">
           
           {/* Create Post */}
-          <div className="glass-card p-5 rounded-2xl cm-card-elevate">
+          <div className="card-premium p-5 rounded-2xl">
             <form onSubmit={handleCreatePost}>
               <div className="flex gap-4">
-                <div className="w-10 h-10 shrink-0 rounded-full bg-pink-500/20 overflow-hidden border border-pink-500/30">
+                <div className="w-10 h-10 shrink-0 rounded-full bg-blue-500/20 overflow-hidden border border-blue-500/30">
                   {user?.avatarUrl ? (
                     <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-pink-400 font-bold" style={{ fontFamily: 'Outfit' }}>
+                    <div className="w-full h-full flex items-center justify-center text-blue-400 font-bold">
                       {user?.name?.charAt(0)}
                     </div>
                   )}
@@ -92,13 +92,11 @@ export default function Dashboard() {
                     onChange={(e) => setNewPostContent(e.target.value)}
                     placeholder="What's happening on campus?"
                     className="bg-transparent border-none text-white focus-visible:ring-0 focus-visible:ring-offset-0 px-0 placeholder:text-white/40 text-lg"
-                    style={{ fontFamily: 'Inter' }}
                   />
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
                     <div className="flex gap-2">
                       <select 
-                        className="bg-white/5 border border-white/10 text-white text-sm rounded-full px-3 py-1 outline-none focus:ring-1 focus:ring-[#ec4899]"
-                        style={{ fontFamily: 'Cabin' }}
+                        className="bg-white/5 border border-white/10 text-white text-sm rounded-full px-3 py-1 outline-none focus:ring-1 focus:ring-blue-500"
                         value={selectedCategory || 'general'}
                         onChange={(e) => setSelectedCategory(e.target.value as PostInputCategory)}
                       >
@@ -112,10 +110,9 @@ export default function Dashboard() {
                     <Button 
                       type="submit" 
                       disabled={!newPostContent.trim() || isSubmitting}
-                      className="rounded-full bg-[#ec4899] text-white border-0 shadow-lg shadow-pink-500/20 h-8 px-4 hover:bg-[#db2777]"
-                      style={{ fontFamily: 'Cabin' }}
+                      className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0 shadow-lg shadow-blue-500/20 h-8 px-4 hover:from-blue-600 hover:to-indigo-700"
                     >
-                      {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Send className="w-3 h-3 mr-2" /> Post</>}
+                      {isSubmitting ? <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /> : <><Send className="w-3 h-3 mr-2" /> Post</>}
                     </Button>
                   </div>
                 </div>
@@ -131,10 +128,9 @@ export default function Dashboard() {
                 onClick={() => setSelectedCategory(cat.id as PostInputCategory)}
                 className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   selectedCategory === cat.id 
-                    ? 'bg-[#ec4899] text-white shadow-md shadow-pink-500/20' 
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md shadow-blue-500/20' 
                     : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
                 }`}
-                style={{ fontFamily: 'Cabin' }}
               >
                 {cat.label}
               </button>
@@ -144,11 +140,22 @@ export default function Dashboard() {
           {/* Posts Feed */}
           <div className="space-y-4">
             {isLoadingPosts ? (
-              <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 text-pink-500 animate-spin" /></div>
+              <div className="space-y-4">
+                {[1,2,3].map(i => (
+                  <div key={i} className="card-premium p-5 rounded-2xl space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="skeleton w-10 h-10 rounded-full" />
+                      <div className="space-y-2 flex-1"><div className="skeleton h-3 w-24 rounded" /><div className="skeleton h-2 w-16 rounded" /></div>
+                    </div>
+                    <div className="skeleton h-3 w-full rounded" />
+                    <div className="skeleton h-3 w-4/5 rounded" />
+                  </div>
+                ))}
+              </div>
             ) : posts?.length === 0 ? (
-              <div className="glass-card p-12 text-center rounded-2xl">
-                <p className="text-white/50" style={{ fontFamily: 'Outfit' }}>No posts in this category yet.</p>
-                <p className="text-white/30 text-sm mt-2" style={{ fontFamily: 'Inter' }}>Be the first to post something!</p>
+              <div className="card-premium p-12 text-center rounded-2xl">
+                <p className="text-white/50">No posts in this category yet.</p>
+                <p className="text-white/30 text-sm mt-2">Be the first to post something!</p>
               </div>
             ) : (
               <AnimatePresence>
@@ -157,31 +164,31 @@ export default function Dashboard() {
                     key={post.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="glass-card p-5 rounded-2xl cm-card-elevate"
+                    className="card-premium p-5 rounded-2xl"
                   >
                     <div className="flex gap-3 mb-3">
                       <div className="w-10 h-10 rounded-full bg-white/10 overflow-hidden shrink-0">
                         {post.authorAvatarUrl ? (
                           <img src={post.authorAvatarUrl} alt={post.authorName} className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-white/50 text-sm" style={{ fontFamily: 'Outfit' }}>
+                          <div className="w-full h-full flex items-center justify-center text-white/50 text-sm">
                             {post.authorName?.charAt(0) || '?'}
                           </div>
                         )}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-semibold text-white text-sm" style={{ fontFamily: 'Outfit' }}>{post.authorName}</h4>
+                          <h4 className="font-semibold text-white text-sm">{post.authorName}</h4>
                           <span className="text-xs text-white/40">•</span>
-                          <span className="text-xs text-white/40" style={{ fontFamily: 'Inter' }}>{formatDistanceToNow(new Date(post.createdAt))} ago</span>
+                          <span className="text-xs text-white/40">{formatDistanceToNow(new Date(post.createdAt))} ago</span>
                         </div>
-                        <div className="text-xs text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded-full inline-block mt-1" style={{ fontFamily: 'Cabin' }}>
+                        <div className="text-xs text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded-full inline-block mt-1">
                           {post.category}
                         </div>
                       </div>
                     </div>
                     
-                    <p className="text-white/90 text-sm whitespace-pre-wrap mb-4" style={{ fontFamily: 'Inter' }}>{post.content}</p>
+                    <p className="text-white/90 text-sm whitespace-pre-wrap mb-4">{post.content}</p>
                     
                     {post.imageUrl && (
                       <div className="rounded-xl overflow-hidden mb-4 border border-white/10">
@@ -193,11 +200,11 @@ export default function Dashboard() {
                       <button 
                         onClick={() => handleLike(post.id)}
                         className={`flex items-center gap-1.5 text-sm transition-colors ${
-                          post.isLiked ? 'text-pink-400' : 'text-white/50 hover:text-white'
+                          post.isLiked ? 'text-blue-400' : 'text-white/50 hover:text-white'
                         }`}
                       >
-                        <Heart className={`w-5 h-5 ${post.isLiked ? 'fill-pink-400' : ''}`} />
-                        <span style={{ fontFamily: 'Space Grotesk' }}>{post.likeCount}</span>
+                        <Heart className={`w-5 h-5 ${post.isLiked ? 'fill-blue-400' : ''}`} />
+                        <span>{post.likeCount}</span>
                       </button>
                     </div>
                   </motion.div>
@@ -210,51 +217,51 @@ export default function Dashboard() {
         {/* Sidebar */}
         <div className="w-full lg:w-80 space-y-6">
           {/* Announcements */}
-          <div className="glass-card p-5 rounded-2xl relative overflow-hidden cm-card-elevate">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 rounded-full blur-3xl" />
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-4" style={{ fontFamily: 'Outfit' }}>
-              <Megaphone className="w-5 h-5 text-pink-400" />
+          <div className="card-premium p-5 rounded-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl" />
+            <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-4">
+              <Megaphone className="w-5 h-5 text-blue-400" />
               Campus Alerts
             </h3>
             
             <div className="space-y-4">
               {isLoadingAnnouncements ? (
-                <Loader2 className="w-5 h-5 text-white/50 animate-spin mx-auto" />
+                <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto" />
               ) : announcements?.slice(0, 3).map((ann) => (
-                <div key={ann.id} className="relative pl-4 border-l-2 border-pink-500/30">
-                  <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-pink-500" />
-                  <h4 className="text-sm font-semibold text-white" style={{ fontFamily: 'Outfit' }}>{ann.title}</h4>
-                  <p className="text-xs text-white/60 line-clamp-2 mt-1" style={{ fontFamily: 'Inter' }}>{ann.content}</p>
+                <div key={ann.id} className="relative pl-4 border-l-2 border-blue-500/30">
+                  <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-blue-500" />
+                  <h4 className="text-sm font-semibold text-white">{ann.title}</h4>
+                  <p className="text-xs text-white/60 line-clamp-2 mt-1">{ann.content}</p>
                 </div>
               ))}
               {announcements?.length === 0 && (
-                <p className="text-sm text-white/50" style={{ fontFamily: 'Inter' }}>No new announcements.</p>
+                <p className="text-sm text-white/50">No new announcements.</p>
               )}
             </div>
           </div>
 
           {/* Quick Links / Trending */}
-          <div className="glass-card p-5 rounded-2xl cm-card-elevate">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-4" style={{ fontFamily: 'Outfit' }}>
-              <Flame className="w-5 h-5 text-pink-400" />
+          <div className="card-premium p-5 rounded-2xl">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-4">
+              <Flame className="w-5 h-5 text-blue-400" />
               Trending Modules
             </h3>
             <div className="grid grid-cols-2 gap-3">
-              <Link href="/discover" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block cm-card-elevate">
+              <Link href="/discover" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block">
                 <div className="text-2xl mb-1">💗</div>
-                <div className="text-xs font-medium text-white/80" style={{ fontFamily: 'Cabin' }}>Dating</div>
+                <div className="text-xs font-medium text-white/80">Dating</div>
               </Link>
-              <Link href="/events" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block cm-card-elevate">
+              <Link href="/events" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block">
                 <div className="text-2xl mb-1">💻</div>
-                <div className="text-xs font-medium text-white/80" style={{ fontFamily: 'Cabin' }}>Hackathons</div>
+                <div className="text-xs font-medium text-white/80">Hackathons</div>
               </Link>
-              <Link href="/discover" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block cm-card-elevate">
+              <Link href="/discover" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block">
                 <div className="text-2xl mb-1">📚</div>
-                <div className="text-xs font-medium text-white/80" style={{ fontFamily: 'Cabin' }}>Study</div>
+                <div className="text-xs font-medium text-white/80">Study</div>
               </Link>
-              <Link href="/marketplace" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block cm-card-elevate">
+              <Link href="/marketplace" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block">
                 <div className="text-2xl mb-1">🛒</div>
-                <div className="text-xs font-medium text-white/80" style={{ fontFamily: 'Cabin' }}>Marketplace</div>
+                <div className="text-xs font-medium text-white/80">Marketplace</div>
               </Link>
             </div>
           </div>
