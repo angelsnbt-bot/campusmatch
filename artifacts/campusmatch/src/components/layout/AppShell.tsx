@@ -47,6 +47,9 @@ export const AppShell: React.FC<{ children: React.ReactNode; requireAuth?: boole
 
   return (
     <div className="min-h-screen bg-background text-foreground relative noise-overlay">
+      {/* Skip to content - Accessibility */}
+      <a href="#main-content" className="skip-to-content">Skip to content</a>
+
       {/* Aurora background */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute w-[800px] h-[800px] rounded-full opacity-[0.12] animate-aurora" style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)', top: '-10%', left: '-5%', filter: 'blur(80px)' }} />
@@ -56,7 +59,7 @@ export const AppShell: React.FC<{ children: React.ReactNode; requireAuth?: boole
       </div>
 
       <Navbar />
-      <main className="relative z-10 pt-20 min-h-screen">
+      <main id="main-content" className="relative z-10 pt-20 min-h-screen" tabIndex={-1}>
         {children}
       </main>
       <Footer />
