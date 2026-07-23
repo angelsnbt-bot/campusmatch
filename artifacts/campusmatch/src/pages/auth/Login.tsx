@@ -32,7 +32,7 @@ export default function Login() {
 
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4 relative">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={isError ? { x: [-10, 10, -10, 10, -5, 5, 0] } : { opacity: 1, y: 0 }} transition={isError ? { duration: 0.4 } : { duration: 0.5 }} className="w-full max-w-md glass-card p-8 rounded-2xl relative overflow-hidden">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={isError ? { x: [-10, 10, -10, 10, -5, 5, 0] } : { opacity: 1, y: 0 }} transition={isError ? { duration: 0.4 } : { duration: 0.5 }} className="w-full max-w-md glass-card p-8 rounded-2xl relative overflow-hidden cm-card-elevate">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-500" />
         <div className="flex flex-col items-center mb-8">
           <div className="w-12 h-12 rounded-xl bg-[#ec4899] flex items-center justify-center mb-4 shadow-lg shadow-pink-500/20">
@@ -44,16 +44,16 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-white/80" style={{ fontFamily: 'Outfit' }}>College Email</Label>
-            <Input id="email" type="email" placeholder="name.branch@vgu.ac.in" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-pink-500" />
+            <Input id="email" type="email" placeholder="name.branch@vgu.ac.in" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
           </div>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <Label htmlFor="password" className="text-white/80" style={{ fontFamily: 'Outfit' }}>Password</Label>
               <Link href="/forgot-password" className="text-xs text-pink-300 hover:text-pink-200 transition-colors" style={{ fontFamily: 'Outfit' }}>Forgot password?</Link>
             </div>
-            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-pink-500" />
+            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#ec4899]" />
           </div>
-          <Button type="submit" className="w-full bg-[#ec4899] hover:bg-[#db2777] text-white border-0 py-6 mt-4 shadow-lg shadow-pink-500/25" style={{ fontFamily: 'Cabin', borderRadius: '10px' }} disabled={loginMutation.isPending}>
+          <Button type="submit" className="w-full bg-[#ec4899] hover:bg-[#db2777] text-white border-0 py-6 mt-4 shadow-lg shadow-pink-500/25 cm-button-glow" style={{ fontFamily: 'Cabin', borderRadius: '10px' }} disabled={loginMutation.isPending}>
             {loginMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
           </Button>
         </form>
