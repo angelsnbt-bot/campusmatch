@@ -1,25 +1,35 @@
-import app from "./app";
-import { logger } from "./lib/logger";
+process.on("uncaughtException", (err) => {
+  console.error("UNCAUGHT EXCEPTION:", err);
+  process.exit(1);
+});
+process.on("unhandledRejection", (err) => {
+  console.error("UNHANDLED REJECTION:", err);
+  process.exit(1);
+});
+
+const app = (await import("./app")).default;
 
 const rawPort = process.env["PORT"];
 
 if (!rawPort) {
-  throw new Error(
-    "PORT environment variable is required but was not provided.",
-  );
+  console.error("PORT environment variable is required but was not provided.");
+  process.exit(1);
 }
 
 const port = Number(rawPort);
 
 if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
+  console.error(`Invalid PORT value: "${rawPort}"`);
+  process.exit(1);
 }
+
+console.log("Starting server on port", port);
 
 app.listen(port, (err) => {
   if (err) {
-    logger.error({ err }, "Error listening on port");
+    console.error("Error listening on port", err);
     process.exit(1);
   }
 
-  logger.info({ port }, "Server listening");
+  console.log(`Server listening on port ${port}`);
 });
