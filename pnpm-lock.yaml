@@ -153,18 +153,9 @@ importers:
 
   .:
     dependencies:
-      '@esbuild/darwin-x64':
-        specifier: ^0.27.3
-        version: 0.27.3
       '@replit/connectors-sdk':
         specifier: ^0.4.1
         version: 0.4.1
-      '@rollup/rollup-darwin-x64':
-        specifier: 4.62.2
-        version: 4.62.2
-      lightningcss:
-        specifier: 1.32.0
-        version: 1.32.0
     devDependencies:
       prettier:
         specifier: ^3.9.4
@@ -3576,7 +3567,8 @@ snapshots:
 
   '@drizzle-team/brocli@0.10.2': {}
 
-  '@esbuild/darwin-x64@0.27.3': {}
+  '@esbuild/darwin-x64@0.27.3':
+    optional: true
 
   '@esbuild/linux-x64@0.27.3':
     optional: true
@@ -4442,7 +4434,8 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.0-rc.3': {}
 
-  '@rollup/rollup-darwin-x64@4.62.2': {}
+  '@rollup/rollup-darwin-x64@4.62.2':
+    optional: true
 
   '@rollup/rollup-linux-x64-gnu@4.62.2':
     optional: true
