@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'wouter';
-import { Heart, Send, Flame, Megaphone, Loader2 } from 'lucide-react';
+import { Heart, MessageSquare, Send, Image as ImageIcon, Flame, Bell, Pin, Megaphone, Loader2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -95,6 +94,9 @@ export default function Dashboard() {
                   />
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
                     <div className="flex gap-2">
+                      <Button type="button" variant="ghost" size="sm" className="text-white/60 hover:text-primary hover:bg-primary/10 rounded-full h-8 px-3">
+                        <ImageIcon className="w-4 h-4 mr-2" /> Photo
+                      </Button>
                       <select 
                         className="bg-white/5 border border-white/10 text-white text-sm rounded-full px-3 py-1 outline-none focus:ring-1 focus:ring-primary"
                         value={selectedCategory || 'general'}
@@ -195,6 +197,10 @@ export default function Dashboard() {
                         <Heart className={`w-5 h-5 ${post.isLiked ? 'fill-primary' : ''}`} />
                         <span>{post.likeCount}</span>
                       </button>
+                      <button className="flex items-center gap-1.5 text-sm text-white/50 hover:text-white transition-colors">
+                        <MessageSquare className="w-5 h-5" />
+                        <span>Reply</span>
+                      </button>
                     </div>
                   </motion.div>
                 ))}
@@ -236,22 +242,22 @@ export default function Dashboard() {
               Trending Modules
             </h3>
             <div className="grid grid-cols-2 gap-3">
-              <Link href="/discover" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block">
+              <div className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors cursor-pointer text-center">
                 <div className="text-2xl mb-1">💗</div>
                 <div className="text-xs font-medium text-white/80">Dating</div>
-              </Link>
-              <Link href="/events" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block">
+              </div>
+              <div className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors cursor-pointer text-center">
                 <div className="text-2xl mb-1">💻</div>
                 <div className="text-xs font-medium text-white/80">Hackathons</div>
-              </Link>
-              <Link href="/discover" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block">
+              </div>
+              <div className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors cursor-pointer text-center">
                 <div className="text-2xl mb-1">📚</div>
                 <div className="text-xs font-medium text-white/80">Study</div>
-              </Link>
-              <Link href="/marketplace" className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors text-center block">
+              </div>
+              <div className="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-colors cursor-pointer text-center">
                 <div className="text-2xl mb-1">🛒</div>
                 <div className="text-xs font-medium text-white/80">Marketplace</div>
-              </Link>
+              </div>
             </div>
           </div>
         </div>

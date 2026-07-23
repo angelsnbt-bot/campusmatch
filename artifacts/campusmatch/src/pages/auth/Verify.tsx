@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { useSubmitVerification, useGetVerificationStatus } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
@@ -14,56 +14,30 @@ export default function Verify() {
   const { data: statusData, isLoading: isLoadingStatus, refetch } = useGetVerificationStatus();
   const submitVerification = useSubmitVerification();
   const { toast } = useToast();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
 
   const [erpNumber, setErpNumber] = useState('');
   const [collegeEmail, setCollegeEmail] = useState('');
-  const [idCardFile, setIdCardFile] = useState<File | null>(null);
-  const [idCardPreview, setIdCardPreview] = useState<string | null>(null);
+  // We'll simulate file upload by just using a dummy string for now, or letting the user type a URL
+  // In a real app, you'd use a file input and upload to S3/Cloudinary
 
-  useEffect(() => {
-    if (!isLoadingStatus && user?.verificationStatus === 'approved') {
-      setLocation('/dashboard');
-    }
-  }, [user, isLoadingStatus, setLocation]);
+  if (!user) return null;
 
-  if (!user || user.verificationStatus === 'approved') return null;
+  if (user.verificationStatus === 'approved') {
+    setLocation('/dashboard');
+    return null;
+  }
 
   const isPending = statusData?.status === 'pending' || user.verificationStatus === 'pending';
   const isRejected = statusData?.status === 'rejected' || user.verificationStatus === 'rejected';
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      toast({ title: 'Unsupported file type', description: 'Please upload a JPG, PNG, or WebP image.', variant: 'destructive' });
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      toast({ title: 'File too large', description: 'ID card image must be under 5MB.', variant: 'destructive' });
-      return;
-    }
-    setIdCardFile(file);
-    const reader = new FileReader();
-    reader.onload = (ev) => setIdCardPreview(ev.target?.result as string);
-    reader.readAsDataURL(file);
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!erpNumber.trim()) {
-      toast({ title: 'ERP Number required', variant: 'destructive' });
-      return;
-    }
-    if (!collegeEmail.trim()) {
-      toast({ title: 'College Email required', variant: 'destructive' });
-      return;
-    }
     submitVerification.mutate({
       data: {
-        erpNumber: erpNumber.trim(),
-        collegeEmail: collegeEmail.trim(),
-        idCardUrl: idCardPreview || undefined,
+        erpNumber,
+        collegeEmail,
+        idCardUrl: "https://example.com/dummy-id-card.jpg" // Placeholder for demo
       }
     }, {
       onSuccess: () => {
@@ -71,7 +45,7 @@ export default function Verify() {
         refetch();
       },
       onError: (err) => {
-        toast({ title: 'Submission Failed', description: (err as any)?.data?.error || (err as any)?.message || 'Could not submit.', variant: 'destructive' });
+        toast({ title: 'Submission Failed', description: (err?.data as any)?.error || err?.message || 'Could not submit.', variant: 'destructive' });
       }
     });
   };
@@ -129,18 +103,18 @@ export default function Verify() {
         </div>
 
         {isRejected && (
-          <div className="mb-6 p-4 rounded-xl bg-destructive/10 border border-destructive/30 flex gap-3">
+          <div className="mb-6 p-4 rounded-xl bg-destructive/10 border border-destructive/30 flex gap-3 text-destructive-foreground">
             <AlertCircle className="w-5 h-5 shrink-0 text-destructive" />
             <div className="text-sm">
               <p className="font-semibold text-destructive">Previous submission rejected</p>
-              <p className="text-destructive/80 mt-1">{statusData?.rejectionReason || 'Please resubmit with valid details.'}</p>
+              <p className="opacity-80 mt-1">{statusData?.rejectionReason || 'Please resubmit with valid details.'}</p>
             </div>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="erpNumber" className="text-white/80">ERP Number *</Label>
+            <Label htmlFor="erpNumber" className="text-white/80">ERP Number</Label>
             <Input 
               id="erpNumber" 
               placeholder="e.g. 21BXX100XX" 
@@ -152,11 +126,11 @@ export default function Verify() {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="collegeEmail" className="text-white/80">College Email *</Label>
+            <Label htmlFor="collegeEmail" className="text-white/80">College Email Again (For verification)</Label>
             <Input 
               id="collegeEmail" 
               type="email" 
-              placeholder="name.branch@college.ac.in" 
+              placeholder="name.branch@vgu.ac.in" 
               value={collegeEmail}
               onChange={(e) => setCollegeEmail(e.target.value)}
               required
@@ -165,29 +139,14 @@ export default function Verify() {
           </div>
 
           <div className="space-y-2">
-            <Label className="text-white/80">Student ID Card</Label>
-            <label className="border-2 border-dashed border-white/20 rounded-xl p-8 text-center hover:bg-white/5 transition-colors cursor-pointer group block">
-              <input 
-                type="file" 
-                accept="image/jpeg,image/png,image/webp" 
-                className="hidden" 
-                onChange={handleFileChange}
-              />
-              {idCardPreview ? (
-                <div className="space-y-3">
-                  <img src={idCardPreview} alt="ID Card preview" className="max-h-40 mx-auto rounded-lg border border-white/10" />
-                  <p className="text-sm text-primary">Click to change</p>
-                </div>
-              ) : (
-                <>
-                  <UploadCloud className="w-8 h-8 text-white/40 mx-auto mb-3 group-hover:text-primary transition-colors" />
-                  <p className="text-sm text-white/60 group-hover:text-white/80 transition-colors">
-                    Drag and drop your ID card image here, or click to browse
-                  </p>
-                  <p className="text-xs text-white/40 mt-2">JPG, PNG, WebP up to 5MB</p>
-                </>
-              )}
-            </label>
+            <Label className="text-white/80">Student ID Card (Optional for demo)</Label>
+            <div className="border-2 border-dashed border-white/20 rounded-xl p-8 text-center hover:bg-white/5 transition-colors cursor-pointer group">
+              <UploadCloud className="w-8 h-8 text-white/40 mx-auto mb-3 group-hover:text-primary transition-colors" />
+              <p className="text-sm text-white/60 group-hover:text-white/80 transition-colors">
+                Drag and drop your ID card image here, or click to browse
+              </p>
+              <p className="text-xs text-white/40 mt-2">JPG, PNG up to 5MB</p>
+            </div>
           </div>
           
           <Button 

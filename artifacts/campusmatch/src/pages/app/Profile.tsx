@@ -65,7 +65,7 @@ export default function Profile() {
       <div className="relative">
         {/* Cover */}
         <div className="h-48 md:h-64 w-full rounded-3xl bg-gradient-to-br from-primary/40 via-secondary/20 to-background overflow-hidden relative border border-white/5">
-          <div className="absolute inset-0 opacity-20 mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px)' }}></div>
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-30 mix-blend-overlay"></div>
         </div>
 
         {/* Avatar & Basic Info */}
@@ -80,7 +80,7 @@ export default function Profile() {
                 </div>
               )}
             </div>
-            <button className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-white text-black flex items-center justify-center shadow-lg hover:bg-gray-200 transition-colors z-10" title="Profile photo upload coming soon">
+            <button className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-white text-black flex items-center justify-center shadow-lg hover:bg-gray-200 transition-colors z-10">
               <Camera className="w-5 h-5" />
             </button>
           </div>
@@ -213,20 +213,20 @@ export default function Profile() {
           
           <div className="md:col-span-1 space-y-4">
             <div className="glass-card p-5 rounded-2xl">
-              <h3 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-4">Account Info</h3>
+              <h3 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-4">Account Stats</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-white/60">Status</span>
-                  <span className={`font-bold ${profile.isVerified ? 'text-green-400' : 'text-yellow-400'}`}>
-                    {profile.isVerified ? 'Verified' : 'Pending'}
-                  </span>
+                  <span className="text-white/60">Profile Views</span>
+                  <span className="text-white font-bold">124</span>
                 </div>
-                {profile.isFirst100 && (
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-white/60">Badge</span>
-                    <span className="text-yellow-400 font-bold">First 100</span>
-                  </div>
-                )}
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-white/60">Matches</span>
+                  <span className="text-white font-bold">12</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-white/60">Posts</span>
+                  <span className="text-white font-bold">4</span>
+                </div>
               </div>
             </div>
           </div>

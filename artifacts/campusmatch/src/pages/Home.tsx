@@ -11,19 +11,6 @@ export default function Home() {
   const { data: statsData } = useGetStatsOverview();
   const { data: modulesData } = useGetModulesSummary();
 
-  const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
-  
-  React.useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({
-        x: (e.clientX - window.innerWidth / 2) / 35,
-        y: (e.clientY - window.innerHeight / 2) / 35,
-      });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
   const stats = statsData || {
     activeModules: 12,
     verifiedUsers: 0,
@@ -46,56 +33,7 @@ export default function Home() {
     <div className="flex flex-col w-full pb-20">
       {/* Hero Section */}
       <section className="relative pt-20 pb-32 md:pt-32 md:pb-48 px-4 md:px-6 overflow-hidden flex flex-col items-center text-center">
-        {/* Animated Background Mesh Glows */}
-        <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
-          <motion.div 
-            style={{ 
-              x: mousePos.x * 0.4, 
-              y: mousePos.y * 0.4,
-              background: 'radial-gradient(circle, rgba(168,85,247,0.2) 0%, rgba(236,72,153,0.1) 40%, transparent 70%)',
-            }}
-            className="absolute top-0 right-0 w-[700px] h-[700px] rounded-full opacity-60 CM-animate-float-1" 
-          />
-          <motion.div 
-            style={{ 
-              x: -mousePos.x * 0.3, 
-              y: -mousePos.y * 0.3,
-              background: 'radial-gradient(circle, rgba(236,72,153,0.15) 0%, transparent 70%)',
-            }}
-            className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-40 CM-animate-float-2"
-          />
-          
-          {/* Floating Rising Particles */}
-          {Array.from({ length: 15 }).map((_, idx) => {
-            const size = Math.random() * 5 + 2;
-            const delay = Math.random() * 8;
-            const duration = Math.random() * 12 + 10;
-            const left = Math.random() * 100;
-            return (
-              <motion.div
-                key={idx}
-                className="absolute rounded-full bg-primary/20 pointer-events-none"
-                style={{
-                  width: size,
-                  height: size,
-                  left: `${left}%`,
-                  bottom: "-20px",
-                }}
-                animate={{
-                  y: ["0vh", "-110vh"],
-                  opacity: [0, 0.8, 0],
-                  x: [0, Math.sin(idx) * 50, 0]
-                }}
-                transition={{
-                  duration,
-                  repeat: Infinity,
-                  delay,
-                  ease: "linear"
-                }}
-              />
-            );
-          })}
-        </div>
+        <div className="absolute inset-0 z-[-1] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-background"></div>
         
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -193,7 +131,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5, delay: i * 0.05 }}
-              className="glass-card p-6 rounded-2xl group hover:border-primary/50 transition-colors relative overflow-hidden CM-card-elevate"
+              className="glass-card p-6 rounded-2xl group hover:border-primary/50 transition-colors relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="flex items-start justify-between mb-4 relative z-10">

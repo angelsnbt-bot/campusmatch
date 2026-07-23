@@ -13,7 +13,6 @@ import { Link } from 'wouter';
 export default function Login() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [isError, setIsError] = React.useState(false);
   const { setToken, user } = useAuth();
   const [location, setLocation] = useLocation();
   const loginMutation = useLogin();
@@ -27,7 +26,6 @@ export default function Login() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsError(false);
     loginMutation.mutate(
       { data: { email, password } },
       {
@@ -37,8 +35,6 @@ export default function Login() {
           setLocation('/dashboard');
         },
         onError: (err) => {
-          setIsError(true);
-          setTimeout(() => setIsError(false), 500);
           toast({ 
             title: 'Login failed', 
             description: (err?.data as any)?.error || err?.message || 'Invalid credentials.',
@@ -53,8 +49,7 @@ export default function Login() {
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
-        animate={isError ? { x: [-10, 10, -10, 10, -5, 5, 0] } : { opacity: 1, y: 0 }}
-        transition={isError ? { duration: 0.4 } : { duration: 0.5 }}
+        animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md glass-card p-8 rounded-2xl relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary" />
@@ -81,12 +76,7 @@ export default function Login() {
             />
           </div>
           <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <Label htmlFor="password" className="text-white/80">Password</Label>
-              <Link href="/forgot-password" className="text-xs text-primary/80 hover:text-primary transition-colors">
-                Forgot password?
-              </Link>
-            </div>
+            <Label htmlFor="password" className="text-white/80">Password</Label>
             <Input 
               id="password" 
               type="password" 
@@ -99,7 +89,7 @@ export default function Login() {
           
           <Button 
             type="submit" 
-            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white border-0 py-6 mt-4 shadow-lg shadow-primary/25 CM-button-glow hover:scale-[1.02] transition-all"
+            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white border-0 py-6 mt-4 shadow-lg shadow-primary/25"
             disabled={loginMutation.isPending}
           >
             {loginMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign In"}
