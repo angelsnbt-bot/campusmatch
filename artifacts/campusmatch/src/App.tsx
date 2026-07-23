@@ -7,6 +7,7 @@ import NotFound from '@/pages/not-found';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { AuthProvider } from '@/hooks/use-auth';
 import { AppShell } from '@/components/layout/AppShell';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 
 const Home = lazy(() => import('@/pages/Home'));
 const Login = lazy(() => import('@/pages/auth/Login'));
@@ -38,7 +39,7 @@ const queryClient = new QueryClient();
 function PageLoader() {
   return (
     <div className="flex items-center justify-center min-h-[50vh]">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500" />
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
     </div>
   );
 }
@@ -50,7 +51,7 @@ function Router() {
         <AppShell><Suspense fallback={<PageLoader />}><Home /></Suspense></AppShell>
       </Route>
       <Route path="/login">
-        <AppShell><Suspense fallback={<PageLoader />}><Login /></Suspense></AppShell>
+        <Suspense fallback={<PageLoader />}><Login /></Suspense>
       </Route>
       <Route path="/register">
         <AppShell><Suspense fallback={<PageLoader />}><Register /></Suspense></AppShell>
@@ -94,16 +95,24 @@ function Router() {
       </Route>
 
       <Route path="/admin">
-        <AppShell requireAuth requireVerification requireAdmin><Suspense fallback={<PageLoader />}><AdminDashboard /></Suspense></AppShell>
+        <AppShell requireAuth requireVerification requireAdmin>
+          <AdminLayout><Suspense fallback={<PageLoader />}><AdminDashboard /></Suspense></AdminLayout>
+        </AppShell>
       </Route>
       <Route path="/admin/verification">
-        <AppShell requireAuth requireVerification requireAdmin><Suspense fallback={<PageLoader />}><AdminVerification /></Suspense></AppShell>
+        <AppShell requireAuth requireVerification requireAdmin>
+          <AdminLayout><Suspense fallback={<PageLoader />}><AdminVerification /></Suspense></AdminLayout>
+        </AppShell>
       </Route>
       <Route path="/admin/users">
-        <AppShell requireAuth requireVerification requireAdmin><Suspense fallback={<PageLoader />}><AdminUsers /></Suspense></AppShell>
+        <AppShell requireAuth requireVerification requireAdmin>
+          <AdminLayout><Suspense fallback={<PageLoader />}><AdminUsers /></Suspense></AdminLayout>
+        </AppShell>
       </Route>
       <Route path="/admin/audit-logs">
-        <AppShell requireAuth requireVerification requireAdmin><Suspense fallback={<PageLoader />}><AdminAuditLogs /></Suspense></AppShell>
+        <AppShell requireAuth requireVerification requireAdmin>
+          <AdminLayout><Suspense fallback={<PageLoader />}><AdminAuditLogs /></Suspense></AdminLayout>
+        </AppShell>
       </Route>
 
       <Route path="/terms">

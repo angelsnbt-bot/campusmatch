@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useGetAdminVerificationQueue, useApproveVerification, useRejectVerification } from '@workspace/api-client-react';
-import { Loader2, Check, X, ShieldCheck } from 'lucide-react';
+import { useGetAdminVerificationQueue, useApproveVerification, useRejectVerification, AdminVerificationItem } from '@workspace/api-client-react';
+import { Check, X, ShieldCheck, Eye, ZoomIn, FileText, Clock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -18,6 +18,7 @@ export default function AdminVerification() {
 
   const [rejectId, setRejectId] = useState<number | null>(null);
   const [rejectReason, setRejectReason] = useState('');
+  const [viewId, setViewId] = useState<AdminVerificationItem | null>(null);
 
   const handleApprove = (id: number) => {
     approveMutation.mutate({ verificationId: id }, {
@@ -31,11 +32,7 @@ export default function AdminVerification() {
   const handleReject = (e: React.FormEvent) => {
     e.preventDefault();
     if (!rejectId || !rejectReason.trim()) return;
-
-    rejectMutation.mutate({
-      verificationId: rejectId,
-      data: { reason: rejectReason }
-    }, {
+    rejectMutation.mutate({ verificationId: rejectId, data: { reason: rejectReason } }, {
       onSuccess: () => {
         toast({ title: 'Rejected successfully' });
         setRejectId(null);
@@ -46,105 +43,160 @@ export default function AdminVerification() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
-          <ShieldCheck className="w-5 h-5 text-blue-400" />
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Verification Queue</h1>
+          <p className="text-white/40 text-sm mt-1">{queue?.length || 0} pending requests</p>
         </div>
-        <h1 className="text-3xl font-bold text-white">Verification Queue</h1>
+        <div className="flex items-center gap-2 text-xs text-yellow-400 bg-yellow-500/10 px-3 py-1.5 rounded-full">
+          <Clock className="w-3 h-3" />
+          Pending Review
+        </div>
       </div>
 
+      {/* Reject Dialog */}
       <Dialog open={!!rejectId} onOpenChange={(open) => !open && setRejectId(null)}>
-        <DialogContent className="glass-card border-white/10 text-white">
+        <DialogContent className="glass-card border-white/10 text-white max-w-md">
           <DialogHeader>
-            <DialogTitle>Reject Verification</DialogTitle>
+            <DialogTitle className="text-lg font-bold">Reject Verification</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleReject} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm text-white/80">Reason for Rejection</label>
-              <Input 
-                value={rejectReason} 
-                onChange={(e) => setRejectReason(e.target.value)} 
-                placeholder="e.g. Blurry ID card, ERP doesn't match" 
-                className="bg-white/5 border-white/10 text-white"
+              <label className="text-sm text-white/80 font-medium">Reason for Rejection</label>
+              <Input
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                placeholder="e.g. Blurry ID card, ERP doesn't match"
+                className="input-premium"
                 required
               />
             </div>
             <div className="flex justify-end gap-2 pt-2">
-              <Button type="button" variant="ghost" onClick={() => setRejectId(null)}>Cancel</Button>
-              <Button type="submit" variant="destructive" disabled={rejectMutation.isPending}>
-                {rejectMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Confirm Reject'}
+              <Button type="button" variant="ghost" onClick={() => setRejectId(null)} className="btn-premium btn-ghost">Cancel</Button>
+              <Button type="submit" variant="destructive" disabled={rejectMutation.isPending} className="btn-premium btn-danger">
+                {rejectMutation.isPending ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full border-spinner" /> : 'Confirm Reject'}
               </Button>
             </div>
           </form>
         </DialogContent>
       </Dialog>
 
-      <div className="glass-card rounded-2xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-white/80">
-            <thead className="bg-white/5 text-white/50 uppercase">
-              <tr>
-                <th className="px-6 py-4 font-medium">User</th>
-                <th className="px-6 py-4 font-medium">ERP Number</th>
-                <th className="px-6 py-4 font-medium">Submitted</th>
-                <th className="px-6 py-4 font-medium">ID Card</th>
-                <th className="px-6 py-4 font-medium text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center"><Loader2 className="w-6 h-6 text-primary animate-spin mx-auto" /></td>
-                </tr>
-              ) : queue?.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-white/50">Queue is empty.</td>
-                </tr>
-              ) : (
-                queue?.map((item) => (
-                  <tr key={item.id} className="border-t border-white/5 hover:bg-white/5 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="font-semibold text-white">{item.userName}</div>
-                      <div className="text-xs text-white/50">{item.userEmail}</div>
-                    </td>
-                    <td className="px-6 py-4 font-mono">{item.erpNumber}</td>
-                    <td className="px-6 py-4">{format(new Date(item.createdAt), 'MMM d, HH:mm')}</td>
-                    <td className="px-6 py-4">
-                      {item.idCardUrl ? (
-                        <a href={item.idCardUrl} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">View ID</a>
-                      ) : (
-                        <span className="text-white/30 italic">None</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500 hover:text-white"
-                          onClick={() => handleApprove(item.id)}
-                          disabled={approveMutation.isPending}
-                        >
-                          <Check className="w-4 h-4 mr-1" /> Approve
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="bg-red-500/10 text-red-500 border-red-500/20 hover:bg-red-500 hover:text-white"
-                          onClick={() => setRejectId(item.id)}
-                        >
-                          <X className="w-4 h-4 mr-1" /> Reject
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+      {/* View ID Dialog */}
+      <Dialog open={!!viewId} onOpenChange={(open) => !open && setViewId(null)}>
+        <DialogContent className="glass-card border-white/10 text-white max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold">ID Card Preview</DialogTitle>
+          </DialogHeader>
+          {viewId && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-white/40 mb-1">Student Name</p>
+                  <p className="text-white font-medium">{viewId.userName}</p>
+                </div>
+                <div>
+                  <p className="text-white/40 mb-1">ERP Number</p>
+                  <p className="text-white font-mono font-medium">{viewId.erpNumber}</p>
+                </div>
+                <div>
+                  <p className="text-white/40 mb-1">Email</p>
+                  <p className="text-white font-medium">{viewId.userEmail}</p>
+                </div>
+                <div>
+                  <p className="text-white/40 mb-1">Submitted</p>
+                  <p className="text-white font-medium">{format(new Date(viewId.createdAt), 'MMM d, yyyy HH:mm')}</p>
+                </div>
+              </div>
+              {viewId.idCardUrl && (
+                <div className="rounded-xl overflow-hidden border border-white/10">
+                  <img src={viewId.idCardUrl} alt="ID Card" className="w-full object-contain max-h-[400px]" />
+                </div>
               )}
-            </tbody>
-          </table>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Verification cards */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[1,2,3].map(i => (
+            <div key={i} className="card-premium p-5 rounded-2xl animate-pulse-glow">
+              <div className="skeleton w-full h-40 rounded-xl mb-4" />
+              <div className="skeleton w-32 h-5 mb-2" />
+              <div className="skeleton w-48 h-4" />
+            </div>
+          ))}
         </div>
-      </div>
+      ) : queue?.length === 0 ? (
+        <div className="card-premium p-12 rounded-2xl text-center">
+          <div className="w-16 h-16 rounded-2xl bg-green-500/10 flex items-center justify-center mx-auto mb-4">
+            <Check className="w-8 h-8 text-green-400" />
+          </div>
+          <p className="text-white/60 text-lg font-medium">All caught up!</p>
+          <p className="text-white/30 text-sm mt-1">No pending verification requests.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {queue?.map((item) => (
+            <div key={item.id} className="card-premium p-5 rounded-2xl group hover:border-white/10 transition-all">
+              {/* ID Card preview */}
+              {item.idCardUrl ? (
+                <div className="relative rounded-xl overflow-hidden mb-4 bg-white/5 h-40">
+                  <img src={item.idCardUrl} alt="ID Card" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-3">
+                    <button
+                      onClick={() => setViewId(item)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/20 backdrop-blur-sm text-white text-xs font-medium hover:bg-white/30 transition-colors"
+                    >
+                      <ZoomIn className="w-3 h-3" /> View Full
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="rounded-xl mb-4 bg-white/5 h-40 flex items-center justify-center">
+                  <FileText className="w-10 h-10 text-white/20" />
+                </div>
+              )}
+
+              {/* Info */}
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-white">{item.userName}</h3>
+                  <span className="text-xs text-white/30">{format(new Date(item.createdAt), 'MMM d')}</span>
+                </div>
+                <p className="text-xs text-white/40">{item.userEmail}</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md">
+                    ERP: {item.erpNumber}
+                  </span>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  className="flex-1 btn-premium btn-success text-xs"
+                  onClick={() => handleApprove(item.id)}
+                  disabled={approveMutation.isPending}
+                >
+                  <Check className="w-3.5 h-3.5 mr-1" /> Approve
+                </Button>
+                <Button
+                  size="sm"
+                  className="flex-1 btn-premium btn-danger text-xs"
+                  onClick={() => setRejectId(item.id)}
+                >
+                  <X className="w-3.5 h-3.5 mr-1" /> Reject
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

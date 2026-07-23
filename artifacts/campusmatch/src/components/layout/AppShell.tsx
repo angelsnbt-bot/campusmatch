@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
+import { SplashScreen } from '@/components/ui/SplashScreen';
 import { useAuth } from '@/hooks/use-auth';
 import { useLocation } from 'wouter';
-import { Loader2 } from 'lucide-react';
 
 export const AppShell: React.FC<{ children: React.ReactNode; requireAuth?: boolean; requireVerification?: boolean; requireAdmin?: boolean }> = ({
   children,
@@ -13,8 +13,13 @@ export const AppShell: React.FC<{ children: React.ReactNode; requireAuth?: boole
 }) => {
   const { user, isLoading } = useAuth();
   const [location, setLocation] = useLocation();
+  const [splashDone, setSplashDone] = useState(() => !!sessionStorage.getItem('cm_splash_seen'));
 
-  useEffect(() => {
+  const handleSplashComplete = useCallback(() => {
+    setSplashDone(true);
+  }, []);
+
+  React.useEffect(() => {
     if (isLoading) return;
     if (requireAuth && !user) setLocation('/login');
     if (requireAuth && user && requireVerification) {
@@ -23,12 +28,16 @@ export const AppShell: React.FC<{ children: React.ReactNode; requireAuth?: boole
     if (requireAuth && user && requireAdmin && user.role !== 'admin' && user.role !== 'super_admin') setLocation('/dashboard');
   }, [user, isLoading, requireAuth, requireVerification, requireAdmin, location, setLocation]);
 
+  if (!splashDone) {
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 animate-pulse-glow">
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full border-spinner" />
           </div>
           <p className="text-white/30 text-sm font-medium">Loading...</p>
         </div>
