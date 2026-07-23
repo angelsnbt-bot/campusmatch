@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: https://campusmatch.in/sitemap.xml
+
+# CampusMatch - Verified Campus Social Network

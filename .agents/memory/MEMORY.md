@@ -1,0 +1,3 @@
+- [CampusMatch auth token](campusmatch-auth.md) — setAuthTokenGetter registered in useAuth hook; token stored under cm_token in localStorage.
+- [CampusMatch API error typing](campusmatch-api-errors.md) — ErrorType from api-zod has no .error field; access as (err?.data as any)?.error || err?.message.
+- [CampusMatch useGetMe pattern](campusmatch-query-options.md) — generated hooks require queryKey inside query options even when providing only enabled/retry.

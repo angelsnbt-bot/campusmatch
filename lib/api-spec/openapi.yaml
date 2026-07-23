@@ -1,0 +1,1834 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: CampusMatch API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication
+  - name: verification
+    description: ERP verification
+  - name: profile
+    description: User profile
+  - name: discover
+    description: Discovery / matching
+  - name: connections
+    description: Friends
+  - name: posts
+    description: Feed and posts
+  - name: events
+    description: Campus events
+  - name: marketplace
+    description: Marketplace listings
+  - name: announcements
+    description: Campus announcements
+  - name: modules
+    description: Campus modules summary
+  - name: uploads
+    description: File uploads
+  - name: admin
+    description: Admin operations
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # ── AUTH ────────────────────────────────────────────────────────────────────
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Create a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /auth/refresh:
+    post:
+      operationId: refreshToken
+      tags: [auth]
+      summary: Refresh access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        "200":
+          description: Tokens refreshed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "401":
+          description: Invalid refresh token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/verify-email:
+    post:
+      operationId: verifyEmail
+      tags: [auth]
+      summary: Verify email with OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OtpInput"
+      responses:
+        "200":
+          description: Email verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid OTP
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/resend-otp:
+    post:
+      operationId: resendOtp
+      tags: [auth]
+      summary: Resend OTP
+      responses:
+        "200":
+          description: OTP sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /auth/forgot-password:
+    post:
+      operationId: forgotPasswordRequest
+      tags: [auth]
+      summary: Request forgot password OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordInput"
+      responses:
+        "200":
+          description: OTP sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/verify-forgot-otp:
+    post:
+      operationId: verifyForgotOtpCode
+      tags: [auth]
+      summary: Verify forgot password OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyForgotOtpInput"
+      responses:
+        "200":
+          description: OTP verified, returns reset token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifyForgotOtpResponse"
+        "400":
+          description: Invalid OTP
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/reset-password:
+    post:
+      operationId: resetPasswordSubmit
+      tags: [auth]
+      summary: Reset password with token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordInput"
+      responses:
+        "200":
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── VERIFICATION ────────────────────────────────────────────────────────────
+  /verification/submit:
+    post:
+      operationId: submitVerification
+      tags: [verification]
+      summary: Submit ERP verification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerificationInput"
+      responses:
+        "201":
+          description: Verification submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerificationStatus"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /verification/status:
+    get:
+      operationId: getVerificationStatus
+      tags: [verification]
+      summary: Get verification status for current user
+      responses:
+        "200":
+          description: Verification status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerificationStatus"
+
+  # ── PROFILE ─────────────────────────────────────────────────────────────────
+  /profile:
+    get:
+      operationId: getProfile
+      tags: [profile]
+      summary: Get own profile
+      responses:
+        "200":
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+    patch:
+      operationId: updateProfile
+      tags: [profile]
+      summary: Update own profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+
+  /profile/{userId}:
+    get:
+      operationId: getUserProfile
+      tags: [profile]
+      summary: Get a user's profile
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+
+  # ── DISCOVERY / MATCHING ────────────────────────────────────────────────────
+  /discover:
+    get:
+      operationId: getDiscoverFeed
+      tags: [discover]
+      summary: Get discovery feed (profiles to swipe)
+      parameters:
+        - in: query
+          name: mode
+          schema:
+            type: string
+            enum: [dating, friends, study, hackathon, sports]
+          description: Discovery mode
+        - in: query
+          name: branch
+          schema:
+            type: ["string", "null"]
+        - in: query
+          name: year
+          schema:
+            type: ["integer", "null"]
+      responses:
+        "200":
+          description: List of profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DiscoverProfile"
+
+  /discover/like:
+    post:
+      operationId: likeProfile
+      tags: [discover]
+      summary: Like a profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LikeInput"
+      responses:
+        "200":
+          description: Like result (match if mutual)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LikeResult"
+
+  /discover/pass:
+    post:
+      operationId: passProfile
+      tags: [discover]
+      summary: Pass on a profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PassInput"
+      responses:
+        "200":
+          description: Passed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /discover/matches:
+    get:
+      operationId: getMatches
+      tags: [discover]
+      summary: Get all matches
+      responses:
+        "200":
+          description: List of matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+
+  # ── CONNECTIONS / FRIENDS ────────────────────────────────────────────────────
+  /connections:
+    get:
+      operationId: getConnections
+      tags: [connections]
+      summary: Get friends / connections
+      responses:
+        "200":
+          description: List of connections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Connection"
+
+  /connections/request:
+    post:
+      operationId: sendConnectionRequest
+      tags: [connections]
+      summary: Send a friend request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConnectionRequestInput"
+      responses:
+        "201":
+          description: Request sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Connection"
+
+  /connections/{connectionId}/accept:
+    post:
+      operationId: acceptConnection
+      tags: [connections]
+      summary: Accept friend request
+      parameters:
+        - in: path
+          name: connectionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Connection"
+
+  /connections/{connectionId}/reject:
+    post:
+      operationId: rejectConnection
+      tags: [connections]
+      summary: Reject friend request
+      parameters:
+        - in: path
+          name: connectionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /connections/{connectionId}:
+    delete:
+      operationId: deleteConnection
+      tags: [connections]
+      summary: Remove a connection
+      parameters:
+        - in: path
+          name: connectionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /connections/requests:
+    get:
+      operationId: getConnectionRequests
+      tags: [connections]
+      summary: Get pending connection requests
+      responses:
+        "200":
+          description: List of pending requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Connection"
+
+  # ── POSTS / FEED ─────────────────────────────────────────────────────────────
+  /posts:
+    get:
+      operationId: getPosts
+      tags: [posts]
+      summary: Get campus feed
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: ["string", "null"]
+            enum: [general, study, sports, hackathon, events, null]
+      responses:
+        "200":
+          description: Posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+    post:
+      operationId: createPost
+      tags: [posts]
+      summary: Create a post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostInput"
+      responses:
+        "201":
+          description: Created post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+
+  /posts/{postId}:
+    get:
+      operationId: getPost
+      tags: [posts]
+      summary: Get a single post
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+    patch:
+      operationId: updatePost
+      tags: [posts]
+      summary: Update a post
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                category:
+                  type: string
+                imageUrl:
+                  type: ["string", "null"]
+      responses:
+        "200":
+          description: Updated post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+    delete:
+      operationId: deletePost
+      tags: [posts]
+      summary: Delete a post
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /posts/{postId}/like:
+    post:
+      operationId: likePost
+      tags: [posts]
+      summary: Toggle like on a post
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Like toggled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  # ── EVENTS ────────────────────────────────────────────────────────────────────
+  /events:
+    get:
+      operationId: getEvents
+      tags: [events]
+      summary: Get campus events
+      responses:
+        "200":
+          description: Events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+    post:
+      operationId: createEvent
+      tags: [events]
+      summary: Create event (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+
+  /events/{eventId}:
+    patch:
+      operationId: updateEvent
+      tags: [events]
+      summary: Update event (admin)
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                date:
+                  type: string
+                  format: date-time
+                venue:
+                  type: string
+                category:
+                  type: string
+                imageUrl:
+                  type: ["string", "null"]
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+    delete:
+      operationId: deleteEvent
+      tags: [events]
+      summary: Delete event (admin)
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /events/{eventId}/rsvp:
+    post:
+      operationId: rsvpEvent
+      tags: [events]
+      summary: RSVP to an event
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: RSVP recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  # ── MARKETPLACE ───────────────────────────────────────────────────────────────
+  /marketplace:
+    get:
+      operationId: getListings
+      tags: [marketplace]
+      summary: Get marketplace listings
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: ["string", "null"]
+            enum: [books, cycles, electronics, furniture, other, null]
+      responses:
+        "200":
+          description: Listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Listing"
+    post:
+      operationId: createListing
+      tags: [marketplace]
+      summary: Create a listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+
+  /marketplace/{listingId}:
+    patch:
+      operationId: updateListing
+      tags: [marketplace]
+      summary: Update a listing
+      parameters:
+        - in: path
+          name: listingId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: integer
+                category:
+                  type: string
+                imageUrl:
+                  type: ["string", "null"]
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+    delete:
+      operationId: deleteListing
+      tags: [marketplace]
+      summary: Delete a listing
+      parameters:
+        - in: path
+          name: listingId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /marketplace/{listingId}/sold:
+    put:
+      operationId: toggleListingSold
+      tags: [marketplace]
+      summary: Toggle listing sold status
+      parameters:
+        - in: path
+          name: listingId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Toggled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+
+  # ── UPLOADS ───────────────────────────────────────────────────────────────────
+  /upload/profile-image:
+    post:
+      operationId: uploadProfileImage
+      tags: [uploads]
+      summary: Upload profile image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url]
+                properties:
+                  url:
+                    type: string
+
+  /upload/id-card:
+    post:
+      operationId: uploadIdCard
+      tags: [uploads]
+      summary: Upload ID card for verification
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url]
+                properties:
+                  url:
+                    type: string
+
+  /upload/post-image:
+    post:
+      operationId: uploadPostImage
+      tags: [uploads]
+      summary: Upload image for a post
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url]
+                properties:
+                  url:
+                    type: string
+
+  # ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────────
+  /announcements:
+    get:
+      operationId: getAnnouncements
+      tags: [announcements]
+      summary: Get campus announcements
+      responses:
+        "200":
+          description: Announcements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Announcement"
+
+  # ── MODULES SUMMARY (wow endpoint) ──────────────────────────────────────────
+  /modules/summary:
+    get:
+      operationId: getModulesSummary
+      tags: [modules]
+      summary: Get app modules summary with stats
+      responses:
+        "200":
+          description: Modules summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModulesSummary"
+
+  /stats/overview:
+    get:
+      operationId: getStatsOverview
+      tags: [modules]
+      summary: Get platform overview stats
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformStats"
+
+  # ── ADMIN ─────────────────────────────────────────────────────────────────────
+  /admin/verification-queue:
+    get:
+      operationId: getAdminVerificationQueue
+      tags: [admin]
+      summary: Get pending verification queue
+      responses:
+        "200":
+          description: Queue
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminVerificationItem"
+
+  /admin/verification/{verificationId}/approve:
+    post:
+      operationId: approveVerification
+      tags: [admin]
+      summary: Approve a verification
+      parameters:
+        - in: path
+          name: verificationId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Approved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/verification/{verificationId}/reject:
+    post:
+      operationId: rejectVerification
+      tags: [admin]
+      summary: Reject a verification
+      parameters:
+        - in: path
+          name: verificationId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RejectInput"
+      responses:
+        "200":
+          description: Rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/users:
+    get:
+      operationId: getAdminUsers
+      tags: [admin]
+      summary: Get all users (admin)
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: ["string", "null"]
+        - in: query
+          name: status
+          schema:
+            type: ["string", "null"]
+            enum: [active, banned, pending_verification, null]
+      responses:
+        "200":
+          description: Users list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUser"
+
+  /admin/users/{userId}/ban:
+    post:
+      operationId: banUser
+      tags: [admin]
+      summary: Ban a user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BanInput"
+      responses:
+        "200":
+          description: Banned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/analytics:
+    get:
+      operationId: getAdminAnalytics
+      tags: [admin]
+      summary: Get platform analytics
+      responses:
+        "200":
+          description: Analytics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAnalytics"
+
+  /admin/audit-logs:
+    get:
+      operationId: getAuditLogs
+      tags: [admin]
+      summary: Get audit logs
+      responses:
+        "200":
+          description: Audit logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AuditLog"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status, checks]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded]
+        checks:
+          type: object
+          properties:
+            db:
+              type: string
+            uptime:
+              type: string
+            storage:
+              type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: ["string", "null"]
+      required: [success]
+
+    # ── AUTH ──────────────────────────────────────────────────────────────────
+    RegisterInput:
+      type: object
+      required: [name, email, password, phone, erpNumber, college, course, branch, year, photoUrl, interests, acceptTerms]
+      properties:
+        name:
+          type: string
+          minLength: 2
+        email:
+          type: string
+        password:
+          type: string
+          minLength: 8
+        phone:
+          type: string
+        erpNumber:
+          type: string
+        college:
+          type: string
+        course:
+          type: string
+        branch:
+          type: string
+        year:
+          type: integer
+        photoUrl:
+          type: string
+        interests:
+          type: array
+          items:
+            type: string
+        acceptTerms:
+          type: boolean
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    OtpInput:
+      type: object
+      required: [otp]
+      properties:
+        otp:
+          type: string
+
+    ForgotPasswordInput:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+
+    VerifyForgotOtpInput:
+      type: object
+      required: [email, otp]
+      properties:
+        email:
+          type: string
+        otp:
+          type: string
+
+    VerifyForgotOtpResponse:
+      type: object
+      required: [resetToken]
+      properties:
+        resetToken:
+          type: string
+
+    ResetPasswordInput:
+      type: object
+      required: [resetToken, password]
+      properties:
+        resetToken:
+          type: string
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [user, token]
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+        refreshToken:
+          type: string
+
+    TokenResponse:
+      type: object
+      required: [token, refreshToken]
+      properties:
+        token:
+          type: string
+        refreshToken:
+          type: string
+
+    User:
+      type: object
+      required: [id, name, email, role, verificationStatus, emailVerified, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [student, moderator, admin, super_admin]
+        verificationStatus:
+          type: string
+          enum: [unverified, pending, approved, rejected]
+        emailVerified:
+          type: boolean
+        isFirst100:
+          type: boolean
+        avatarUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    # ── VERIFICATION ──────────────────────────────────────────────────────────
+    VerificationInput:
+      type: object
+      required: [erpNumber, collegeEmail]
+      properties:
+        erpNumber:
+          type: string
+        collegeEmail:
+          type: string
+        idCardUrl:
+          type: ["string", "null"]
+
+    VerificationStatus:
+      type: object
+      required: [id, userId, status, erpNumber, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        erpNumber:
+          type: string
+        rejectionReason:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: ["string", "null"]
+
+    # ── PROFILE ───────────────────────────────────────────────────────────────
+    Profile:
+      type: object
+      required: [id, userId, name, branch, year, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        name:
+          type: string
+        avatarUrl:
+          type: ["string", "null"]
+        bio:
+          type: ["string", "null"]
+        branch:
+          type: string
+        year:
+          type: integer
+        hostel:
+          type: ["string", "null"]
+        interests:
+          type: array
+          items:
+            type: string
+        skills:
+          type: array
+          items:
+            type: string
+        isVerified:
+          type: boolean
+        isFirst100:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    ProfileUpdate:
+      type: object
+      properties:
+        bio:
+          type: ["string", "null"]
+        branch:
+          type: ["string", "null"]
+        year:
+          type: ["integer", "null"]
+        hostel:
+          type: ["string", "null"]
+        interests:
+          type: array
+          items:
+            type: string
+        skills:
+          type: array
+          items:
+            type: string
+        avatarUrl:
+          type: ["string", "null"]
+
+    # ── DISCOVER ──────────────────────────────────────────────────────────────
+    DiscoverProfile:
+      type: object
+      required: [id, userId, name, branch, year, isVerified]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        name:
+          type: string
+        avatarUrl:
+          type: ["string", "null"]
+        bio:
+          type: ["string", "null"]
+        branch:
+          type: string
+        year:
+          type: integer
+        interests:
+          type: array
+          items:
+            type: string
+        skills:
+          type: array
+          items:
+            type: string
+        isVerified:
+          type: boolean
+        matchScore:
+          type: ["integer", "null"]
+
+    LikeInput:
+      type: object
+      required: [targetUserId, mode]
+      properties:
+        targetUserId:
+          type: integer
+        mode:
+          type: string
+          enum: [dating, friends, study, hackathon, sports]
+        isSuperLike:
+          type: boolean
+
+    PassInput:
+      type: object
+      required: [targetUserId]
+      properties:
+        targetUserId:
+          type: integer
+
+    LikeResult:
+      type: object
+      required: [liked, isMatch]
+      properties:
+        liked:
+          type: boolean
+        isMatch:
+          type: boolean
+        matchId:
+          type: ["integer", "null"]
+
+    Match:
+      type: object
+      required: [id, userId, matchedUserId, mode, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        matchedUserId:
+          type: integer
+        matchedProfile:
+          $ref: "#/components/schemas/DiscoverProfile"
+        mode:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    # ── CONNECTIONS ───────────────────────────────────────────────────────────
+    Connection:
+      type: object
+      required: [id, userId, connectedUserId, status, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        connectedUserId:
+          type: integer
+        connectedProfile:
+          $ref: "#/components/schemas/DiscoverProfile"
+        status:
+          type: string
+          enum: [pending, accepted, rejected]
+        createdAt:
+          type: string
+          format: date-time
+
+    ConnectionRequestInput:
+      type: object
+      required: [targetUserId]
+      properties:
+        targetUserId:
+          type: integer
+
+    # ── POSTS ─────────────────────────────────────────────────────────────────
+    Post:
+      type: object
+      required: [id, userId, content, category, likeCount, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        authorName:
+          type: string
+        authorAvatarUrl:
+          type: ["string", "null"]
+        content:
+          type: string
+        category:
+          type: string
+        imageUrl:
+          type: ["string", "null"]
+        likeCount:
+          type: integer
+        isLiked:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    PostInput:
+      type: object
+      required: [content, category]
+      properties:
+        content:
+          type: string
+          minLength: 1
+        category:
+          type: string
+          enum: [general, study, sports, hackathon, events]
+        imageUrl:
+          type: ["string", "null"]
+
+    # ── EVENTS ────────────────────────────────────────────────────────────────
+    Event:
+      type: object
+      required: [id, title, description, date, venue, category, rsvpCount, createdAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+          format: date-time
+        venue:
+          type: string
+        category:
+          type: string
+          enum: [hackathon, sports, cultural, academic, social]
+        imageUrl:
+          type: ["string", "null"]
+        rsvpCount:
+          type: integer
+        isRsvped:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    EventInput:
+      type: object
+      required: [title, description, date, venue, category]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+          format: date-time
+        venue:
+          type: string
+        category:
+          type: string
+          enum: [hackathon, sports, cultural, academic, social]
+        imageUrl:
+          type: ["string", "null"]
+
+    # ── MARKETPLACE ───────────────────────────────────────────────────────────
+    Listing:
+      type: object
+      required: [id, userId, title, description, price, category, status, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        sellerName:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: integer
+        category:
+          type: string
+          enum: [books, cycles, electronics, furniture, other]
+        imageUrl:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [available, sold]
+        createdAt:
+          type: string
+          format: date-time
+
+    ListingInput:
+      type: object
+      required: [title, description, price, category]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: integer
+        category:
+          type: string
+          enum: [books, cycles, electronics, furniture, other]
+        imageUrl:
+          type: ["string", "null"]
+
+    # ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────
+    Announcement:
+      type: object
+      required: [id, title, content, priority, createdAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
+        createdAt:
+          type: string
+          format: date-time
+
+    # ── MODULES ───────────────────────────────────────────────────────────────
+    ModuleCard:
+      type: object
+      required: [id, name, description, emoji, isNew]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        emoji:
+          type: string
+        isNew:
+          type: boolean
+        isPopular:
+          type: boolean
+        isAi:
+          type: boolean
+        activeCount:
+          type: ["integer", "null"]
+
+    ModulesSummary:
+      type: object
+      required: [modules]
+      properties:
+        modules:
+          type: array
+          items:
+            $ref: "#/components/schemas/ModuleCard"
+
+    PlatformStats:
+      type: object
+      required: [verifiedUsers, activeModules, erpVerifiedProfiles, verificationTime]
+      properties:
+        verifiedUsers:
+          type: integer
+        activeModules:
+          type: integer
+        erpVerifiedProfiles:
+          type: string
+        verificationTime:
+          type: string
+
+    # ── ADMIN ─────────────────────────────────────────────────────────────────
+    AdminVerificationItem:
+      type: object
+      required: [id, userId, userName, erpNumber, status, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        userName:
+          type: string
+        userEmail:
+          type: string
+        erpNumber:
+          type: string
+        idCardUrl:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        createdAt:
+          type: string
+          format: date-time
+
+    RejectInput:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string
+
+    BanInput:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string
+
+    AdminUser:
+      type: object
+      required: [id, name, email, role, verificationStatus, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        verificationStatus:
+          type: string
+        isBanned:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    AdminAnalytics:
+      type: object
+      required: [totalUsers, verifiedUsers, pendingVerifications, totalPosts, totalEvents, totalMatches]
+      properties:
+        totalUsers:
+          type: integer
+        verifiedUsers:
+          type: integer
+        pendingVerifications:
+          type: integer
+        totalPosts:
+          type: integer
+        totalEvents:
+          type: integer
+        totalMatches:
+          type: integer
+        dailySignups:
+          type: array
+          items:
+            type: object
+            required: [date, count]
+            properties:
+              date:
+                type: string
+              count:
+                type: integer
+
+    AuditLog:
+      type: object
+      required: [id, adminId, action, targetType, createdAt]
+      properties:
+        id:
+          type: integer
+        adminId:
+          type: integer
+        adminName:
+          type: string
+        action:
+          type: string
+        targetType:
+          type: string
+        targetId:
+          type: ["integer", "null"]
+        details:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time

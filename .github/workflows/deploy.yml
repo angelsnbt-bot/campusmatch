@@ -1,0 +1,29 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run typecheck
+      - run: pnpm --filter @workspace/db run generate
+      - run: pnpm --filter @workspace/db run migrate
+      - run: pnpm --filter @workspace/api-server run build
+      - run: pnpm --filter @workspace/campusmatch run build
+
+      # Example: deploy to your hosting provider
+      # - name: Deploy to Railway/Fly.io/Render
+      #   run: |
+      #     # Add your deployment commands here
