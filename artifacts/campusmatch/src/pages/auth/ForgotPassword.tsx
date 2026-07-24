@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { Loader2, ArrowLeft, Mail, Key, Lock, Eye, EyeOff, RefreshCw, Zap } from
 import { Link } from 'wouter';
 import { useForgotPasswordRequest, useVerifyForgotOtpCode, useResetPasswordSubmit } from '@workspace/api-client-react';
 import LightPillar from '@/components/ui/LightPillar';
+import OtpInput from '@/components/ui/OtpInput';
 
 type Step = 'email' | 'otp' | 'reset' | 'done';
 
@@ -25,7 +26,6 @@ export default function ForgotPassword() {
 
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const sendOtpMutation = useForgotPasswordRequest();
   const verifyOtpMutation = useVerifyForgotOtpCode();
@@ -36,8 +36,6 @@ export default function ForgotPassword() {
     const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
     return () => clearTimeout(timer);
   }, [countdown]);
-
-  useEffect(() => { if (step === 'otp') setTimeout(() => otpRefs.current[0]?.focus(), 100); }, [step]);
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +49,7 @@ export default function ForgotPassword() {
     setIsError(false);
     verifyOtpMutation.mutate({ data: { email, otp: otpString } }, {
       onSuccess: (data) => { setResetToken(data.resetToken); setStep('reset'); toast({ title: 'OTP Verified', description: 'You can now set a new password.' }); },
-      onError: (err) => { setIsError(true); setOtp(Array(6).fill('')); otpRefs.current[0]?.focus(); toast({ title: 'Verification failed', description: (err?.data as any)?.error || err?.message || 'Invalid or expired OTP.', variant: 'destructive' }); },
+      onError: (err) => { setIsError(true); setOtp(Array(6).fill('')); toast({ title: 'Verification failed', description: (err?.data as any)?.error || err?.message || 'Invalid or expired OTP.', variant: 'destructive' }); },
     });
   };
 
@@ -65,39 +63,10 @@ export default function ForgotPassword() {
     });
   };
 
-  const handleOTPChange = (index: number, val: string) => {
-    const cleaned = val.replace(/\D/g, '');
-    if (!cleaned) return;
-    const newOtp = [...otp];
-    newOtp[index] = cleaned[cleaned.length - 1];
-    setOtp(newOtp);
-    if (index < 5) otpRefs.current[index + 1]?.focus();
-    const completeOtp = newOtp.join('');
-    if (completeOtp.length === 6 && index === 5) handleVerifyOTP(completeOtp);
-  };
-
-  const handleOTPKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace') {
-      const newOtp = [...otp];
-      if (otp[index]) { newOtp[index] = ''; setOtp(newOtp); }
-      else if (index > 0) { newOtp[index - 1] = ''; setOtp(newOtp); otpRefs.current[index - 1]?.focus(); }
-    }
-  };
-
-  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
-    const newOtp = [...otp];
-    for (let i = 0; i < pastedData.length; i++) newOtp[i] = pastedData[i];
-    setOtp(newOtp);
-    otpRefs.current[Math.min(pastedData.length, 5)]?.focus();
-    if (pastedData.length === 6) handleVerifyOTP(pastedData);
-  };
-
   const handleResendOTP = () => {
     if (countdown > 0) return;
     sendOtpMutation.mutate({ data: { email } }, {
-      onSuccess: () => { setCountdown(60); setOtp(Array(6).fill('')); otpRefs.current[0]?.focus(); toast({ title: 'OTP Resent', description: 'Check your email for the new code.' }); },
+      onSuccess: () => { setCountdown(60); setOtp(Array(6).fill('')); toast({ title: 'OTP Resent', description: 'Check your email for the new code.' }); },
       onError: (err) => { toast({ title: 'Failed to resend', description: (err?.data as any)?.error || err?.message || 'An error occurred.', variant: 'destructive' }); },
     });
   };
@@ -147,14 +116,9 @@ export default function ForgotPassword() {
 
           {step === 'otp' && (
             <motion.div key="otp-step" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-6">
-              <motion.div animate={isError ? { x: [-10, 10, -10, 10, -5, 5, 0] } : {}} transition={{ duration: 0.5 }} className="flex justify-center gap-2">
-                {otp.map((digit, i) => (
-                  <motion.input key={i} ref={(el) => { otpRefs.current[i] = el; }} type="text" inputMode="numeric" maxLength={1} value={digit}
-                    onChange={(e) => handleOTPChange(i, e.target.value)} onKeyDown={(e) => handleOTPKeyDown(i, e)} onPaste={handlePaste} whileFocus={{ scale: 1.05 }}
-                    className={`w-12 h-14 text-center text-2xl font-bold rounded-xl bg-white/5 border text-white transition-all focus:outline-none focus:ring-1 focus:ring-blue-500 ${isError ? 'border-red-500 bg-red-500/5' : 'border-white/10 hover:border-white/20 focus:border-blue-500 focus:bg-white/10'}`}
-                  />
-                ))}
-              </motion.div>
+              <div className={isError ? 'animate-[shake_0.5s_ease-in-out]' : ''}>
+                <OtpInput value={otp} onChange={setOtp} onComplete={handleVerifyOTP} error={isError} />
+              </div>
               <Button onClick={() => handleVerifyOTP(otp.join(''))} className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0 py-6 font-semibold shadow-lg shadow-blue-500/20 rounded-xl" disabled={verifyOtpMutation.isPending || otp.join('').length !== 6}>
                 {verifyOtpMutation.isPending ? <span className="flex items-center gap-2 justify-center"><Loader2 className="w-5 h-5 animate-spin" /> Verifying...</span> : "Verify OTP"}
               </Button>
@@ -193,7 +157,7 @@ export default function ForgotPassword() {
 
           {step === 'done' && (
             <motion.div key="done-step" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="py-6 flex flex-col items-center justify-center text-center">
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.2, stiffness: 200, damping: 10 }} className="w-20 h-20 bg-green-500/10 border border-green-500/30 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-green-500/10">
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", delay: 0.2, stiffness: 200, damping: 10 }} className="w-20 h-20 bg-green-500/10 border border-green-500/30 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-green-500/10">
                 <motion.svg className="w-10 h-10 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                   <motion.path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.5, delay: 0.4 }} />
                 </motion.svg>
