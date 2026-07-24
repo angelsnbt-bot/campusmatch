@@ -3,6 +3,7 @@ import { db } from "@workspace/db";
 import { usersTable, profilesTable } from "@workspace/db";
 import { eq, sql } from "drizzle-orm";
 import crypto from "crypto";
+import { OAuth2Client } from "google-auth-library";
 import {
   RegisterBody,
   LoginBody,
@@ -14,6 +15,8 @@ import {
 import { authRateLimit } from "../middlewares/rateLimit";
 import { logger } from "../lib/logger";
 import { store } from "../lib/store";
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const router = Router();
 
@@ -485,6 +488,93 @@ router.post("/auth/reset-password", authRateLimit, async (req, res): Promise<voi
   await store.del(`reset:${resetToken}`);
 
   res.json({ success: true, message: "Password reset successfully. Please login." });
+});
+
+router.post("/auth/google", authRateLimit, async (req, res): Promise<void> => {
+  const { credential } = req.body as { credential?: string };
+  if (!credential) {
+    res.status(400).json({ error: "Google credential required" });
+    return;
+  }
+
+  let payload: { email?: string; name?: string; sub?: string; picture?: string } | undefined;
+  try {
+    const ticket = await googleClient.verifyIdToken({ idToken: credential, audience: process.env.GOOGLE_CLIENT_ID });
+    payload = ticket.getPayload();
+  } catch (err) {
+    logger.error({ err }, "Google token verification failed");
+    res.status(401).json({ error: "Invalid Google token" });
+    return;
+  }
+
+  if (!payload?.email) {
+    res.status(400).json({ error: "No email in Google token" });
+    return;
+  }
+
+  const { email, name, sub: googleId, picture } = payload;
+
+  const existing = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
+
+  if (existing.length > 0) {
+    const user = existing[0];
+    if (user.isBanned) {
+      res.status(403).json({ error: "Account is banned" });
+      return;
+    }
+    const token = generateToken();
+    const refreshToken = generateRefreshToken();
+    const refreshTokenExpiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY_MS);
+    await db.update(usersTable).set({ jwtToken: token, refreshToken, refreshTokenExpiresAt, emailVerified: true, avatarUrl: user.avatarUrl || picture || null }).where(eq(usersTable.id, user.id));
+    res.json({
+      user: { id: user.id, name: user.name, email: user.email, role: user.role, verificationStatus: user.verificationStatus, emailVerified: true, isFirst100: user.isFirst100, avatarUrl: user.avatarUrl || picture, createdAt: user.createdAt },
+      token,
+      refreshToken,
+    });
+    return;
+  }
+
+  const otp = generateOtp();
+  const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+  const verifiedCount = await db.select({ count: sql<number>`count(*)::int` }).from(usersTable).where(eq(usersTable.verificationStatus, "approved"));
+  const isFirst100 = (verifiedCount[0]?.count ?? 0) < 100;
+
+  const [user] = await db.insert(usersTable).values({
+    name: name || email.split("@")[0],
+    email,
+    phone: null,
+    passwordHash: hashPassword(crypto.randomBytes(16).toString("hex")),
+    emailOtp: hashOtp(otp),
+    otpExpiresAt,
+    emailVerified: true,
+    isFirst100,
+    avatarUrl: picture || null,
+  }).returning();
+
+  if (!user) {
+    res.status(500).json({ error: "Failed to create user" });
+    return;
+  }
+
+  await db.insert(profilesTable).values({ userId: user.id, name: user.name, avatarUrl: picture || null });
+
+  const token = generateToken();
+  const refreshToken = generateRefreshToken();
+  const refreshTokenExpiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY_MS);
+  await db.update(usersTable).set({ jwtToken: token, refreshToken, refreshTokenExpiresAt }).where(eq(usersTable.id, user.id));
+
+  await sendResendEmail(
+    email,
+    "Welcome to CampusMatch!",
+    `<p>Welcome, ${name || "Student"}! Your account has been created via Google Sign-In. Your email is already verified.</p>`
+  );
+
+  req.log.info({ userId: user.id }, "User registered via Google");
+  res.status(201).json({
+    user: { id: user.id, name: user.name, email: user.email, role: user.role, verificationStatus: user.verificationStatus, emailVerified: true, isFirst100: user.isFirst100, avatarUrl: user.avatarUrl, createdAt: user.createdAt },
+    token,
+    refreshToken,
+  });
 });
 
 export default router;
