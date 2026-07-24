@@ -40,13 +40,13 @@ export default function Login() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(135deg, #050510 0%, #0a0a1a 40%, #0d0d24 100%)' }}>
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f0515 0%, #150a20 40%, #1a0f2e 100%)' }}>
       <div className="absolute inset-0 z-0">
-        <LightPillar topColor="#3b82f6" bottomColor="#8b5cf6" intensity={0.7} rotationSpeed={0.2} glowAmount={0.004} pillarWidth={3.5} pillarHeight={0.35} noiseIntensity={0.3} pillarRotation={15} interactive={false} mixBlendMode="screen" quality="high" />
+        <LightPillar topColor="#f472b6" bottomColor="#a855f7" intensity={0.7} rotationSpeed={0.2} glowAmount={0.004} pillarWidth={3.5} pillarHeight={0.35} noiseIntensity={0.3} pillarRotation={15} interactive={false} mixBlendMode="screen" quality="high" />
       </div>
       <div className="absolute inset-0 pointer-events-none z-[1]">
-        <div className="absolute w-[600px] h-[600px] rounded-full opacity-20" style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%)', top: '10%', left: '20%', filter: 'blur(80px)' }} />
-        <div className="absolute w-[400px] h-[400px] rounded-full opacity-15" style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%)', bottom: '20%', right: '10%', filter: 'blur(60px)' }} />
+        <div className="absolute w-[600px] h-[600px] rounded-full opacity-20" style={{ background: 'radial-gradient(circle, rgba(244,114,182,0.25) 0%, transparent 70%)', top: '10%', left: '20%', filter: 'blur(80px)' }} />
+        <div className="absolute w-[400px] h-[400px] rounded-full opacity-15" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%)', bottom: '20%', right: '10%', filter: 'blur(60px)' }} />
       </div>
 
       <motion.div
@@ -56,11 +56,11 @@ export default function Login() {
         className="relative z-10 w-full max-w-md mx-4"
       >
         <div className="glass-card p-8 rounded-2xl overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-pink-500 via-purple-500 to-fuchsia-500" />
 
           <div className="flex flex-col items-center mb-8">
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
-              className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 flex items-center justify-center mb-4 shadow-lg shadow-blue-500/25">
+            <motion.div initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
+              className="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-500 via-purple-600 to-fuchsia-600 flex items-center justify-center mb-4 shadow-lg shadow-pink-500/25">
               <Zap className="w-7 h-7 text-white" />
             </motion.div>
             <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-2xl font-bold text-white mb-1">Welcome Back</motion.h1>
@@ -94,7 +94,7 @@ export default function Login() {
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.35 }} className="space-y-2">
               <Label htmlFor="email" className="text-white/70 text-sm font-medium">College Email</Label>
               <div className="relative">
-                <Input id="email" type="email" placeholder="name.branch@college.edu" value={email} onChange={(e) => setEmail(e.target.value)} required className="input-premium h-12 pl-10" />
+                <Input id="email" type="email" placeholder="name.branch@college.edu" value={email} onChange={(e) => setEmail(e.target.value)} required className="input-premium h-12 pl-10 focus-visible:ring-pink-500/50" />
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
               </div>
             </motion.div>
@@ -103,10 +103,10 @@ export default function Login() {
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }} className="space-y-2">
                 <div className="flex justify-between items-center">
                   <Label htmlFor="password" className="text-white/70 text-sm font-medium">Password</Label>
-                  <Link href="/forgot-password" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">Forgot password?</Link>
+                  <Link href="/forgot-password" className="text-xs text-pink-400 hover:text-pink-300 transition-colors">Forgot password?</Link>
                 </div>
                 <div className="relative">
-                  <Input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required className="input-premium h-12 pl-10 pr-10" />
+                  <Input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required className="input-premium h-12 pl-10 pr-10 focus-visible:ring-pink-500/50" />
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors">
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -117,10 +117,10 @@ export default function Login() {
 
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
               <div className="flex items-center gap-2 mb-4">
-                <Checkbox id="remember" checked={rememberMe} onCheckedChange={(v) => setRememberMe(v === true)} className="border-white/20 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500" />
+                <Checkbox id="remember" checked={rememberMe} onCheckedChange={(v) => setRememberMe(v === true)} className="border-white/20 data-[state=checked]:bg-pink-500 data-[state=checked]:border-pink-500" />
                 <Label htmlFor="remember" className="text-white/50 text-sm cursor-pointer">Remember me</Label>
               </div>
-              <Button type="submit" className="w-full btn-premium btn-primary h-12 text-sm font-semibold" disabled={loginMutation.isPending}>
+              <Button type="submit" className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white border-0 h-12 text-sm font-semibold shadow-lg shadow-pink-500/20 rounded-xl transition-all hover:shadow-pink-500/30 hover:scale-[1.02] active:scale-[0.98]" disabled={loginMutation.isPending}>
                 {loginMutation.isPending ? (
                   <div className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Signing in...</div>
                 ) : (
@@ -132,7 +132,7 @@ export default function Login() {
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-6 text-center text-sm text-white/50">
             Don't have an account?{' '}
-            <Link href="/register" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">Get Started</Link>
+            <Link href="/register" className="text-pink-400 hover:text-pink-300 transition-colors font-medium">Get Started</Link>
           </motion.div>
         </div>
       </motion.div>
