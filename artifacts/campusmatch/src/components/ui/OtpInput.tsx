@@ -1,5 +1,9 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const INPUT_SIZE = 70;
+const RADIUS = 14;
+const BORDER = 2;
 
 interface OtpInputProps {
   length?: number;
@@ -114,101 +118,124 @@ export default function OtpInput({
     setFocusedIndex(-1);
   }, []);
 
-  const getBoxState = (index: number) => {
-    if (error) return 'error';
-    if (value[index]) return 'filled';
-    if (focusedIndex === index) return 'focused';
-    return 'empty';
+  const getBorderColor = (index: number) => {
+    if (error) return '#ef4444';
+    if (focusedIndex === index) return '#3b82f6';
+    if (value[index]) return '#6366f1';
+    return '#404040';
+  };
+
+  const getBackgroundColor = (index: number) => {
+    if (error) return '#262626';
+    if (value[index]) return '#1e1e2e';
+    return '#262626';
   };
 
   return (
-    <div className="flex justify-center gap-3">
+    <div className="flex justify-center" style={{ gap: `${(INPUT_SIZE * 0.25)}px` }}>
       {Array.from({ length }, (_, i) => {
-        const state = getBoxState(i);
         const isFocused = focusedIndex === i;
         const isFilled = !!value[i];
         const wasJustFilled = justFilledIndex === i;
+        const borderColor = getBorderColor(i);
+        const bgColor = getBackgroundColor(i);
 
         return (
-          <div key={i} className="relative">
+          <div
+            key={i}
+            className="relative"
+            style={{ width: INPUT_SIZE, height: INPUT_SIZE }}
+          >
+            {/* Skia-style rounded rect border */}
             <motion.div
-              className={`relative w-12 h-14 rounded-xl overflow-hidden transition-colors duration-200 ${
-                state === 'error'
-                  ? 'bg-red-500/10 border-2 border-red-500/60'
-                  : state === 'filled'
-                  ? 'bg-blue-500/15 border-2 border-blue-500/60'
-                  : state === 'focused'
-                  ? 'bg-white/5 border-2 border-blue-500'
-                  : 'bg-white/[0.03] border-2 border-white/10'
-              }`}
-              animate={
-                wasJustFilled
-                  ? {
-                      scale: [1, 1.12, 0.95, 1],
-                    }
-                  : isFocused
-                  ? { scale: 1.05 }
-                  : { scale: 1 }
-              }
-              transition={
-                wasJustFilled
-                  ? { duration: 0.3, ease: 'easeOut' }
-                  : { duration: 0.15 }
-              }
-            >
-              {/* Fill animation */}
-              {isFilled && (
-                <motion.div
-                  className="absolute inset-0 rounded-xl"
-                  style={{
-                    background: error
-                      ? 'linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(239,68,68,0.05) 100%)'
-                      : 'linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(99,102,241,0.1) 100%)',
-                  }}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.2 }}
-                />
-              )}
+              className="absolute inset-0"
+              style={{
+                width: INPUT_SIZE,
+                height: INPUT_SIZE,
+                borderRadius: RADIUS,
+                backgroundColor: borderColor,
+              }}
+              animate={{
+                backgroundColor: borderColor,
+              }}
+              transition={{ duration: 0.2 }}
+            />
 
-              {/* Focus glow ring */}
+            {/* Inner fill (creates the border effect — matches Skia rrect path) */}
+            <motion.div
+              className="absolute"
+              style={{
+                top: BORDER,
+                left: BORDER,
+                right: BORDER,
+                bottom: BORDER,
+                borderRadius: RADIUS - BORDER,
+                backgroundColor: bgColor,
+              }}
+              animate={{
+                backgroundColor: bgColor,
+              }}
+              transition={{ duration: 0.2 }}
+            />
+
+            {/* Focus glow */}
+            <AnimatePresence>
               {isFocused && (
                 <motion.div
-                  className="absolute inset-[-1px] rounded-xl"
+                  className="absolute inset-[-2px]"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(59,130,246,0.3) 0%, rgba(139,92,246,0.3) 100%)',
-                    filter: 'blur(4px)',
+                    borderRadius: RADIUS + 2,
+                    background: 'linear-gradient(135deg, rgba(59,130,246,0.25) 0%, rgba(99,102,241,0.25) 100%)',
+                    filter: 'blur(6px)',
                   }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   transition={{ duration: 0.15 }}
                 />
               )}
+            </AnimatePresence>
 
-              {/* Digit text */}
-              <div className="relative z-10 w-full h-full flex items-center justify-center">
-                <motion.span
-                  className={`text-2xl font-bold tabular-nums ${
-                    error ? 'text-red-400' : isFilled ? 'text-white' : 'text-white'
-                  }`}
-                  initial={wasJustFilled ? { scale: 0.5, opacity: 0 } : false}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.2, ease: 'backOut' }}
-                >
-                  {isFilled ? '•' : ''}
-                </motion.span>
-              </div>
-
-              {/* Active border glow */}
-              {isFocused && (
+            {/* Filled pulse */}
+            <AnimatePresence>
+              {wasJustFilled && (
                 <motion.div
-                  className="absolute inset-0 rounded-xl border-2 border-blue-500"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.15 }}
+                  className="absolute inset-0"
+                  style={{
+                    borderRadius: RADIUS,
+                    border: `2px solid ${error ? '#ef4444' : '#6366f1'}`,
+                  }}
+                  initial={{ scale: 1.15, opacity: 0.8 }}
+                  animate={{ scale: 1, opacity: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
                 />
               )}
-            </motion.div>
+            </AnimatePresence>
+
+            {/* Digit text */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <motion.span
+                style={{
+                  fontSize: INPUT_SIZE * 0.34,
+                  fontWeight: 600,
+                  color: error ? '#ef4444' : isFocused ? '#ffffff' : isFilled ? '#e5e5e5' : '#737373',
+                  lineHeight: 1,
+                }}
+                animate={
+                  wasJustFilled
+                    ? { scale: [0.5, 1.1, 1] }
+                    : { scale: 1 }
+                }
+                transition={
+                  wasJustFilled
+                    ? { duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }
+                    : { duration: 0.15 }
+                }
+              >
+                {value[i] || ''}
+              </motion.span>
+            </div>
 
             {/* Hidden input */}
             <input
@@ -225,6 +252,7 @@ export default function OtpInput({
               onBlur={handleBlur}
               disabled={disabled}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              style={{ fontSize: INPUT_SIZE * 0.34 }}
               aria-label={`OTP digit ${i + 1}`}
             />
           </div>
