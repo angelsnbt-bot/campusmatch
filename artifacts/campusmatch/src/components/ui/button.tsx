@@ -10,8 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          // @replit: no hover, and add primary border
-          'bg-primary text-primary-foreground border border-primary-border',
+          'bg-gradient-to-r from-pink-500 to-purple-600 text-white border border-pink-500/20 shadow-md shadow-pink-500/20 hover:from-pink-600 hover:to-purple-700 hover:shadow-pink-500/30 active:scale-[0.98] transition-all',
         destructive:
           'bg-destructive text-destructive-foreground shadow-sm border-destructive-border',
         outline:
@@ -20,11 +19,10 @@ const buttonVariants = cva(
           // No hover state
           ' border [border-color:var(--button-outline)] shadow-xs active:shadow-none ',
         secondary:
-          // @replit border, no hover, no shadow, secondary border.
-          'border bg-secondary text-secondary-foreground border border-secondary-border ',
+          'border bg-white/[0.06] text-white/80 border-white/10 hover:bg-white/[0.1] hover:border-white/14',
         // @replit no hover, transparent border
         ghost: 'border border-transparent',
-        link: 'text-primary underline-offset-4 hover:underline',
+        link: 'text-pink-400 underline-offset-4 hover:text-pink-300 hover:underline',
       },
       size: {
         // @replit changed sizes
