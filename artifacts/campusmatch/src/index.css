@@ -43,49 +43,47 @@
 
 /* ============================================================
    CAMPUSMATCH PREMIUM DESIGN SYSTEM
-   Deep matte black + indigo + electric blue + violet glow
+   Deep matte black + pink + purple + violet glow
    ============================================================ */
 
 :root {
-  --background: 235 25% 5%;
+  --background: 300 25% 5%;
   --foreground: 0 0% 95%;
-  --border: 235 20% 12%;
-  --card: 235 22% 8%;
+  --border: 300 20% 12%;
+  --card: 300 22% 8%;
   --card-foreground: 0 0% 95%;
-  --card-border: 235 18% 14%;
-  --popover: 235 22% 8%;
+  --card-border: 300 18% 14%;
+  --popover: 300 22% 8%;
   --popover-foreground: 0 0% 95%;
-  --popover-border: 235 18% 14%;
-  --primary: 220 90% 56%;
+  --popover-border: 300 18% 14%;
+  --primary: 330 81% 60%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 262 83% 58%;
+  --secondary: 270 76% 58%;
   --secondary-foreground: 0 0% 100%;
-  --muted: 235 15% 12%;
-  --muted-foreground: 235 10% 50%;
-  --accent: 200 100% 50%;
+  --muted: 300 15% 12%;
+  --muted-foreground: 300 10% 50%;
+  --accent: 330 81% 60%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --input: 235 18% 12%;
-  --ring: 220 90% 56%;
+  --input: 300 18% 12%;
+  --ring: 330 81% 60%;
   --radius: 0.875rem;
 
-  /* Premium Design Tokens */
-  --cm-blue: #3b82f6;
-  --cm-blue-light: #60a5fa;
-  --cm-purple: #8b5cf6;
-  --cm-purple-light: #a78bfa;
-  --cm-indigo: #4f46e5;
-  --cm-indigo-deep: #3730a3;
-  --cm-cyan: #06b6d4;
-  --cm-cyan-light: #22d3ee;
-  --cm-violet: #7c3aed;
+  /* Premium Design Tokens - Pink/Purple */
+  --cm-pink: #f472b6;
+  --cm-pink-light: #f9a8d4;
+  --cm-purple: #a855f7;
+  --cm-purple-light: #c084fc;
+  --cm-fuchsia: #d946ef;
+  --cm-violet: #8b5cf6;
+  --cm-rose: #f43f5e;
   --cm-surface: rgba(255, 255, 255, 0.03);
   --cm-surface-hover: rgba(255, 255, 255, 0.06);
   --cm-border: rgba(255, 255, 255, 0.08);
   --cm-border-hover: rgba(255, 255, 255, 0.14);
-  --cm-glow-blue: rgba(59, 130, 246, 0.15);
-  --cm-glow-purple: rgba(139, 92, 246, 0.12);
+  --cm-glow-pink: rgba(244, 114, 182, 0.15);
+  --cm-glow-purple: rgba(168, 85, 247, 0.12);
 }
 
 @layer base {
@@ -98,7 +96,7 @@
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
   ::selection {
-    background: rgba(59, 130, 246, 0.3);
+    background: rgba(244, 114, 182, 0.3);
     color: white;
   }
 }
@@ -130,7 +128,7 @@
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.04) inset,
     0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(59, 130, 246, 0.05);
+    0 0 0 1px rgba(244, 114, 182, 0.05);
 }
 
 .glass-surface {
@@ -181,20 +179,20 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 12px rgba(59, 130, 246, 0.3), 0 0 0 1px rgba(59, 130, 246, 0.1) inset;
+  box-shadow: 0 2px 12px rgba(244, 114, 182, 0.3), 0 0 0 1px rgba(244, 114, 182, 0.1) inset;
 }
 
 .btn-primary:hover {
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.45), 0 0 0 1px rgba(59, 130, 246, 0.2) inset;
+  box-shadow: 0 4px 20px rgba(244, 114, 182, 0.45), 0 0 0 1px rgba(244, 114, 182, 0.2) inset;
   transform: translateY(-1px);
 }
 
 .btn-primary:active {
   transform: translateY(0);
-  box-shadow: 0 1px 6px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 1px 6px rgba(244, 114, 182, 0.3);
 }
 
 .btn-secondary {
@@ -267,7 +265,7 @@
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.04) inset,
     0 8px 40px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(59, 130, 246, 0.06);
+    0 0 0 1px rgba(244, 114, 182, 0.06);
   transform: translateY(-2px);
 }
 
@@ -280,7 +278,7 @@
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.1), transparent 60%);
+  background: linear-gradient(135deg, rgba(244, 114, 182, 0.15), rgba(139, 92, 246, 0.1), transparent 60%);
   opacity: 0;
   transition: opacity 0.3s;
   z-index: -1;
@@ -328,8 +326,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.15); }
-  50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.3); }
+  0%, 100% { box-shadow: 0 0 20px rgba(244, 114, 182, 0.15); }
+  50% { box-shadow: 0 0 40px rgba(244, 114, 182, 0.3); }
 }
 
 @keyframes gradient-shift {
@@ -353,12 +351,12 @@
 }
 
 @keyframes counter-glow {
-  0%, 100% { text-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
-  50% { text-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+  0%, 100% { text-shadow: 0 0 10px rgba(244, 114, 182, 0.3); }
+  50% { text-shadow: 0 0 20px rgba(244, 114, 182, 0.5); }
 }
 
 @keyframes border-flow {
-  0%, 100% { border-color: rgba(59, 130, 246, 0.2); }
+  0%, 100% { border-color: rgba(244, 114, 182, 0.2); }
   50% { border-color: rgba(139, 92, 246, 0.3); }
 }
 
@@ -401,7 +399,7 @@
 
 /* Text gradient */
 .text-gradient-blue {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, #f472b6, #8b5cf6);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -455,8 +453,8 @@
 }
 
 .input-premium:focus {
-  border-color: rgba(59, 130, 246, 0.4);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 0 20px rgba(59, 130, 246, 0.08);
+  border-color: rgba(244, 114, 182, 0.4);
+  box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.1), 0 0 20px rgba(244, 114, 182, 0.08);
   background: rgba(255, 255, 255, 0.06);
 }
 
@@ -576,7 +574,7 @@
 }
 
 .profile-hover-glow:hover {
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 2px rgba(244, 114, 182, 0.3), 0 0 20px rgba(244, 114, 182, 0.15);
 }
 
 /* Button press feedback */
@@ -587,13 +585,13 @@
 
 /* Focus visible states - Accessibility */
 *:focus-visible {
-  outline: 2px solid rgba(59, 130, 246, 0.6);
+  outline: 2px solid rgba(244, 114, 182, 0.6);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 button:focus-visible, a:focus-visible {
-  outline: 2px solid rgba(59, 130, 246, 0.6);
+  outline: 2px solid rgba(244, 114, 182, 0.6);
   outline-offset: 2px;
 }
 
@@ -608,7 +606,7 @@ button:focus-visible, a:focus-visible {
   left: 0;
   z-index: 9999;
   padding: 0.75rem 1.5rem;
-  background: #3b82f6;
+  background: #f472b6;
   color: white;
   font-weight: 600;
   font-size: 0.875rem;
@@ -632,7 +630,7 @@ button:focus-visible, a:focus-visible {
   left: 0;
   width: 0;
   height: 1px;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(90deg, #f472b6, #8b5cf6);
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -646,8 +644,8 @@ button:focus-visible, a:focus-visible {
 }
 
 @keyframes badge-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
-  50% { box-shadow: 0 0 0 4px rgba(59, 130, 246, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(244, 114, 182, 0.4); }
+  50% { box-shadow: 0 0 0 4px rgba(244, 114, 182, 0); }
 }
 
 /* Notification slide in */
