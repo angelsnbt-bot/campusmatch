@@ -183,11 +183,11 @@ export default function Home() {
               className="mb-8 flex items-center gap-3"
             >
               <LiveUserCounter />
-              <span className="text-xs text-white/40 uppercase tracking-widest" style={{ fontWeight: 500 }}>Real Users</span>
+              <span className="text-xs text-gray-900 uppercase tracking-widest" style={{ fontWeight: 500 }}>Real Users</span>
             </motion.div>
 
             {/* Word-by-word headline */}
-            <h1 className="text-white leading-[1.08] mb-6" style={{ fontSize: 'clamp(40px, 6vw, 80px)' }}>
+            <h1 className="text-gray-900 leading-[1.08] mb-6" style={{ fontSize: 'clamp(40px, 6vw, 80px)' }}>
               {'Your whole campus, one verified app.'.split(' ').map((word, i) => (
                 <motion.span
                   key={i}
@@ -197,7 +197,7 @@ export default function Home() {
                   className="inline-block mr-[0.3em]"
                 >
                   {word === 'verified' ? (
-                    <span className="italic bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">{word}</span>
+                    <span className="italic bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">{word}</span>
                   ) : word}
                 </motion.span>
               ))}
@@ -208,7 +208,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.7 }}
-              className="text-white/60 max-w-[520px] mb-10 leading-relaxed"
+              className="text-gray-800 max-w-[520px] mb-10 leading-relaxed"
               style={{ fontSize: '17px' }}
             >
               Find friends, study partners, dates, internships, and campus events — no fakes, no bots, just real ERP-verified students.
