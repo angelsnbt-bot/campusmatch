@@ -37,6 +37,9 @@ export default function AdminUsers() {
         setBanId(null);
         setBanReason('');
         queryClient.invalidateQueries({ queryKey: getGetAdminUsersQueryKey({ search: debouncedSearch, status: statusFilter }) });
+      },
+      onError: () => {
+        toast({ title: 'Failed to ban user', variant: 'destructive' });
       }
     });
   };
@@ -197,13 +200,18 @@ export default function AdminUsers() {
                           variant="ghost"
                           className="text-green-400 hover:text-green-300 hover:bg-green-500/10 text-xs"
                           onClick={async () => {
-                            const API_URL = import.meta.env.VITE_API_URL || '';
-                            await fetch(`${API_URL}/api/admin/users/${u.id}/unban`, {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('cm_token')}` },
-                            });
-                            queryClient.invalidateQueries({ queryKey: getGetAdminUsersQueryKey({ search: debouncedSearch, status: statusFilter }) });
-                            toast({ title: 'User unbanned' });
+                            try {
+                              const API_URL = import.meta.env.VITE_API_URL || '';
+                              const res = await fetch(`${API_URL}/api/admin/users/${u.id}/unban`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('cm_token')}` },
+                              });
+                              if (!res.ok) throw new Error('Failed');
+                              queryClient.invalidateQueries({ queryKey: getGetAdminUsersQueryKey({ search: debouncedSearch, status: statusFilter }) });
+                              toast({ title: 'User unbanned' });
+                            } catch {
+                              toast({ title: 'Failed to unban user', variant: 'destructive' });
+                            }
                           }}
                         >
                           <CheckCircle className="w-3.5 h-3.5 mr-1" /> Unban
