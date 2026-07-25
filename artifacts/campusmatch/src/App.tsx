@@ -68,13 +68,13 @@ function Router() {
         <Suspense fallback={<PageLoader />}><Login /></Suspense>
       </Route>
       <Route path="/register">
-        <AppShell><Suspense fallback={<PageLoader />}><Register /></Suspense></AppShell>
+        <Suspense fallback={<PageLoader />}><Register /></Suspense>
       </Route>
       <Route path="/verify-otp">
-        <AppShell requireAuth><Suspense fallback={<PageLoader />}><VerifyOtp /></Suspense></AppShell>
+        <Suspense fallback={<PageLoader />}><VerifyOtp /></Suspense>
       </Route>
       <Route path="/forgot-password">
-        <AppShell><Suspense fallback={<PageLoader />}><ForgotPassword /></Suspense></AppShell>
+        <Suspense fallback={<PageLoader />}><ForgotPassword /></Suspense>
       </Route>
       <Route path="/verify">
         <AppShell requireAuth><Suspense fallback={<PageLoader />}><Verify /></Suspense></AppShell>
