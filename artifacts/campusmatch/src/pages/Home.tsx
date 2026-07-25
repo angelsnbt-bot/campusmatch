@@ -187,7 +187,7 @@ export default function Home() {
             </motion.div>
 
             {/* Word-by-word headline */}
-            <h1 className="text-gray-900 leading-[1.08] mb-6" style={{ fontSize: 'clamp(40px, 6vw, 80px)' }}>
+            <h1 className="text-gray-900 leading-[1.08] mb-6 font-serif" style={{ fontSize: 'clamp(40px, 6vw, 80px)' }}>
               {'Your whole campus, one verified app.'.split(' ').map((word, i) => (
                 <motion.span
                   key={i}
