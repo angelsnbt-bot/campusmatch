@@ -172,6 +172,7 @@ export default function Home() {
       {/* ===== 2. HERO SECTION ===== */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260210_031346_d87182fb-b0af-4273-84d1-c6fd17d6bf0f.mp4" />
+        <div className="absolute inset-0 z-[1] bg-white/40 backdrop-blur-[2px]" />
 
         <div className="relative z-10 w-full min-h-screen flex items-center px-6 md:px-[80px] lg:px-[120px] py-24">
           {/* LEFT: Text content */}
@@ -183,11 +184,11 @@ export default function Home() {
               className="mb-8 flex items-center gap-3"
             >
               <LiveUserCounter />
-              <span className="text-xs text-white/40 uppercase tracking-widest" style={{ fontWeight: 500 }}>Real Users</span>
+              <span className="text-xs text-gray-900/70 uppercase tracking-widest" style={{ fontWeight: 500 }}>Real Users</span>
             </motion.div>
 
             {/* Word-by-word headline */}
-            <h1 className="text-white leading-[1.08] mb-6" style={{ fontSize: 'clamp(40px, 6vw, 80px)' }}>
+            <h1 className="text-gray-900 leading-[1.08] mb-6" style={{ fontSize: 'clamp(40px, 6vw, 80px)' }}>
               {'Your whole campus, one verified app.'.split(' ').map((word, i) => (
                 <motion.span
                   key={i}
@@ -197,7 +198,7 @@ export default function Home() {
                   className="inline-block mr-[0.3em]"
                 >
                   {word === 'verified' ? (
-                    <span className="italic bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">{word}</span>
+                    <span className="italic bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">{word}</span>
                   ) : word}
                 </motion.span>
               ))}
@@ -208,7 +209,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.7 }}
-              className="text-white/60 max-w-[520px] mb-10 leading-relaxed"
+              className="text-gray-800 max-w-[520px] mb-10 leading-relaxed"
               style={{ fontSize: '17px' }}
             >
               Find friends, study partners, dates, internships, and campus events — no fakes, no bots, just real ERP-verified students.
@@ -221,10 +222,10 @@ export default function Home() {
               transition={{ duration: 0.7, delay: 0.9 }}
               className="flex flex-col sm:flex-row items-start gap-4"
             >
-              <Link href="/register" className="h-14 px-8 inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold text-base hover:from-pink-600 hover:to-purple-700 transition-all shadow-lg shadow-pink-500/20">
+              <Link href="/register" className="h-14 px-8 inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold text-base hover:from-pink-600 hover:to-purple-700 transition-all shadow-lg shadow-pink-500/30">
                 Join CampusMatch <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
-              <a href="#features" className="h-14 px-8 inline-flex items-center justify-center rounded-[10px] bg-white/[0.06] text-white/90 font-semibold text-base border border-white/10 hover:bg-white/[0.1] transition-all">
+              <a href="#features" className="h-14 px-8 inline-flex items-center justify-center rounded-[10px] bg-gray-900/80 text-white font-semibold text-base border border-gray-700 hover:bg-gray-900 transition-all">
                 Explore Features
               </a>
             </motion.div>
