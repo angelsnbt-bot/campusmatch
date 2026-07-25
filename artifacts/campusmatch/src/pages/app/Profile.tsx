@@ -12,6 +12,8 @@ export default function Profile() {
   const updateMutation = useUpdateProfile();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = React.useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = React.useState({
     bio: '',
@@ -58,6 +60,41 @@ export default function Profile() {
     });
   };
 
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: 'Image must be under 5MB', variant: 'destructive' });
+      return;
+    }
+    setUploadingPhoto(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+      const token = localStorage.getItem('cm_token');
+      const res = await fetch('/api/upload/profile-image', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formDataUpload,
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      const { url } = await res.json();
+      updateMutation.mutate({
+        data: { avatarUrl: url }
+      }, {
+        onSuccess: () => {
+          toast({ title: 'Profile photo updated' });
+          refetch();
+        }
+      });
+    } catch {
+      toast({ title: 'Failed to upload photo', variant: 'destructive' });
+    } finally {
+      setUploadingPhoto(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <div className="relative">
@@ -78,8 +115,24 @@ export default function Profile() {
                 </div>
               )}
             </div>
-            <button className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center shadow-lg hover:from-pink-600 to-purple-700 transition-colors z-10" title="Profile photo upload coming soon">
-              <Camera className="w-5 h-5 text-white" />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="hidden"
+              onChange={handlePhotoUpload}
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingPhoto}
+              className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center shadow-lg hover:from-pink-600 to-purple-700 transition-colors z-10 disabled:opacity-50"
+              title="Upload profile photo"
+            >
+              {uploadingPhoto ? (
+                <Loader2 className="w-5 h-5 text-white animate-spin" />
+              ) : (
+                <Camera className="w-5 h-5 text-white" />
+              )}
             </button>
           </div>
         </div>
@@ -87,7 +140,16 @@ export default function Profile() {
         {/* Actions */}
         <div className="absolute right-4 -bottom-12">
           {!isEditing && (
-            <Button onClick={() => setIsEditing(true)} variant="outline" className="bg-card border-white/10 hover:bg-white/10 text-white rounded-full px-6">
+            <Button onClick={() => {
+              setFormData({
+                bio: profile.bio || '',
+                branch: profile.branch || '',
+                year: profile.year || 1,
+                hostel: profile.hostel || '',
+                interests: profile.interests ? profile.interests.join(', ') : '',
+              });
+              setIsEditing(true);
+            }} variant="outline" className="bg-card border-white/10 hover:bg-white/10 text-white rounded-full px-6">
               <Edit3 className="w-4 h-4 mr-2" /> Edit Profile
             </Button>
           )}

@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 import { getGetEventsQueryKey } from '@workspace/api-client-react';
 import { EmptyEvents } from '@/components/ui/EmptyStates';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function Events() {
   const { data: events, isLoading } = useGetEvents();
@@ -19,6 +20,8 @@ export default function Events() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
 
   const [formData, setFormData] = React.useState({
     title: '',
@@ -45,6 +48,9 @@ export default function Events() {
         setIsDialogOpen(false);
         queryClient.invalidateQueries({ queryKey: getGetEventsQueryKey() });
         setFormData({ title: '', description: '', date: '', venue: '', category: 'social' });
+      },
+      onError: () => {
+        toast({ title: 'Failed to create event', description: 'Only admins can create events.', variant: 'destructive' });
       }
     });
   };
@@ -70,55 +76,57 @@ export default function Events() {
           <p className="text-white/60">Discover and join what's happening at VGU.</p>
         </div>
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 to-purple-700 rounded-full px-6 shadow-lg shadow-pink-500/20">
-              <Plus className="w-4 h-4 mr-2" /> Host Event
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="card-premium border-white/10 text-white sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-xl">Host an Event</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleCreate} className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label className="text-white/80">Event Title</Label>
-                <Input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="bg-white/5 border-white/10" />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-white/80">Description</Label>
-                <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:ring-1 focus:ring-pink-500 outline-none" rows={3} />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-white/80">Date & Time</Label>
-                  <Input type="datetime-local" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} className="bg-white/5 border-white/10" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-white/80">Venue</Label>
-                  <Input required value={formData.venue} onChange={e => setFormData({...formData, venue: e.target.value})} className="bg-white/5 border-white/10" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-white/80">Category</Label>
-                <select 
-                  className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-white outline-none"
-                  value={formData.category}
-                  onChange={e => setFormData({...formData, category: e.target.value as EventInputCategory})}
-                >
-                  <option value="social" className="bg-[#0a0a14]">Social</option>
-                  <option value="hackathon" className="bg-[#0a0a14]">Hackathon</option>
-                  <option value="sports" className="bg-[#0a0a14]">Sports</option>
-                  <option value="cultural" className="bg-[#0a0a14]">Cultural</option>
-                  <option value="academic" className="bg-[#0a0a14]">Academic</option>
-                </select>
-              </div>
-              <Button type="submit" className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 to-purple-700 text-white" disabled={createMutation.isPending}>
-                {createMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Event'}
+        {isAdmin && (
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 to-purple-700 rounded-full px-6 shadow-lg shadow-pink-500/20">
+                <Plus className="w-4 h-4 mr-2" /> Host Event
               </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent className="card-premium border-white/10 text-white sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-xl">Host an Event</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleCreate} className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label className="text-white/80">Event Title</Label>
+                  <Input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="bg-white/5 border-white/10" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-white/80">Description</Label>
+                  <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:ring-1 focus:ring-pink-500 outline-none" rows={3} />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-white/80">Date & Time</Label>
+                    <Input type="datetime-local" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} className="bg-white/5 border-white/10" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-white/80">Venue</Label>
+                    <Input required value={formData.venue} onChange={e => setFormData({...formData, venue: e.target.value})} className="bg-white/5 border-white/10" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-white/80">Category</Label>
+                  <select 
+                    className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-white outline-none"
+                    value={formData.category}
+                    onChange={e => setFormData({...formData, category: e.target.value as EventInputCategory})}
+                  >
+                    <option value="social" className="bg-[#0a0a14]">Social</option>
+                    <option value="hackathon" className="bg-[#0a0a14]">Hackathon</option>
+                    <option value="sports" className="bg-[#0a0a14]">Sports</option>
+                    <option value="cultural" className="bg-[#0a0a14]">Cultural</option>
+                    <option value="academic" className="bg-[#0a0a14]">Academic</option>
+                  </select>
+                </div>
+                <Button type="submit" className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 to-purple-700 text-white" disabled={createMutation.isPending}>
+                  {createMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Event'}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       {isLoading ? (

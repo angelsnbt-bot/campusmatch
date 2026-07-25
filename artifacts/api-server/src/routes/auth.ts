@@ -288,6 +288,18 @@ router.get("/auth/me", async (req, res): Promise<void> => {
     res.status(403).json({ error: "Account is banned" });
     return;
   }
+  const [profile] = await db.select().from(profilesTable).where(eq(profilesTable.userId, user.id)).limit(1);
+  let profileCompletion = 0;
+  if (profile) {
+    let filled = 0;
+    if (profile.avatarUrl) filled++;
+    if (profile.bio) filled++;
+    if (profile.interests && profile.interests.length > 0) filled++;
+    if (profile.branch) filled++;
+    if (profile.hostel) filled++;
+    if (profile.year && profile.year > 1) filled++;
+    profileCompletion = Math.round((filled / 6) * 100);
+  }
   res.json({
     id: user.id,
     name: user.name,
@@ -298,6 +310,7 @@ router.get("/auth/me", async (req, res): Promise<void> => {
     isFirst100: user.isFirst100,
     avatarUrl: user.avatarUrl,
     createdAt: user.createdAt,
+    profileCompletion,
   });
 });
 

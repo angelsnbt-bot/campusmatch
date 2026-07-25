@@ -24,6 +24,9 @@ export default function Friends() {
           toast({ title: 'Request accepted!' });
           queryClient.invalidateQueries({ queryKey: getGetConnectionRequestsQueryKey() });
           queryClient.invalidateQueries({ queryKey: getGetConnectionsQueryKey() });
+        },
+        onError: () => {
+          toast({ title: 'Failed to accept request', variant: 'destructive' });
         }
       });
     } else {
@@ -31,7 +34,8 @@ export default function Friends() {
       fetch(`${API_URL}/api/connections/${connectionId}/reject`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('cm_token')}` },
-      }).then(() => {
+      }).then(async (res) => {
+        if (!res.ok) throw new Error('Failed');
         toast({ title: 'Request declined' });
         queryClient.invalidateQueries({ queryKey: getGetConnectionRequestsQueryKey() });
       }).catch(() => {
