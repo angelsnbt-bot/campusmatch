@@ -580,12 +580,6 @@ export default function Register() {
 
           {step >= 2 && step <= 7 && renderStepIndicator()}
 
-          <AnimatePresence mode="wait">
-            <motion.div key={step} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
-              {renderCurrentStep()}
-            </motion.div>
-          </AnimatePresence>
-
           {step === 1 && (
             <>
               {isGoogleAvailable ? (
@@ -602,6 +596,12 @@ export default function Register() {
               </div>
             </>
           )}
+
+          <AnimatePresence mode="wait">
+            <motion.div key={step} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              {renderCurrentStep()}
+            </motion.div>
+          </AnimatePresence>
 
           {step < 8 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-6 text-center text-sm text-white/50">
