@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import { Link } from 'wouter';
 import LightPillar from '@/components/ui/LightPillar';
-import OtpInput from '@/components/ui/OtpInput';
 
 const INTEREST_SUGGESTIONS = [
   'Coding', 'Music', 'Sports', 'Photography', 'Reading', 'Gaming', 'Art',
@@ -26,7 +25,7 @@ const INTEREST_SUGGESTIONS = [
 
 const YEARS = [1, 2, 3, 4, 5];
 
-const TOTAL_STEPS = 9;
+const TOTAL_STEPS = 8;
 
 const stepLabels = [
   'Personal Info',
@@ -36,7 +35,6 @@ const stepLabels = [
   'Interests',
   'Fraud Check',
   'Summary',
-  'OTP Verify',
   'Success',
 ];
 
@@ -64,9 +62,6 @@ type StepState = {
 export default function Register() {
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
-  const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
-  const [otpError, setOtpError] = useState(false);
-  const [countdown, setCountdown] = useState(60);
   const [isError, setIsError] = useState(false);
 
   const [data, setData] = useState<StepState>({
@@ -86,12 +81,6 @@ export default function Register() {
   const idCardInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { if (user) setLocation('/dashboard'); }, [user, setLocation]);
-
-  useEffect(() => {
-    if (countdown <= 0) return;
-    const timer = setInterval(() => setCountdown((c) => c - 1), 1000);
-    return () => clearInterval(timer);
-  }, [countdown]);
 
   const updateData = useCallback((partial: Partial<StepState>) => {
     setData((prev) => ({ ...prev, ...partial }));
@@ -182,18 +171,20 @@ export default function Register() {
         acceptTerms: data.acceptTerms,
       },
     }, {
-      onSuccess: () => {
-        setStep(9);
-        toast({ title: 'Account created!', description: 'Please verify your email.' });
+      onSuccess: (res: any) => {
+        if (res?.token) {
+          setToken(res.token);
+          toast({ title: 'Account created!', description: 'Welcome to CampusMatch!' });
+          setLocation('/dashboard');
+        } else {
+          setStep(8);
+          toast({ title: 'Account created!', description: 'Please sign in.' });
+        }
       },
       onError: (err) => {
         toast({ title: 'Registration failed', description: (err?.data as any)?.error || 'Could not create account.', variant: 'destructive' });
       },
     });
-  };
-
-  const handleVerifyOTP = (otpString: string) => {
-    setLocation('/verify-otp');
   };
 
   const nextStep = () => {
@@ -206,14 +197,14 @@ export default function Register() {
   const renderStepIndicator = () => (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-white/40 font-medium">Step {Math.min(step, 8)} of {TOTAL_STEPS - 1}</span>
+        <span className="text-xs text-white/40 font-medium">Step {Math.min(step, 7)} of {TOTAL_STEPS - 1}</span>
         <span className="text-xs text-white/40">{stepLabels[Math.min(step - 1, TOTAL_STEPS - 1)]}</span>
       </div>
       <div className="w-full h-1 rounded-full bg-white/10 overflow-hidden">
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+          className="h-full rounded-full bg-gradient-to-r from-pink-500 to-purple-500"
           initial={{ width: 0 }}
-          animate={{ width: `${(Math.min(step, 8) / (TOTAL_STEPS - 1)) * 100}%` }}
+          animate={{ width: `${(Math.min(step, 7) / (TOTAL_STEPS - 1)) * 100}%` }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         />
       </div>
@@ -223,9 +214,9 @@ export default function Register() {
             key={i}
             className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
               i + 1 === step
-                ? 'bg-blue-500 w-4'
+                ? 'bg-pink-500 w-4'
                 : i + 1 < step
-                ? 'bg-blue-500/50'
+                ? 'bg-pink-500/50'
                 : 'bg-white/15'
             }`}
           />
@@ -274,7 +265,7 @@ export default function Register() {
           <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
         </div>
       </div>
-      <Button type="button" onClick={() => canProceedStep1 && nextStep()} className="w-full btn-premium btn-primary h-12 text-sm font-semibold mt-2" disabled={!canProceedStep1}>
+      <Button type="button" onClick={() => canProceedStep1 && nextStep()} className="w-full h-12 text-sm font-semibold mt-2" disabled={!canProceedStep1}>
         <span className="flex items-center gap-2">Continue <ArrowRight className="w-4 h-4" /></span>
       </Button>
     </motion.div>
@@ -291,7 +282,7 @@ export default function Register() {
           <div key={i} className="relative">
             <input ref={(el) => { fileInputRefs.current[i] = el; }} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => handleProfilePhoto(i, e)} />
             <div onClick={() => fileInputRefs.current[i]?.click()} className={`aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden ${
-              data.profilePhotos[i] ? 'border-blue-500/50 bg-blue-500/5' : 'border-white/15 bg-white/[0.02] hover:border-blue-500/30 hover:bg-white/[0.04]'
+              data.profilePhotos[i] ? 'border-pink-500/50 bg-pink-500/5' : 'border-white/15 bg-white/[0.02] hover:border-pink-500/30 hover:bg-white/[0.04]'
             }`}>
               {data.profilePhotos[i] ? (
                 <>
@@ -315,7 +306,7 @@ export default function Register() {
       </p>
       <div className="flex gap-3 mt-2">
         <Button type="button" variant="outline" onClick={prevStep} className="flex-1 h-12 border-white/10 text-white hover:bg-white/10"><ChevronLeft className="w-4 h-4 mr-1" /> Back</Button>
-        <Button type="button" onClick={() => canProceedStep2 && nextStep()} className="flex-1 h-12 btn-premium btn-primary" disabled={!canProceedStep2}>
+        <Button type="button" onClick={() => canProceedStep2 && nextStep()} className="flex-1 h-12" disabled={!canProceedStep2}>
           <span className="flex items-center gap-2">Continue <ArrowRight className="w-4 h-4" /></span>
         </Button>
       </div>
@@ -330,12 +321,12 @@ export default function Register() {
       </div>
       <input ref={idCardInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleIdCard} />
       <div onClick={() => idCardInputRef.current?.click()} className={`rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-all ${
-        data.idCardPreview ? 'border-blue-500/50 bg-blue-500/5' : 'border-white/15 bg-white/[0.02] hover:border-blue-500/30'
+        data.idCardPreview ? 'border-pink-500/50 bg-pink-500/5' : 'border-white/15 bg-white/[0.02] hover:border-pink-500/30'
       }`}>
         {data.idCardPreview ? (
           <div className="space-y-3">
             <img src={data.idCardPreview} alt="ID Card" className="max-h-44 mx-auto rounded-lg border border-white/10" />
-            <p className="text-sm text-blue-300">Click to change</p>
+            <p className="text-sm text-pink-300">Click to change</p>
           </div>
         ) : (
           <>
@@ -347,7 +338,7 @@ export default function Register() {
       </div>
       <div className="flex gap-3 mt-2">
         <Button type="button" variant="outline" onClick={prevStep} className="flex-1 h-12 border-white/10 text-white hover:bg-white/10"><ChevronLeft className="w-4 h-4 mr-1" /> Back</Button>
-        <Button type="button" onClick={() => canProceedStep3 && nextStep()} className="flex-1 h-12 btn-premium btn-primary" disabled={!canProceedStep3}>
+        <Button type="button" onClick={() => canProceedStep3 && nextStep()} className="flex-1 h-12" disabled={!canProceedStep3}>
           <span className="flex items-center gap-2">Scan ID <ScanLine className="w-4 h-4" /></span>
         </Button>
       </div>
@@ -387,7 +378,7 @@ export default function Register() {
           <Label className="text-white/70 text-sm font-medium">Year</Label>
           <div className="flex gap-2">
             {YEARS.map((y) => (
-              <button key={y} type="button" onClick={() => updateData({ year: y })} className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all ${data.year === y ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/20' : 'bg-white/5 text-white/50 hover:bg-white/10'}`}>
+              <button key={y} type="button" onClick={() => updateData({ year: y })} className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all ${data.year === y ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg shadow-pink-500/20' : 'bg-white/5 text-white/50 hover:bg-white/10'}`}>
                 {y}{y === 1 ? 'st' : y === 2 ? 'nd' : y === 3 ? 'rd' : 'th'}
               </button>
             ))}
@@ -396,7 +387,7 @@ export default function Register() {
       </div>
       <div className="flex gap-3 mt-2">
         <Button type="button" variant="outline" onClick={prevStep} className="flex-1 h-12 border-white/10 text-white hover:bg-white/10"><ChevronLeft className="w-4 h-4 mr-1" /> Back</Button>
-        <Button type="button" onClick={() => canProceedStep4 && nextStep()} className="flex-1 h-12 btn-premium btn-primary" disabled={!canProceedStep4}>
+        <Button type="button" onClick={() => canProceedStep4 && nextStep()} className="flex-1 h-12" disabled={!canProceedStep4}>
           <span className="flex items-center gap-2">Continue <ArrowRight className="w-4 h-4" /></span>
         </Button>
       </div>
@@ -411,7 +402,7 @@ export default function Register() {
       </div>
       <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-1">
         {INTEREST_SUGGESTIONS.map((interest) => (
-          <button key={interest} type="button" onClick={() => toggleInterest(interest)} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${data.interests.includes(interest) ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md shadow-blue-500/20' : 'bg-white/5 text-white/50 hover:bg-white/10'}`}>
+          <button key={interest} type="button" onClick={() => toggleInterest(interest)} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${data.interests.includes(interest) ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md shadow-pink-500/20' : 'bg-white/5 text-white/50 hover:bg-white/10'}`}>
             {data.interests.includes(interest) && <X className="w-3 h-3 inline mr-1" />}{interest}
           </button>
         ))}
@@ -421,7 +412,7 @@ export default function Register() {
       </p>
       <div className="flex gap-3 mt-2">
         <Button type="button" variant="outline" onClick={prevStep} className="flex-1 h-12 border-white/10 text-white hover:bg-white/10"><ChevronLeft className="w-4 h-4 mr-1" /> Back</Button>
-        <Button type="button" onClick={() => canProceedStep5 && nextStep()} className="flex-1 h-12 btn-premium btn-primary" disabled={!canProceedStep5}>
+        <Button type="button" onClick={() => canProceedStep5 && nextStep()} className="flex-1 h-12" disabled={!canProceedStep5}>
           <span className="flex items-center gap-2">Continue <ArrowRight className="w-4 h-4" /></span>
         </Button>
       </div>
@@ -477,7 +468,7 @@ export default function Register() {
         transition={{ delay: 1.6 }}
         className="text-center mt-4"
       >
-        <Button type="button" onClick={nextStep} className="w-full h-12 btn-premium btn-primary" disabled={false}>
+        <Button type="button" onClick={nextStep} className="w-full h-12" disabled={false}>
           <span className="flex items-center gap-2">Continue <ArrowRight className="w-4 h-4" /></span>
         </Button>
       </motion.div>
@@ -516,14 +507,14 @@ export default function Register() {
         </div>
       </div>
       <div className="flex items-start gap-3 pt-2">
-        <Checkbox id="terms" checked={data.acceptTerms} onCheckedChange={(v) => updateData({ acceptTerms: v === true })} className="mt-0.5 border-white/20 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500" />
+        <Checkbox id="terms" checked={data.acceptTerms} onCheckedChange={(v) => updateData({ acceptTerms: v === true })} className="mt-0.5 border-white/20 data-[state=checked]:bg-pink-500 data-[state=checked]:border-pink-500" />
         <Label htmlFor="terms" className="text-white/50 text-xs leading-relaxed cursor-pointer">
-          I accept the <a href="/terms" className="text-blue-400 hover:underline">Terms</a> and <a href="/privacy" className="text-blue-400 hover:underline">Privacy Policy</a>. I confirm I am a current student.
+          I accept the <a href="/terms" className="text-pink-400 hover:underline">Terms</a> and <a href="/privacy" className="text-pink-400 hover:underline">Privacy Policy</a>. I confirm I am a current student.
         </Label>
       </div>
       <div className="flex gap-3 mt-2">
         <Button type="button" variant="outline" onClick={prevStep} className="flex-1 h-12 border-white/10 text-white hover:bg-white/10"><ChevronLeft className="w-4 h-4 mr-1" /> Back</Button>
-        <Button type="button" onClick={() => { if (canSubmit) { nextStep(); handleSubmit(); } }} className="flex-1 h-12 btn-premium btn-primary" disabled={!canSubmit || registerMutation.isPending}>
+        <Button type="button" onClick={() => { if (canSubmit) { handleSubmit(); } }} className="flex-1 h-12" disabled={!canSubmit || registerMutation.isPending}>
           {registerMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <span className="flex items-center gap-2">Create Account <ArrowRight className="w-4 h-4" /></span>}
         </Button>
       </div>
@@ -531,36 +522,6 @@ export default function Register() {
   );
 
   const renderStep8 = () => (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
-      <div className="text-center mb-2">
-        <div className="w-16 h-16 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/10">
-          <Mail className="w-8 h-8 text-blue-400" />
-        </div>
-        <h3 className="text-white font-semibold text-lg">Verify Your Email</h3>
-        <p className="text-white/50 text-sm">Enter the 6-digit code sent to {data.email}</p>
-      </div>
-      <div className={isError ? 'animate-[shake_0.5s_ease-in-out]' : ''}>
-        <OtpInput value={otp} onChange={setOtp} onComplete={handleVerifyOTP} error={otpError} />
-      </div>
-      <Button onClick={() => handleVerifyOTP(otp.join(''))} className="w-full btn-premium btn-primary h-12 text-sm font-semibold" disabled={otp.join('').length !== 6}>
-        <span className="flex items-center gap-2">Verify Email <ArrowRight className="w-4 h-4" /></span>
-      </Button>
-      <div className="text-center">
-        <span className="text-sm text-white/50">
-          Didn't receive code?{' '}
-          <button onClick={() => { setCountdown(60); toast({ title: 'OTP Resent' }); }} disabled={countdown > 0} className="text-blue-400 hover:text-blue-300 font-medium disabled:text-white/20">
-            {countdown > 0 ? `Resend in ${countdown}s` : 'Resend OTP'}
-          </button>
-        </span>
-      </div>
-      <p className="text-white/30 text-xs text-center">Or skip to verify later from your dashboard</p>
-      <Button variant="outline" onClick={() => setStep(9)} className="w-full h-12 border-white/10 text-white/60 hover:bg-white/10 hover:text-white">
-        Skip for now
-      </Button>
-    </motion.div>
-  );
-
-  const renderStep9 = () => (
     <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="py-6 flex flex-col items-center justify-center text-center">
       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.2, stiffness: 200, damping: 10 }}
         className="w-20 h-20 bg-green-500/10 border border-green-500/30 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-green-500/10">
@@ -570,12 +531,10 @@ export default function Register() {
       </motion.div>
       <h1 className="text-2xl font-bold text-white mb-2">Account Created!</h1>
       <p className="text-white/60 text-sm mb-6">Welcome to CampusMatch. Your campus journey begins now.</p>
-      <Button onClick={() => setLocation('/verify-otp')} className="w-full btn-premium btn-primary h-12 text-sm font-semibold mb-3">
-        <span className="flex items-center gap-2">Verify Email Now <ArrowRight className="w-4 h-4" /></span>
+      <Button onClick={() => setLocation('/dashboard')} className="w-full h-12 text-sm font-semibold mb-3">
+        <span className="flex items-center gap-2">Go to Dashboard <ArrowRight className="w-4 h-4" /></span>
       </Button>
-      <Button onClick={() => setLocation('/dashboard')} variant="outline" className="w-full h-12 border-white/10 text-white/60 hover:bg-white/10 hover:text-white">
-        Go to Dashboard
-      </Button>
+      <p className="text-white/30 text-xs">You can verify your email later from settings</p>
     </motion.div>
   );
 
@@ -589,30 +548,29 @@ export default function Register() {
       case 6: return renderStep6();
       case 7: return renderStep7();
       case 8: return renderStep8();
-      case 9: return renderStep9();
       default: return renderStep1();
     }
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden p-4" style={{ background: 'linear-gradient(135deg, #050510 0%, #0a0a1a 40%, #0d0d24 100%)' }}>
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden p-4" style={{ background: 'linear-gradient(135deg, #0f0515 0%, #150a20 40%, #1a0f2e 100%)' }}>
       <div className="absolute inset-0 z-0">
-        <LightPillar topColor="#8b5cf6" bottomColor="#3b82f6" intensity={0.5} rotationSpeed={0.15} glowAmount={0.003} pillarWidth={3.0} pillarHeight={0.3} noiseIntensity={0.3} pillarRotation={-10} interactive={false} mixBlendMode="screen" quality="medium" />
+        <LightPillar topColor="#f472b6" bottomColor="#a855f7" intensity={0.5} rotationSpeed={0.15} glowAmount={0.003} pillarWidth={3.0} pillarHeight={0.3} noiseIntensity={0.3} pillarRotation={-10} interactive={false} mixBlendMode="screen" quality="medium" />
       </div>
       <div className="absolute inset-0 pointer-events-none z-[1]">
-        <div className="absolute w-[500px] h-[500px] rounded-full opacity-15" style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%)', top: '15%', right: '15%', filter: 'blur(80px)' }} />
-        <div className="absolute w-[400px] h-[400px] rounded-full opacity-10" style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.25) 0%, transparent 70%)', bottom: '15%', left: '10%', filter: 'blur(60px)' }} />
+        <div className="absolute w-[500px] h-[500px] rounded-full opacity-20" style={{ background: 'radial-gradient(circle, rgba(244,114,182,0.25) 0%, transparent 70%)', top: '15%', right: '15%', filter: 'blur(80px)' }} />
+        <div className="absolute w-[400px] h-[400px] rounded-full opacity-15" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%)', bottom: '15%', left: '10%', filter: 'blur(60px)' }} />
       </div>
 
       <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className="relative z-10 w-full max-w-lg mx-4">
         <div className="glass-card p-8 rounded-2xl overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-pink-500 via-purple-500 to-fuchsia-500" />
 
           {step === 1 && (
             <div className="flex flex-col items-center mb-6">
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
-                className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 flex items-center justify-center mb-3 shadow-lg shadow-blue-500/25">
+                className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 via-purple-600 to-fuchsia-600 flex items-center justify-center mb-3 shadow-lg shadow-pink-500/25">
                 <Zap className="w-6 h-6 text-white" />
               </motion.div>
               <h1 className="text-2xl font-bold text-white mb-1">Join CampusMatch</h1>
@@ -620,7 +578,7 @@ export default function Register() {
             </div>
           )}
 
-          {step >= 2 && step <= 8 && renderStepIndicator()}
+          {step >= 2 && step <= 7 && renderStepIndicator()}
 
           <AnimatePresence mode="wait">
             <motion.div key={step} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
@@ -645,9 +603,9 @@ export default function Register() {
             </>
           )}
 
-          {step < 9 && (
+          {step < 8 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-6 text-center text-sm text-white/50">
-              Already have an account? <Link href="/login" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">Sign in</Link>
+              Already have an account? <Link href="/login" className="text-pink-400 hover:text-pink-300 transition-colors font-medium">Sign in</Link>
             </motion.div>
           )}
         </div>
