@@ -1,5 +1,5 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 import { logger } from "./logger";
@@ -23,15 +23,15 @@ class LocalStorage implements StorageAdapter {
     this.publicBase = publicBase;
     for (const dir of ["profiles", "id-cards", "posts"]) {
       const full = path.join(root, dir);
-      if (!fs.existsSync(full)) fs.mkdirSync(full, { recursive: true });
+      fs.mkdir(full, { recursive: true }).catch(() => {});
     }
   }
 
   async upload(buffer: Buffer, filename: string, _contentType: string, folder: string): Promise<UploadResult> {
     const dir = path.join(this.root, folder);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    await fs.mkdir(dir, { recursive: true });
     const dest = path.join(dir, filename);
-    fs.writeFileSync(dest, buffer);
+    await fs.writeFile(dest, buffer);
     const key = `${folder}/${filename}`;
     return { url: `${this.publicBase}/${key}`, key };
   }

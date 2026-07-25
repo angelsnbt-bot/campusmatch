@@ -1,22 +1,18 @@
-# Bug Fix Plan — ✅ ALL FIXED
 
-## 🔴 Critical Fixes
-- [x] Bug 1: Marketplace sellerPhone always returns null → **FIXED**: Now fetches phone from usersTable, returns it for verified users
-- [x] Bug 2: Password reset doesn't clear refreshToken → **FIXED**: Added `refreshToken: null, refreshTokenExpiresAt: null` to reset handler
-- [x] Bug 3: ~~Off-by-one in isFirst100~~ → **NOT A BUG**: Logic is correct (99 < 100 = true for the 100th user)
-- [x] Bug 4: Prevent duplicate match rows → **FIXED**: Added existence checks before inserting match records
-- [x] Bug 5: Add rate limiting to OTP verification endpoints → **FIXED**: Added `authRateLimit` to `/verify-email` and `/resend-otp` routes
-- [x] Bug 6: Fix allowBuilds in pnpm-workspace.yaml → **FIXED**: Changed `"set this to true or false"` → `true`
+# Registration Bug Fix Plan
 
-## 🟡 Moderate Fixes
-- [x] Bug 7: Clean up expired resetTokens periodically → **FIXED**: Added `setInterval` cleanup every 15 minutes
-- [x] Bug 8: Rate limit store cleanup improvement → **FIXED**: Added shared store with periodic cleanup every 5 minutes
-- [x] Bug 9: Fix logout fragility (use user ID instead of jwtToken) → **FIXED**: Now looks up user by token first, then updates by ID
-- [x] Bug 10: Use configurable salt for OTP hashing → **FIXED**: Now uses `process.env.OTP_SALT` with fallback
-- [x] Bug 11: Add ERP-verification check to discover route → **FIXED**: Added check returning 403 if not approved
+## Issue
+Registration fails with generic "Could not create account" error toast.
 
-## 🟢 Minor Fixes
-- [x] Bug 12: Fix GetVerificationStatusResponse Zod schema to include "unverified" → **FIXED**: Added to both `SubmitVerificationResponse` and `GetVerificationStatusResponse`
-- [x] Bug 13: Price type consistency (integer rounding) → **FIXED**: Added `Math.round()` when inserting listings
-- [x] Bug 14: Fix Navbar logout async handling → **FIXED**: Added `async/await` with `try/catch/finally`
+## Root Causes Identified
+1. Poor frontend error handling - shows fallback message instead of actual error details
+2. Empty string handling for optional DB fields (`phone`, `photoUrl`) 
+3. Insufficient server-side error logging
+
+## Steps
+- [x] Step 1: Fix error handling in Register.tsx to show actual error details (HTTP status + message)
+- [x] Step 2: Fix server auth route to normalize empty strings to null for nullable DB fields (phone, photoUrl)
+- [x] Step 3: Add better server-side error logging and try-catch around DB inserts with user cleanup on profile failure
+
+## ✅ All fixes applied successfully
 

@@ -24,7 +24,7 @@ const mockNotifications: Notification[] = [
 
 const iconMap = {
   like: { icon: Heart, color: 'text-pink-400 bg-pink-500/15' },
-  message: { icon: MessageCircle, color: 'text-blue-400 bg-blue-500/15' },
+  message: { icon: MessageCircle, color: 'text-pink-400 bg-pink-500/15' },
   verification: { icon: ShieldCheck, color: 'text-green-400 bg-green-500/15' },
   event: { icon: CalendarDays, color: 'text-orange-400 bg-orange-500/15' },
   mention: { icon: AtSign, color: 'text-purple-400 bg-purple-500/15' },
@@ -59,7 +59,7 @@ export function NotificationCenter() {
           <motion.span
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-blue-500 text-[10px] font-bold text-white flex items-center justify-center shadow-lg shadow-blue-500/30"
+            className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-pink-500 text-[10px] font-bold text-white flex items-center justify-center shadow-lg shadow-pink-500/30"
           >
             {unread}
           </motion.span>
@@ -79,10 +79,10 @@ export function NotificationCenter() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-semibold text-white">Notifications</h3>
-                {unread > 0 && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400">{unread} new</span>}
+                {unread > 0 && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-pink-500/20 text-pink-400">{unread} new</span>}
               </div>
               {unread > 0 && (
-                <button onClick={markAllRead} className="text-[11px] text-blue-400 hover:text-blue-300 transition-colors">
+                <button onClick={markAllRead} className="text-[11px] text-pink-400 hover:text-pink-300 transition-colors">
                   Mark all read
                 </button>
               )}
@@ -98,7 +98,7 @@ export function NotificationCenter() {
                     href={n.href || '#'}
                     onClick={() => setOpen(false)}
                     className={`flex items-start gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors border-b border-white/[0.03] ${
-                      !n.read ? 'bg-blue-500/[0.03]' : ''
+                      !n.read ? 'bg-pink-500/[0.03]' : ''
                     }`}
                   >
                     <div className={`p-1.5 rounded-lg shrink-0 ${color}`}>
@@ -109,7 +109,7 @@ export function NotificationCenter() {
                       <p className="text-[11px] text-white/30 mt-0.5 truncate">{n.description}</p>
                       <p className="text-[10px] text-white/20 mt-1">{n.time}</p>
                     </div>
-                    {!n.read && <div className="w-2 h-2 rounded-full bg-blue-500 shrink-0 mt-1" />}
+                    {!n.read && <div className="w-2 h-2 rounded-full bg-pink-500 shrink-0 mt-1" />}
                   </Link>
                 );
               })}
@@ -117,7 +117,7 @@ export function NotificationCenter() {
 
             {/* Footer */}
             <div className="px-4 py-2.5 border-t border-white/[0.06]">
-              <Link href="/dashboard" onClick={() => setOpen(false)} className="text-center text-xs text-blue-400 hover:text-blue-300 transition-colors block">
+              <Link href="/dashboard" onClick={() => setOpen(false)} className="text-center text-xs text-pink-400 hover:text-pink-300 transition-colors block">
                 View all notifications
               </Link>
             </div>

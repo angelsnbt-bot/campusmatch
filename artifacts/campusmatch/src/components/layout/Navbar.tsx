@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
+import { ButtonCta } from '@/components/ui/button-shiny';
 import {
   Menu, X, Zap, ChevronDown, User, Settings, ShieldCheck, LogOut,
   HelpCircle, Bell, Edit3, Bookmark, CalendarDays, ShoppingBag,
@@ -106,13 +107,13 @@ export const Navbar = () => {
         }`}
         style={{
           borderRadius: scrolled ? '16px' : '0',
-          borderImage: scrolled ? 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.1)) 1' : undefined,
+          borderImage: scrolled ? 'linear-gradient(135deg, rgba(244,114,182,0.15), rgba(139,92,246,0.1)) 1' : undefined,
         }}
       >
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20 group-hover:shadow-pink-500/30 transition-shadow">
               <Zap className="w-4 h-4 text-white" />
             </div>
             <span className="text-lg font-bold tracking-tight">
@@ -139,7 +140,7 @@ export const Navbar = () => {
                   {location === link.href && (
                     <motion.div
                       layoutId="nav-indicator"
-                      className="absolute bottom-0 left-3 right-3 h-[2px] bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+                      className="absolute bottom-0 left-3 right-3 h-[2px] bg-gradient-to-r from-pink-500 to-purple-500 rounded-full"
                       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
                   )}
@@ -199,7 +200,7 @@ export const Navbar = () => {
                     aria-expanded={dropdownOpen}
                   >
                     <div className="relative">
-                      <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 group-hover:border-blue-500/30 transition-colors">
+                      <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 group-hover:border-pink-500/30 transition-colors">
                         <img
                           src={user.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`}
                           alt={user.name}
@@ -290,8 +291,8 @@ export const Navbar = () => {
                 <Link href="/login" className="btn-premium btn-secondary h-9 px-4 text-xs">
                   Sign In
                 </Link>
-                <Link href="/register" className="btn-premium btn-primary h-9 px-4 text-xs">
-                  Get Started
+                <Link href="/register">
+                  <ButtonCta label="Get Started" className="w-auto h-9 px-4 text-xs" />
                 </Link>
               </>
             )}
@@ -406,7 +407,7 @@ export const Navbar = () => {
                   <>
                     <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-sm font-medium text-white/50 hover:text-white/90 hover:bg-white/[0.04]">Sign In</Link>
                     <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="block mt-2">
-                      <div className="btn-premium btn-primary w-full text-center">Get Started</div>
+                      <ButtonCta label="Get Started" className="w-full h-10" />
                     </Link>
                   </>
                 )}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGetAdminAnalytics } from '@workspace/api-client-react';
-import { Users, ShieldCheck, FileText, CalendarDays, Heart, TrendingUp, Activity, Clock, AlertTriangle, UserPlus } from 'lucide-react';
+import { Users, ShieldCheck, FileText, CalendarDays, Heart, TrendingUp, Activity, Clock, UserPlus } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 export default function AdminDashboard() {
@@ -21,19 +21,19 @@ export default function AdminDashboard() {
   }
 
   const statCards = [
-    { label: 'Total Students', value: analytics?.totalUsers || 0, icon: Users, color: 'from-blue-500/20 to-blue-600/10', iconColor: 'text-blue-400', change: '+12%', changeUp: true },
+    { label: 'Total Students', value: analytics?.totalUsers || 0, icon: Users, color: 'from-pink-500/20 to-purple-600/10', iconColor: 'text-pink-400', change: '+12%', changeUp: true },
     { label: 'Verified', value: analytics?.verifiedUsers || 0, icon: ShieldCheck, color: 'from-green-500/20 to-green-600/10', iconColor: 'text-green-400', change: '+8%', changeUp: true },
     { label: 'Pending', value: analytics?.pendingVerifications || 0, icon: Clock, color: 'from-yellow-500/20 to-yellow-600/10', iconColor: 'text-yellow-400', change: '-3%', changeUp: false },
     { label: 'Total Posts', value: analytics?.totalPosts || 0, icon: FileText, color: 'from-purple-500/20 to-purple-600/10', iconColor: 'text-purple-400', change: '+24%', changeUp: true },
     { label: 'Events', value: analytics?.totalEvents || 0, icon: CalendarDays, color: 'from-orange-500/20 to-orange-600/10', iconColor: 'text-orange-400', change: '+5%', changeUp: true },
     { label: 'Matches', value: analytics?.totalMatches || 0, icon: Heart, color: 'from-pink-500/20 to-pink-600/10', iconColor: 'text-pink-400', change: '+18%', changeUp: true },
     { label: 'Active Users', value: Math.round((analytics?.verifiedUsers || 0) * 0.7), icon: Activity, color: 'from-cyan-500/20 to-cyan-600/10', iconColor: 'text-cyan-400', change: '+9%', changeUp: true },
-    { label: 'Today Registrations', value: 3, icon: UserPlus, color: 'from-indigo-500/20 to-indigo-600/10', iconColor: 'text-indigo-400', change: '+2', changeUp: true },
+    { label: 'Today Registrations', value: (analytics as any)?.todayRegistrations ?? 0, icon: UserPlus, color: 'from-indigo-500/20 to-indigo-600/10', iconColor: 'text-indigo-400', change: `+${(analytics as any)?.todayRegistrations ?? 0}`, changeUp: true },
   ];
 
   const quickActions = [
     { label: 'Review Verifications', href: '/admin/verification', icon: ShieldCheck, color: 'text-yellow-400 bg-yellow-500/10' },
-    { label: 'Manage Students', href: '/admin/users', icon: Users, color: 'text-blue-400 bg-blue-500/10' },
+    { label: 'Manage Students', href: '/admin/users', icon: Users, color: 'text-pink-400 bg-pink-500/10' },
     { label: 'View Audit Logs', href: '/admin/audit-logs', icon: FileText, color: 'text-purple-400 bg-purple-500/10' },
     { label: 'System Health', href: '/admin', icon: Activity, color: 'text-green-400 bg-green-500/10' },
   ];
@@ -83,8 +83,8 @@ export default function AdminDashboard() {
               <AreaChart data={analytics?.dailySignups || []}>
                 <defs>
                   <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#f472b6" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#f472b6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
                   contentStyle={{ backgroundColor: 'hsl(235,22%,10%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
                   itemStyle={{ color: '#fff' }}
                 />
-                <Area type="monotone" dataKey="count" stroke="#3b82f6" strokeWidth={2} fill="url(#blueGradient)" dot={{r: 3, fill: '#3b82f6', strokeWidth: 0}} activeDot={{r: 6, stroke: '#3b82f6', strokeWidth: 2, fill: '#fff'}} />
+                <Area type="monotone" dataKey="count" stroke="#f472b6" strokeWidth={2} fill="url(#blueGradient)" dot={{r: 3, fill: '#f472b6', strokeWidth: 0}} activeDot={{r: 6, stroke: '#f472b6', strokeWidth: 2, fill: '#fff'}} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -122,21 +122,17 @@ export default function AdminDashboard() {
 
       {/* Recent Activity */}
       <div className="card-premium p-6 rounded-2xl">
-        <h3 className="text-base font-bold text-white mb-4">Recent Activity</h3>
-        <div className="space-y-3">
+        <h3 className="text-base font-bold text-white mb-4">Quick Stats</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { text: 'New student registration: Priya Sharma', time: '2 min ago', color: 'bg-green-500' },
-            { text: 'Verification request from Rahul Verma', time: '15 min ago', color: 'bg-yellow-500' },
-            { text: 'New event posted: Annual Tech Fest', time: '1 hour ago', color: 'bg-blue-500' },
-            { text: 'Marketplace listing: Used textbooks', time: '3 hours ago', color: 'bg-purple-500' },
-            { text: 'Admin action: Approved 5 verifications', time: '5 hours ago', color: 'bg-cyan-500' },
-          ].map((activity, i) => (
-            <div key={i} className="flex items-start gap-3 p-3 rounded-xl hover:bg-white/[0.02] transition-colors">
-              <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${activity.color}`} />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-white/70">{activity.text}</p>
-                <p className="text-xs text-white/30 mt-0.5">{activity.time}</p>
-              </div>
+            { label: 'Total Students', value: analytics?.totalUsers || 0, color: 'text-pink-400' },
+            { label: 'Verified', value: analytics?.verifiedUsers || 0, color: 'text-green-400' },
+            { label: 'Total Posts', value: analytics?.totalPosts || 0, color: 'text-purple-400' },
+            { label: 'Total Events', value: analytics?.totalEvents || 0, color: 'text-orange-400' },
+          ].map((stat, i) => (
+            <div key={i} className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center">
+              <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
+              <p className="text-xs text-white/40 mt-1">{stat.label}</p>
             </div>
           ))}
         </div>

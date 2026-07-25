@@ -6,6 +6,7 @@ import { Users, Check, X, Loader2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { getGetConnectionsQueryKey, getGetConnectionRequestsQueryKey } from '@workspace/api-client-react';
 import { formatDistanceToNow } from 'date-fns';
+import { EmptyFriends } from '@/components/ui/EmptyStates';
 
 export default function Friends() {
   const [activeTab, setActiveTab] = useState<'friends' | 'requests'>('friends');
@@ -17,19 +18,32 @@ export default function Friends() {
   const queryClient = useQueryClient();
 
   const handleAccept = (connectionId: number, accept: boolean) => {
-    acceptMutation.mutate({ connectionId }, {
-      onSuccess: () => {
-        toast({ title: accept ? 'Request accepted!' : 'Request declined' });
+    if (accept) {
+      acceptMutation.mutate({ connectionId }, {
+        onSuccess: () => {
+          toast({ title: 'Request accepted!' });
+          queryClient.invalidateQueries({ queryKey: getGetConnectionRequestsQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetConnectionsQueryKey() });
+        }
+      });
+    } else {
+      const API_URL = import.meta.env.VITE_API_URL || '';
+      fetch(`${API_URL}/api/connections/${connectionId}/reject`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('cm_token')}` },
+      }).then(() => {
+        toast({ title: 'Request declined' });
         queryClient.invalidateQueries({ queryKey: getGetConnectionRequestsQueryKey() });
-        queryClient.invalidateQueries({ queryKey: getGetConnectionsQueryKey() });
-      }
-    });
+      }).catch(() => {
+        toast({ title: 'Failed to decline', variant: 'destructive' });
+      });
+    }
   };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20">
           <Users className="w-5 h-5 text-white" />
         </div>
         <h1 className="text-3xl font-bold text-white">Friends</h1>
@@ -50,18 +64,16 @@ export default function Friends() {
         >
           Requests 
           {requests && requests.length > 0 && (
-            <span className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs px-2 py-0.5 rounded-full">{requests.length}</span>
+            <span className="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-xs px-2 py-0.5 rounded-full">{requests.length}</span>
           )}
         </button>
       </div>
 
       {activeTab === 'friends' && (
         isLoadingFriends ? (
-          <div className="flex justify-center py-12"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+          <div className="flex justify-center py-12"><div className="w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" /></div>
         ) : connections?.length === 0 ? (
-          <div className="card-premium p-12 text-center rounded-3xl ">
-            <p className="text-white/50">You haven't added any friends yet.</p>
-          </div>
+          <EmptyFriends />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {connections?.map(conn => (
@@ -70,7 +82,7 @@ export default function Friends() {
                   {conn.connectedProfile?.avatarUrl ? (
                     <img src={conn.connectedProfile.avatarUrl} alt="avatar" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-blue-400 font-bold">
+                    <div className="w-full h-full flex items-center justify-center text-pink-400 font-bold">
                       {conn.connectedProfile?.name?.charAt(0) || '?'}
                     </div>
                   )}
@@ -90,11 +102,9 @@ export default function Friends() {
 
       {activeTab === 'requests' && (
         isLoadingRequests ? (
-          <div className="flex justify-center py-12"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+          <div className="flex justify-center py-12"><div className="w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" /></div>
         ) : requests?.length === 0 ? (
-          <div className="card-premium p-12 text-center rounded-3xl ">
-            <p className="text-white/50">No pending friend requests.</p>
-          </div>
+          <EmptyFriends />
         ) : (
           <div className="space-y-4">
             {requests?.map(req => (
@@ -103,7 +113,7 @@ export default function Friends() {
                   {req.connectedProfile?.avatarUrl ? (
                     <img src={req.connectedProfile.avatarUrl} alt="avatar" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-blue-400 font-bold">
+                    <div className="w-full h-full flex items-center justify-center text-pink-400 font-bold">
                       {req.connectedProfile?.name?.charAt(0) || '?'}
                     </div>
                   )}
@@ -116,7 +126,7 @@ export default function Friends() {
                   <Button 
                     size="sm" 
                     onClick={() => handleAccept(req.id, true)}
-                    className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 to-indigo-700 text-white px-3"
+                    className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 to-purple-700 text-white px-3"
                     disabled={acceptMutation.isPending}
                    
                   >

@@ -25,7 +25,7 @@ export default function CareersPage() {
           <li>Community Manager</li>
           <li>Growth Marketing Lead</li>
         </ul>
-        <p className="mt-3">Send your resume and a short note about why you care about CampusMatch to <a href="mailto:careers@campusmatch.in" className="text-blue-400 hover:underline">careers@campusmatch.in</a></p>
+        <p className="mt-3">Send your resume and a short note about why you care about CampusMatch to <a href="mailto:careers@campusmatch.in" className="text-pink-400 hover:underline">careers@campusmatch.in</a></p>
       </Section>
 
       <Section title="Internships">

@@ -6,7 +6,7 @@ import { useGoogleSignIn } from '@/hooks/use-google-signin';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
+import { ShieldCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Zap, Mail, Lock, ArrowRight, Loader2, ArrowLeft } from 'lucide-react';
@@ -20,7 +20,6 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
   const [isError, setIsError] = useState(false);
   const { setToken, user } = useAuth();
   const [_, setLocation] = useLocation();
@@ -148,8 +147,8 @@ export default function Login() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
               {mode === 'password' && (
                 <div className="flex items-center gap-2 mb-4">
-                  <Checkbox id="remember" checked={rememberMe} onCheckedChange={(v) => setRememberMe(v === true)} className="border-white/20 data-[state=checked]:bg-pink-500 data-[state=checked]:border-pink-500" />
-                  <Label htmlFor="remember" className="text-white/50 text-sm cursor-pointer">Remember me</Label>
+                  <ShieldCheck className="w-4 h-4 text-green-400" />
+                  <span className="text-white/50 text-sm">✓ Secure login with encrypted session</span>
                 </div>
               )}
               <Button type="submit" className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white border-0 h-12 text-sm font-semibold shadow-lg shadow-pink-500/20 rounded-xl transition-all hover:shadow-pink-500/30 hover:scale-[1.02] active:scale-[0.98]" disabled={loginMutation.isPending}>

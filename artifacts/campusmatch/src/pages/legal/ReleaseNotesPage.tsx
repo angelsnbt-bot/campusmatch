@@ -4,7 +4,7 @@ export default function ReleaseNotesPage() {
   return (
     <LegalPage title="Release Notes" lastUpdated="July 21, 2026">
       <Section title="Version 1.0.0 — July 21, 2026">
-        <p className="text-blue-400 font-medium mb-2">Initial Release</p>
+        <p className="text-pink-400 font-medium mb-2">Initial Release</p>
         <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
           <li><strong className="text-white">Core Platform:</strong> Account creation, email OTP verification, ERP verification</li>
           <li><strong className="text-white">Dating Module:</strong> Profile creation, swipe matching, mutual likes, real-time chat</li>

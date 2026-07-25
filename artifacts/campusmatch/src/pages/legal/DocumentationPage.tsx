@@ -52,7 +52,7 @@ export default function DocumentationPage() {
           <li>Clear your browser cache and reload the page</li>
           <li>Ensure you are using a supported browser (Chrome, Firefox, Safari, Edge)</li>
           <li>Check your internet connection</li>
-          <li>If the issue persists, email <a href="mailto:support@campusmatch.in" className="text-blue-400 hover:underline">support@campusmatch.in</a></li>
+          <li>If the issue persists, email <a href="mailto:support@campusmatch.in" className="text-pink-400 hover:underline">support@campusmatch.in</a></li>
         </ul>
       </Section>
     </LegalPage>

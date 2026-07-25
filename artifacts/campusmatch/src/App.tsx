@@ -3,11 +3,18 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import NotFound from '@/pages/not-found';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { AuthProvider } from '@/hooks/use-auth';
 import { AppShell } from '@/components/layout/AppShell';
 import { AdminLayout } from '@/components/layout/AdminLayout';
+import { StickyCTA } from '@/components/ui/StickyCTA';
+import { CommandPalette } from '@/components/ui/CommandPalette';
+import FeedbackWidget from '@/components/ui/FeedbackWidget';
+import OnboardingTrigger from '@/components/onboarding/OnboardingTrigger';
+
+const NotFound = lazy(() => import('@/pages/NotFound'));
+const ErrorPage = lazy(() => import('@/pages/ErrorPage'));
+const Maintenance = lazy(() => import('@/pages/Maintenance'));
 
 const Home = lazy(() => import('@/pages/Home'));
 const Login = lazy(() => import('@/pages/auth/Login'));
@@ -53,7 +60,7 @@ const queryClient = new QueryClient();
 function PageLoader() {
   return (
     <div className="flex items-center justify-center min-h-[50vh]">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500" />
     </div>
   );
 }
@@ -178,8 +185,15 @@ function Router() {
         <AppShell><Suspense fallback={<PageLoader />}><SafetyCenterPage /></Suspense></AppShell>
       </Route>
 
+      <Route path="/maintenance">
+        <Suspense fallback={<PageLoader />}><Maintenance /></Suspense>
+      </Route>
+      <Route path="/error">
+        <Suspense fallback={<PageLoader />}><ErrorPage /></Suspense>
+      </Route>
+
       <Route>
-        <AppShell><NotFound /></AppShell>
+        <Suspense fallback={<PageLoader />}><NotFound /></Suspense>
       </Route>
     </Switch>
   );
@@ -193,6 +207,10 @@ function App() {
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
             <AuthProvider>
               <Router />
+              <CommandPalette />
+              <FeedbackWidget />
+              <OnboardingTrigger />
+              <StickyCTA />
             </AuthProvider>
           </WouterRouter>
           <Toaster />

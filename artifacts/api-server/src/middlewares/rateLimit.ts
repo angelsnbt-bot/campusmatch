@@ -1,5 +1,13 @@
 import { type Request, type Response, type NextFunction } from "express";
 
+function getClientIp(req: Request): string {
+  const forwarded = req.headers["x-forwarded-for"];
+  if (typeof forwarded === "string") {
+    return forwarded.split(",")[0].trim();
+  }
+  return req.ip ?? req.socket.remoteAddress ?? "unknown";
+}
+
 interface RateLimitOptions {
   windowMs: number;
   max: number;
@@ -33,7 +41,7 @@ export function rateLimit(options: RateLimitOptions) {
 
   return (req: Request, res: Response, next: NextFunction): void => {
     const now = Date.now();
-    const key = keyGenerator ? keyGenerator(req) : (req.ip ?? req.socket.remoteAddress ?? "unknown");
+    const key = keyGenerator ? keyGenerator(req) : getClientIp(req);
     const storeKey = `${namespace}:${key}`;
 
     let entry = counts.get(storeKey);

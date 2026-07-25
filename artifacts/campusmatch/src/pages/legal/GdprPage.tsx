@@ -17,7 +17,7 @@ export default function GdprPage() {
       </Section>
 
       <Section title="How to Exercise Your Rights">
-        <p>To exercise any of these rights, email our Data Protection Officer at <a href="mailto:dpo@campusmatch.in" className="text-blue-400 hover:underline">dpo@campusmatch.in</a>. We will respond within 30 days.</p>
+        <p>To exercise any of these rights, email our Data Protection Officer at <a href="mailto:dpo@campusmatch.in" className="text-pink-400 hover:underline">dpo@campusmatch.in</a>. We will respond within 30 days.</p>
       </Section>
 
       <Section title="Data Processing">
@@ -35,7 +35,7 @@ export default function GdprPage() {
       </Section>
 
       <Section title="Data Protection Officer">
-        <p>Contact our DPO at <a href="mailto:dpo@campusmatch.in" className="text-blue-400 hover:underline">dpo@campusmatch.in</a> for any GDPR-related inquiries.</p>
+        <p>Contact our DPO at <a href="mailto:dpo@campusmatch.in" className="text-pink-400 hover:underline">dpo@campusmatch.in</a> for any GDPR-related inquiries.</p>
       </Section>
     </LegalPage>
   );

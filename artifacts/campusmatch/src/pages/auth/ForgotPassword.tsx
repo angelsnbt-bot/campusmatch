@@ -35,7 +35,6 @@ export default function ForgotPassword() {
 
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsError(true);
     try {
       const res = await fetch(`${apiBase}/auth/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
       if (!res.ok) throw new Error('Email not found');
@@ -72,6 +71,17 @@ export default function ForgotPassword() {
     } catch {
       setIsError(true); setTimeout(() => setIsError(false), 500);
       toast({ title: 'Failed', description: 'Could not reset password.', variant: 'destructive' });
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      const res = await fetch(`${apiBase}/auth/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+      if (!res.ok) throw new Error('Failed');
+      setCountdown(60); setOtp(Array(6).fill('')); setOtpError(false);
+      toast({ title: 'OTP Resent', description: 'Check your email for the new code.' });
+    } catch {
+      toast({ title: 'Failed', description: 'Could not resend OTP. Try again.', variant: 'destructive' });
     }
   };
 
@@ -145,7 +155,7 @@ export default function ForgotPassword() {
                 </Button>
               </div>
               <div className="mt-4 text-sm text-white/50 flex items-center justify-center gap-2">
-                <button onClick={() => { setCountdown(60); setOtp(Array(6).fill('')); toast({ title: 'OTP Resent' }); }} disabled={countdown > 0} className="text-pink-300 hover:text-pink-200 transition-colors font-medium flex items-center gap-1 disabled:text-white/20 disabled:cursor-not-allowed">
+                <button onClick={handleResendOtp} disabled={countdown > 0} className="text-pink-300 hover:text-pink-200 transition-colors font-medium flex items-center gap-1 disabled:text-white/20 disabled:cursor-not-allowed">
                   <RotateCcw className="w-3.5 h-3.5" /> {countdown > 0 ? `Resend in ${countdown}s` : 'Resend OTP'}
                 </button>
               </div>

@@ -27,7 +27,7 @@ export default function AboutPage() {
       </Section>
 
       <Section title="Contact">
-        <p>Got questions? Reach us at <a href="mailto:hello@campusmatch.in" className="text-blue-400 hover:underline">hello@campusmatch.in</a></p>
+        <p>Got questions? Reach us at <a href="mailto:hello@campusmatch.in" className="text-pink-400 hover:underline">hello@campusmatch.in</a></p>
       </Section>
     </LegalPage>
   );

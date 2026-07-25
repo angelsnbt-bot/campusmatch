@@ -17,7 +17,7 @@ export default function RefundPolicyPage() {
       </Section>
 
       <Section title="How to Request a Refund">
-        <p>Email <a href="mailto:support@campusmatch.in" className="text-blue-400 hover:underline">support@campusmatch.in</a> with your account email, transaction ID, and reason for the refund request. We process refunds within 5-7 business days.</p>
+        <p>Email <a href="mailto:support@campusmatch.in" className="text-pink-400 hover:underline">support@campusmatch.in</a> with your account email, transaction ID, and reason for the refund request. We process refunds within 5-7 business days.</p>
       </Section>
 
       <Section title="Exceptions">

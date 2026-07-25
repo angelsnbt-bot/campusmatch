@@ -10,6 +10,7 @@ import { CalendarDays, MapPin, Users, Plus, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 import { getGetEventsQueryKey } from '@workspace/api-client-react';
+import { EmptyEvents } from '@/components/ui/EmptyStates';
 
 export default function Events() {
   const { data: events, isLoading } = useGetEvents();
@@ -49,11 +50,11 @@ export default function Events() {
   };
 
   const categoryColors: Record<string, string> = {
-    hackathon: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    sports: 'bg-blue-400/20 text-blue-300 border-blue-400/30',
+    hackathon: 'bg-pink-500/20 text-pink-400 border-pink-500/30',
+    sports: 'bg-pink-400/20 text-pink-300 border-pink-400/30',
     cultural: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-    academic: 'bg-blue-600/20 text-blue-300 border-blue-600/30',
-    social: 'bg-blue-500/15 text-blue-300 border-blue-500/25',
+    academic: 'bg-purple-600/20 text-pink-300 border-purple-600/30',
+    social: 'bg-pink-500/15 text-pink-300 border-pink-500/25',
   };
 
   return (
@@ -61,7 +62,7 @@ export default function Events() {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20">
               <CalendarDays className="w-5 h-5 text-white" />
             </div>
             Campus Events
@@ -71,7 +72,7 @@ export default function Events() {
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 to-indigo-700 rounded-full px-6 shadow-lg shadow-blue-500/20">
+            <Button className="bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 to-purple-700 rounded-full px-6 shadow-lg shadow-pink-500/20">
               <Plus className="w-4 h-4 mr-2" /> Host Event
             </Button>
           </DialogTrigger>
@@ -86,7 +87,7 @@ export default function Events() {
               </div>
               <div className="space-y-2">
                 <Label className="text-white/80">Description</Label>
-                <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:ring-1 focus:ring-blue-500 outline-none" rows={3} />
+                <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:ring-1 focus:ring-pink-500 outline-none" rows={3} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -112,7 +113,7 @@ export default function Events() {
                   <option value="academic" className="bg-[#0a0a14]">Academic</option>
                 </select>
               </div>
-              <Button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 to-indigo-700 text-white" disabled={createMutation.isPending}>
+              <Button type="submit" className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 to-purple-700 text-white" disabled={createMutation.isPending}>
                 {createMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Event'}
               </Button>
             </form>
@@ -121,20 +122,18 @@ export default function Events() {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" /></div>
       ) : events?.length === 0 ? (
-        <div className="card-premium p-12 text-center rounded-3xl ">
-          <p className="text-white/50">No upcoming events. Be the first to host one!</p>
-        </div>
+        <EmptyEvents />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events?.map(event => (
-            <div key={event.id} className="card-premium rounded-2xl overflow-hidden flex flex-col border border-white/5 group hover:border-blue-500/20 transition-colors ">
+            <div key={event.id} className="card-premium rounded-2xl overflow-hidden flex flex-col border border-white/5 group hover:border-pink-500/20 transition-colors ">
               <div className="h-40 bg-white/5 relative overflow-hidden">
                 {event.imageUrl ? (
                   <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/10 flex items-center justify-center">
+                  <div className="w-full h-full bg-gradient-to-br from-pink-500/20 to-purple-500/10 flex items-center justify-center">
                     <CalendarDays className="w-12 h-12 text-white/20" />
                   </div>
                 )}
@@ -148,15 +147,15 @@ export default function Events() {
                 
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center text-sm text-white/70 gap-2">
-                    <CalendarDays className="w-4 h-4 text-blue-400" />
+                    <CalendarDays className="w-4 h-4 text-pink-400" />
                     <span>{format(new Date(event.date), "MMM d, yyyy • h:mm a")}</span>
                   </div>
                   <div className="flex items-center text-sm text-white/70 gap-2">
-                    <MapPin className="w-4 h-4 text-blue-400" />
+                    <MapPin className="w-4 h-4 text-pink-400" />
                     <span>{event.venue}</span>
                   </div>
                   <div className="flex items-center text-sm text-white/70 gap-2">
-                    <Users className="w-4 h-4 text-blue-400" />
+                    <Users className="w-4 h-4 text-pink-400" />
                     <span>{event.rsvpCount} Attending</span>
                   </div>
                 </div>
@@ -164,7 +163,7 @@ export default function Events() {
                 <Button 
                   onClick={() => handleRsvp(event.id)}
                   disabled={event.isRsvped || rsvpMutation.isPending}
-                  className={`w-full ${event.isRsvped ? 'bg-white/10 text-white/50 hover:bg-white/10' : 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 to-indigo-700 shadow-lg shadow-blue-500/20'}`}
+                  className={`w-full ${event.isRsvped ? 'bg-white/10 text-white/50 hover:bg-white/10' : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 to-purple-700 shadow-lg shadow-pink-500/20'}`}
                  
                 >
                   {event.isRsvped ? 'RSVP Confirmed' : 'Count Me In'}

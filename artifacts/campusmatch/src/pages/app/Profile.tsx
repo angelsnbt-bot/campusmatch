@@ -34,7 +34,7 @@ export default function Profile() {
   }, [profile]);
 
   if (isLoading) {
-    return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>;
+    return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" /></div>;
   }
 
   if (!profile) return null;
@@ -62,7 +62,7 @@ export default function Profile() {
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <div className="relative">
         {/* Cover */}
-        <div className="h-48 md:h-64 w-full rounded-3xl bg-gradient-to-br from-blue-500/30 via-purple-500/15 to-[#0d0810] overflow-hidden relative border border-white/5">
+        <div className="h-48 md:h-64 w-full rounded-3xl bg-gradient-to-br from-pink-500/30 via-purple-500/15 to-[#0d0810] overflow-hidden relative border border-white/5">
           <div className="absolute inset-0 opacity-20 mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px)' }}></div>
         </div>
 
@@ -73,12 +73,12 @@ export default function Profile() {
               {profile.avatarUrl ? (
                 <img src={profile.avatarUrl} alt={profile.name} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-4xl font-bold text-blue-400 bg-white/5">
+                <div className="w-full h-full flex items-center justify-center text-4xl font-bold text-pink-400 bg-white/5">
                   {profile.name.charAt(0)}
                 </div>
               )}
             </div>
-            <button className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg hover:from-blue-600 to-indigo-700 transition-colors z-10" title="Profile photo upload coming soon">
+            <button className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center shadow-lg hover:from-pink-600 to-purple-700 transition-colors z-10" title="Profile photo upload coming soon">
               <Camera className="w-5 h-5 text-white" />
             </button>
           </div>
@@ -98,7 +98,7 @@ export default function Profile() {
         <div className="flex items-center gap-3 mb-1">
           <h1 className="text-3xl font-bold text-white tracking-tight">{profile.name}</h1>
           {profile.isVerified && (
-            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-xs font-medium">
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-pink-500/20 border border-pink-500/30 text-pink-300 text-xs font-medium">
               <ShieldCheck className="w-3 h-3" /> Verified Student
             </div>
           )}
@@ -112,11 +112,11 @@ export default function Profile() {
 
         <div className="flex flex-wrap gap-4 mt-6 text-white/60 text-sm">
           <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-            <Book className="w-4 h-4 text-blue-400" /> <span>{profile.branch}, Year {profile.year}</span>
+            <Book className="w-4 h-4 text-pink-400" /> <span>{profile.branch}, Year {profile.year}</span>
           </div>
           {profile.hostel && (
             <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-              <MapPin className="w-4 h-4 text-blue-400" /> <span>{profile.hostel} Hostel</span>
+              <MapPin className="w-4 h-4 text-pink-400" /> <span>{profile.hostel} Hostel</span>
             </div>
           )}
         </div>
@@ -130,7 +130,7 @@ export default function Profile() {
                   <div className="space-y-2">
                     <Label className="text-white/80">Bio</Label>
                     <textarea 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:ring-1 focus:ring-blue-500 outline-none"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:ring-1 focus:ring-pink-500 outline-none"
                       rows={3}
                       value={formData.bio}
                       onChange={(e) => setFormData({...formData, bio: e.target.value})}
@@ -177,7 +177,7 @@ export default function Profile() {
                   </div>
                   <div className="flex justify-end gap-3 pt-4">
                     <Button type="button" variant="ghost" onClick={() => setIsEditing(false)} className="text-white/60">Cancel</Button>
-                    <Button type="submit" disabled={updateMutation.isPending} className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 to-indigo-700">
+                    <Button type="submit" disabled={updateMutation.isPending} className="bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 to-purple-700">
                       {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Changes'}
                     </Button>
                   </div>
@@ -197,7 +197,7 @@ export default function Profile() {
                     <h3 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-3">Interests</h3>
                     <div className="flex flex-wrap gap-2">
                       {profile.interests.map(int => (
-                        <span key={int} className="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-xl text-white text-sm font-medium">
+                        <span key={int} className="px-4 py-2 bg-pink-500/10 border border-pink-500/20 rounded-xl text-white text-sm font-medium">
                           {int}
                         </span>
                       ))}
@@ -214,7 +214,7 @@ export default function Profile() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-white/60">Status</span>
-                  <span className={`font-bold ${profile.isVerified ? 'text-blue-400' : 'text-yellow-400'}`}>
+                  <span className={`font-bold ${profile.isVerified ? 'text-pink-400' : 'text-yellow-400'}`}>
                     {profile.isVerified ? 'Verified' : 'Pending'}
                   </span>
                 </div>

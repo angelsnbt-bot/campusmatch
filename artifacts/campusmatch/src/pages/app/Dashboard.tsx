@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'wouter';
 import { Heart, Send, Flame, Megaphone } from 'lucide-react';
+import ProfileCompletionNudge from '@/components/ui/ProfileCompletionNudge';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -68,6 +69,7 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <ProfileCompletionNudge completionPercentage={(user as any)?.profileCompletion || 0} />
       <div className="flex flex-col lg:flex-row gap-8">
         
         {/* Main Feed */}
@@ -77,11 +79,11 @@ export default function Dashboard() {
           <div className="card-premium p-5 rounded-2xl">
             <form onSubmit={handleCreatePost}>
               <div className="flex gap-4">
-                <div className="w-10 h-10 shrink-0 rounded-full bg-blue-500/20 overflow-hidden border border-blue-500/30">
+                <div className="w-10 h-10 shrink-0 rounded-full bg-pink-500/20 overflow-hidden border border-pink-500/30">
                   {user?.avatarUrl ? (
                     <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-blue-400 font-bold">
+                    <div className="w-full h-full flex items-center justify-center text-pink-400 font-bold">
                       {user?.name?.charAt(0)}
                     </div>
                   )}
@@ -96,7 +98,7 @@ export default function Dashboard() {
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
                     <div className="flex gap-2">
                       <select 
-                        className="bg-white/5 border border-white/10 text-white text-sm rounded-full px-3 py-1 outline-none focus:ring-1 focus:ring-blue-500"
+                        className="bg-white/5 border border-white/10 text-white text-sm rounded-full px-3 py-1 outline-none focus:ring-1 focus:ring-pink-500"
                         value={selectedCategory || 'general'}
                         onChange={(e) => setSelectedCategory(e.target.value as PostInputCategory)}
                       >
@@ -110,9 +112,9 @@ export default function Dashboard() {
                     <Button 
                       type="submit" 
                       disabled={!newPostContent.trim() || isSubmitting}
-                      className="rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0 shadow-lg shadow-blue-500/20 h-8 px-4 hover:from-blue-600 hover:to-indigo-700"
+                      className="rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white border-0 shadow-lg shadow-pink-500/20 h-8 px-4 hover:from-pink-600 hover:to-purple-700"
                     >
-                      {isSubmitting ? <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /> : <><Send className="w-3 h-3 mr-2" /> Post</>}
+                      {isSubmitting ? <div className="w-4 h-4 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" /> : <><Send className="w-3 h-3 mr-2" /> Post</>}
                     </Button>
                   </div>
                 </div>
@@ -128,7 +130,7 @@ export default function Dashboard() {
                 onClick={() => setSelectedCategory(cat.id as PostInputCategory)}
                 className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   selectedCategory === cat.id 
-                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md shadow-blue-500/20' 
+                    ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md shadow-pink-500/20' 
                     : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
                 }`}
               >
@@ -182,7 +184,7 @@ export default function Dashboard() {
                           <span className="text-xs text-white/40">•</span>
                           <span className="text-xs text-white/40">{formatDistanceToNow(new Date(post.createdAt))} ago</span>
                         </div>
-                        <div className="text-xs text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded-full inline-block mt-1">
+                        <div className="text-xs text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded-full inline-block mt-1">
                           {post.category}
                         </div>
                       </div>
@@ -200,10 +202,10 @@ export default function Dashboard() {
                       <button 
                         onClick={() => handleLike(post.id)}
                         className={`flex items-center gap-1.5 text-sm transition-colors ${
-                          post.isLiked ? 'text-blue-400' : 'text-white/50 hover:text-white'
+                          post.isLiked ? 'text-pink-400' : 'text-white/50 hover:text-white'
                         }`}
                       >
-                        <Heart className={`w-5 h-5 ${post.isLiked ? 'fill-blue-400' : ''}`} />
+                        <Heart className={`w-5 h-5 ${post.isLiked ? 'fill-pink-400' : ''}`} />
                         <span>{post.likeCount}</span>
                       </button>
                     </div>
@@ -218,18 +220,18 @@ export default function Dashboard() {
         <div className="w-full lg:w-80 space-y-6">
           {/* Announcements */}
           <div className="card-premium p-5 rounded-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 rounded-full blur-3xl" />
             <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-4">
-              <Megaphone className="w-5 h-5 text-blue-400" />
+              <Megaphone className="w-5 h-5 text-pink-400" />
               Campus Alerts
             </h3>
             
             <div className="space-y-4">
               {isLoadingAnnouncements ? (
-                <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                <div className="w-5 h-5 border-2 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto" />
               ) : announcements?.slice(0, 3).map((ann) => (
-                <div key={ann.id} className="relative pl-4 border-l-2 border-blue-500/30">
-                  <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-blue-500" />
+                <div key={ann.id} className="relative pl-4 border-l-2 border-pink-500/30">
+                  <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-pink-500" />
                   <h4 className="text-sm font-semibold text-white">{ann.title}</h4>
                   <p className="text-xs text-white/60 line-clamp-2 mt-1">{ann.content}</p>
                 </div>
@@ -243,7 +245,7 @@ export default function Dashboard() {
           {/* Quick Links / Trending */}
           <div className="card-premium p-5 rounded-2xl">
             <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-4">
-              <Flame className="w-5 h-5 text-blue-400" />
+              <Flame className="w-5 h-5 text-pink-400" />
               Trending Modules
             </h3>
             <div className="grid grid-cols-2 gap-3">

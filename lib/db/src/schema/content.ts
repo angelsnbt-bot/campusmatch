@@ -1,6 +1,7 @@
-import { pgTable, serial, integer, text, boolean, timestamp, pgEnum, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, serial, integer, text, boolean, timestamp, pgEnum, uniqueIndex, foreignKey } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
+import { usersTable } from "./users";
 
 export const eventCategoryEnum = pgEnum("event_category", ["hackathon", "sports", "cultural", "academic", "social"]);
 export const listingCategoryEnum = pgEnum("listing_category", ["books", "cycles", "electronics", "furniture", "other"]);
@@ -15,14 +16,16 @@ export const postsTable = pgTable("posts", {
   imageUrl: text("image_url"),
   likeCount: integer("like_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  foreignKey({ columns: [t.userId], foreignColumns: [usersTable.id], name: "posts_user_id_fk" }),
+]);
 
 export const postLikesTable = pgTable("post_likes", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
   postId: integer("post_id").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (t) => [uniqueIndex("post_likes_user_post_idx").on(t.userId, t.postId)]);
+}, (t) => [uniqueIndex("post_likes_user_post_idx").on(t.userId, t.postId), foreignKey({ columns: [t.userId], foreignColumns: [usersTable.id], name: "post_likes_user_id_fk" }), foreignKey({ columns: [t.postId], foreignColumns: [postsTable.id], name: "post_likes_post_id_fk" })]);
 
 export const eventsTable = pgTable("events", {
   id: serial("id").primaryKey(),
@@ -53,7 +56,9 @@ export const listingsTable = pgTable("listings", {
   imageUrl: text("image_url"),
   status: listingStatusEnum("status").notNull().default("available"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  foreignKey({ columns: [t.userId], foreignColumns: [usersTable.id], name: "listings_user_id_fk" }),
+]);
 
 export const announcementsTable = pgTable("announcements", {
   id: serial("id").primaryKey(),
@@ -71,7 +76,9 @@ export const auditLogsTable = pgTable("audit_logs", {
   targetId: integer("target_id"),
   details: text("details"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  foreignKey({ columns: [t.adminId], foreignColumns: [usersTable.id], name: "audit_logs_admin_id_fk" }),
+]);
 
 export const insertPostSchema = createInsertSchema(postsTable).omit({ id: true, createdAt: true });
 export type InsertPost = z.infer<typeof insertPostSchema>;

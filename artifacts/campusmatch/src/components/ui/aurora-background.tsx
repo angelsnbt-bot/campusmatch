@@ -9,7 +9,7 @@ export function AuroraBackground({ children }: { children: React.ReactNode }) {
         <div
           className="absolute w-[800px] h-[800px] rounded-full opacity-20 animate-aurora"
           style={{
-            background: 'radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(244,114,182,0.4) 0%, transparent 70%)',
             top: '-10%',
             left: '-5%',
             filter: 'blur(80px)',

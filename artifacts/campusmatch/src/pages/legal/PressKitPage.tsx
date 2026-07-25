@@ -11,7 +11,7 @@ export default function PressKitPage() {
         <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
           <li><strong className="text-white">Name:</strong> CampusMatch</li>
           <li><strong className="text-white">Tagline:</strong> Your Campus. Connected.</li>
-          <li><strong className="text-white">Colors:</strong> Electric Blue (#3b82f6), Royal Purple (#8b5cf6), Neon Cyan (#06b6d4)</li>
+          <li><strong className="text-white">Colors:</strong> Electric Blue (#f472b6), Royal Purple (#8b5cf6), Neon Cyan (#06b6d4)</li>
           <li><strong className="text-white">Font:</strong> Inter (primary), Instrument Serif (display)</li>
         </ul>
       </Section>
@@ -31,7 +31,7 @@ export default function PressKitPage() {
       </Section>
 
       <Section title="Media Contact">
-        <p>For press inquiries, interviews, or media assets, contact <a href="mailto:press@campusmatch.in" className="text-blue-400 hover:underline">press@campusmatch.in</a></p>
+        <p>For press inquiries, interviews, or media assets, contact <a href="mailto:press@campusmatch.in" className="text-pink-400 hover:underline">press@campusmatch.in</a></p>
       </Section>
     </LegalPage>
   );

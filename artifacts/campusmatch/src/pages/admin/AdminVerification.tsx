@@ -169,7 +169,7 @@ export default function AdminVerification() {
                 </div>
                 <p className="text-xs text-white/40">{item.userEmail}</p>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md">
+                  <span className="text-xs font-mono text-pink-400 bg-pink-500/10 px-2 py-1 rounded-md">
                     ERP: {item.erpNumber}
                   </span>
                 </div>

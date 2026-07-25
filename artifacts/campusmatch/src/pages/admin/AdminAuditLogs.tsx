@@ -39,7 +39,7 @@ export default function AdminAuditLogs() {
             {logs?.map((log) => (
               <div key={log.id} className="relative pl-8 group">
                 {/* Timeline dot */}
-                <div className="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 ring-[hsl(235,22%,8%)] group-hover:ring-blue-500/20 transition-all" />
+                <div className="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-pink-500 ring-4 ring-[hsl(235,22%,8%)] group-hover:ring-pink-500/20 transition-all" />
 
                 {/* Content */}
                 <div className="p-3 rounded-xl group-hover:bg-white/[0.02] transition-colors">
@@ -49,10 +49,10 @@ export default function AdminAuditLogs() {
                   <div className="flex items-baseline gap-2 flex-wrap">
                     <span className="font-semibold text-white text-sm">{log.adminName || `Admin #${log.adminId}`}</span>
                     <span className="text-white/40 text-xs">performed</span>
-                    <span className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-md text-xs font-mono font-medium">{log.action}</span>
+                    <span className="px-2 py-0.5 bg-pink-500/10 text-pink-400 rounded-md text-xs font-mono font-medium">{log.action}</span>
                     <span className="text-white/40 text-xs">on</span>
                     <span className="text-white/60 text-xs">{log.targetType}</span>
-                    {log.targetId && <span className="font-mono text-xs text-blue-400">#{log.targetId}</span>}
+                    {log.targetId && <span className="font-mono text-xs text-pink-400">#{log.targetId}</span>}
                   </div>
                   {log.details && (
                     <p className="mt-2 text-xs text-white/40 bg-white/[0.03] p-3 rounded-lg border border-white/[0.04]">

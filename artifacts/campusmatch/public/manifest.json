@@ -1,0 +1,14 @@
+{
+  "name": "CampusMatch - Verified Student Network",
+  "short_name": "CampusMatch",
+  "description": "India's trusted verified student networking platform. Find friends, study partners, dates, and campus events.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0515",
+  "theme_color": "#f472b6",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "192x192", "type": "image/svg+xml" },
+    { "src": "/icon.svg", "sizes": "512x512", "type": "image/svg+xml" }
+  ]
+}

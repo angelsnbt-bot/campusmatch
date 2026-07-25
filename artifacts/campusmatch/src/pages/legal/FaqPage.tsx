@@ -20,7 +20,7 @@ export default function FaqPage() {
         <div className="space-y-4">
           {faqs.map((faq, i) => (
             <details key={i} className="group">
-              <summary className="flex items-center justify-between p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer text-white font-semibold hover:border-blue-500/20 transition-colors list-none">
+              <summary className="flex items-center justify-between p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer text-white font-semibold hover:border-pink-500/20 transition-colors list-none">
                 {faq.q}
                 <svg className="w-5 h-5 text-white/40 group-open:rotate-180 transition-transform shrink-0 ml-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
               </summary>

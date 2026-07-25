@@ -12,6 +12,7 @@ import { getGetListingsQueryKey } from '@workspace/api-client-react';
 import { useAuth } from '@/hooks/use-auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
+import { EmptyMarketplace } from '@/components/ui/EmptyStates';
 
 const CATEGORIES = [
   { id: null,          label: 'All Items',        emoji: '🛒' },
@@ -25,7 +26,7 @@ const CATEGORIES = [
 const CATEGORY_COLORS: Record<string, string> = {
   books:       'from-amber-500 to-orange-600',
   cycles:      'from-green-500 to-emerald-600',
-  electronics: 'from-blue-500 to-indigo-600',
+  electronics: 'from-pink-500 to-purple-600',
   furniture:   'from-purple-500 to-violet-600',
   other:       'from-gray-500 to-slate-600',
 };
@@ -59,32 +60,39 @@ function ContactSellerDialog({ item, open, onClose }: ContactDialogProps) {
           {/* Contact options */}
           <div className="space-y-2">
             <p className="text-xs text-white/50 font-medium uppercase tracking-wider">Reach out via</p>
-            <a
-              href={`tel:${item.sellerPhone || ''}`}
-              className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
-            >
-              <div className="w-9 h-9 rounded-lg bg-green-500/20 flex items-center justify-center">
-                <Phone className="w-4 h-4 text-green-400" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">Call Seller</p>
-                <p className="text-xs text-white/40">{item.sellerPhone ? item.sellerPhone : 'Login to view'}</p>
-              </div>
-            </a>
-            <a
-              href={`https://wa.me/91${(item.sellerPhone || '').replace(/\D/g, '')}?text=Hi! I'm interested in your listing: ${encodeURIComponent(item.title)} (₹${item.price}) on CampusMatch.`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-green-500/10 hover:border-green-500/30 transition-colors"
-            >
-              <div className="w-9 h-9 rounded-lg bg-green-500/20 flex items-center justify-center">
-                <MessageCircle className="w-4 h-4 text-green-400" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">WhatsApp</p>
-                <p className="text-xs text-white/40">Message instantly</p>
-              </div>
-            </a>
+            {item.sellerPhone && (
+              <>
+                <a
+                  href={`tel:${item.sellerPhone}`}
+                  className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-green-500/20 flex items-center justify-center">
+                    <Phone className="w-4 h-4 text-green-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-white">Call Seller</p>
+                    <p className="text-xs text-white/40">{item.sellerPhone}</p>
+                  </div>
+                </a>
+                <a
+                  href={`https://wa.me/91${item.sellerPhone.replace(/\D/g, '')}?text=Hi! I'm interested in your listing: ${encodeURIComponent(item.title)} (₹${item.price}) on CampusMatch.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-green-500/10 hover:border-green-500/30 transition-colors"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-green-500/20 flex items-center justify-center">
+                    <MessageCircle className="w-4 h-4 text-green-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-white">WhatsApp</p>
+                    <p className="text-xs text-white/40">Message instantly</p>
+                  </div>
+                </a>
+              </>
+            )}
+            {!item.sellerPhone && (
+              <p className="text-xs text-white/30 text-center py-2">Seller has not provided a phone number.</p>
+            )}
           </div>
 
           <p className="text-xs text-white/30 text-center">
@@ -144,7 +152,7 @@ export default function Marketplace() {
   const books = filtered.filter(l => l.category === 'books');
   const nonBooks = filtered.filter(l => l.category !== 'books');
   const showAll = selectedCat !== null || search !== '';
-  const displayItems = showAll ? filtered : filtered;
+  const displayItems = filtered;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -228,7 +236,7 @@ export default function Marketplace() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search books, cycles, electronics…"
-            className="w-full h-11 pl-10 pr-10 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder:text-white/25 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500/50 transition-all"
+            className="w-full h-11 pl-10 pr-10 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder:text-white/25 outline-none focus:ring-1 focus:ring-pink-500 focus:border-pink-500/50 transition-all"
           />
           {search && (
             <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60">
@@ -271,13 +279,9 @@ export default function Marketplace() {
 
       {/* All / filtered listings */}
       {isLoading ? (
-        <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" /></div>
       ) : displayItems.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="text-4xl mb-4">🛒</div>
-          <p className="text-white/40 font-medium">No items found</p>
-          <p className="text-white/25 text-sm mt-1">Be the first to list something!</p>
-        </div>
+        <EmptyMarketplace />
       ) : (
         <section>
           {(!selectedCat && !search && books.length > 0) && (
@@ -342,7 +346,7 @@ function ListingCard({ item, onContact, highlight }: { item: any; onContact: () 
           <Button
             size="sm"
             onClick={onContact}
-            className="h-7 px-3 text-xs bg-gradient-to-r from-blue-500/80 to-indigo-500/80 hover:opacity-90 text-white border-0 rounded-lg font-medium"
+            className="h-7 px-3 text-xs bg-gradient-to-r from-pink-500/80 to-indigo-500/80 hover:opacity-90 text-white border-0 rounded-lg font-medium"
           >
             Contact
           </Button>

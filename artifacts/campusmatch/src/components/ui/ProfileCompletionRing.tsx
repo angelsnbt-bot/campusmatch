@@ -10,7 +10,7 @@ export function ProfileCompletionRing({ percentage, size = 32, strokeWidth = 3 }
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (percentage / 100) * circumference;
-  const color = percentage >= 80 ? '#10b981' : percentage >= 50 ? '#f59e0b' : '#3b82f6';
+  const color = percentage >= 80 ? '#10b981' : percentage >= 50 ? '#f59e0b' : '#f472b6';
 
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>

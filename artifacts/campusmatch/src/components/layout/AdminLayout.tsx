@@ -37,7 +37,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className={`flex items-center gap-3 px-4 py-5 border-b border-white/[0.06] ${collapsed && !isMobile ? 'justify-center px-2' : ''}`}>
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shrink-0 shadow-lg shadow-pink-500/20">
           <Zap className="w-4 h-4 text-white" />
         </div>
         {(!collapsed || isMobile) && (
@@ -59,15 +59,15 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
               onClick={() => isMobile && setMobileOpen(false)}
               className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 active
-                  ? 'bg-gradient-to-r from-blue-500/20 to-indigo-500/10 text-white border border-blue-500/20'
+                  ? 'bg-gradient-to-r from-pink-500/20 to-indigo-500/10 text-white border border-pink-500/20'
                   : 'text-white/50 hover:text-white/80 hover:bg-white/[0.04] border border-transparent'
               } ${collapsed && !isMobile ? 'justify-center px-2' : ''}`}
               title={collapsed && !isMobile ? item.label : undefined}
             >
-              <item.icon className={`w-4.5 h-4.5 shrink-0 ${active ? 'text-blue-400' : 'text-white/40 group-hover:text-white/60'}`} />
+              <item.icon className={`w-4.5 h-4.5 shrink-0 ${active ? 'text-pink-400' : 'text-white/40 group-hover:text-white/60'}`} />
               {(!collapsed || isMobile) && <span>{item.label}</span>}
               {active && (!collapsed || isMobile) && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-400" />
+                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-pink-400" />
               )}
             </Link>
           );
@@ -150,7 +150,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
           <div className="flex items-center gap-3">
             <div className="relative">
               <Bell className="w-4.5 h-4.5 text-white/40 hover:text-white/70 cursor-pointer transition-colors" />
-              <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-blue-500 rounded-full" />
+              <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-pink-500 rounded-full" />
             </div>
             <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10">
               <img src={user?.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name}`} alt="" className="w-full h-full object-cover" />

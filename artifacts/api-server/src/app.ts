@@ -9,7 +9,7 @@ import { apiRateLimit } from "./middlewares/rateLimit";
 const app: Express = express();
 
 app.use((req: Request, _res: Response, next: NextFunction) => {
-  req.id = crypto.randomUUID();
+  (req as any).id = crypto.randomUUID();
   next();
 });
 
@@ -51,7 +51,26 @@ app.use((_req: Request, res: Response, next: NextFunction) => {
 app.use("/api", apiRateLimit, router);
 
 if (process.env.STORAGE_DRIVER !== "s3") {
-  app.use("/api/uploads", express.static(path.join(process.cwd(), "artifacts", "api-server", "uploads"), {
+  const uploadsRoot = path.join(process.cwd(), "artifacts", "api-server", "uploads");
+
+  app.use("/api/uploads/profiles", express.static(path.join(uploadsRoot, "profiles"), {
+    maxAge: "30d",
+    immutable: true,
+  }));
+
+  app.use("/api/uploads/posts", express.static(path.join(uploadsRoot, "posts"), {
+    maxAge: "30d",
+    immutable: true,
+  }));
+
+  app.use("/api/uploads/id-cards", (req, res, next) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    if (!token) {
+      res.status(401).json({ error: "Authentication required to view ID cards" });
+      return;
+    }
+    next();
+  }, express.static(path.join(uploadsRoot, "id-cards"), {
     maxAge: "30d",
     immutable: true,
   }));

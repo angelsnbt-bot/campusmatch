@@ -1,6 +1,7 @@
-import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, foreignKey } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
+import { usersTable } from "./users";
 
 export const profilesTable = pgTable("profiles", {
   id: serial("id").primaryKey(),
@@ -19,7 +20,13 @@ export const profilesTable = pgTable("profiles", {
   isFirst100: boolean("is_first_100").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (t) => [
+  foreignKey({
+    columns: [t.userId],
+    foreignColumns: [usersTable.id],
+    name: "profiles_user_id_fk",
+  }),
+]);
 
 export const insertProfileSchema = createInsertSchema(profilesTable).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertProfile = z.infer<typeof insertProfileSchema>;

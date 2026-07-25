@@ -15,4 +15,5 @@ export interface AdminAnalytics {
   totalEvents: number;
   totalMatches: number;
   dailySignups?: AdminAnalyticsDailySignupsItem[];
+  todayRegistrations: number;
 }

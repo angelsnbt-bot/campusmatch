@@ -57,6 +57,10 @@ function generateRefreshToken(): string {
   return crypto.randomBytes(40).toString("hex");
 }
 
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
 async function sendResendEmail(to: string, subject: string, htmlContent: string) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -114,18 +118,31 @@ router.post("/auth/register", authRateLimit, async (req, res): Promise<void> => 
     .where(eq(usersTable.verificationStatus, "approved"));
   const isFirst100 = (verifiedCount[0]?.count ?? 0) < 100;
 
-  const [user] = await db.insert(usersTable).values({
-    name,
-    email,
-    phone: phone ?? null,
-    passwordHash: hashPassword(password),
-    emailOtp: hashOtp(otp),
-    otpExpiresAt,
-    isFirst100,
-    avatarUrl: photoUrl ?? null,
-  }).returning();
+  // Normalize empty strings to null for nullable DB columns
+  const normalizedPhone = phone && phone.trim() ? phone : null;
+  const normalizedPhotoUrl = photoUrl && photoUrl.trim() ? photoUrl : null;
+  const normalizedAvatarUrl = normalizedPhotoUrl;
+
+  let user;
+  try {
+    [user] = await db.insert(usersTable).values({
+      name,
+      email,
+      phone: normalizedPhone,
+      passwordHash: hashPassword(password),
+      emailOtp: hashOtp(otp),
+      otpExpiresAt,
+      isFirst100,
+      avatarUrl: normalizedAvatarUrl,
+    }).returning();
+  } catch (insertErr) {
+    logger.error({ err: String(insertErr), name, email }, "Failed to insert user into database");
+    res.status(500).json({ error: "Failed to create user. Database error occurred.", details: process.env.NODE_ENV === "development" ? String(insertErr) : undefined });
+    return;
+  }
 
   if (!user) {
+    logger.error({ name, email }, "Insert returned no user but did not throw");
     res.status(500).json({ error: "Failed to create user" });
     return;
   }
@@ -136,23 +153,31 @@ router.post("/auth/register", authRateLimit, async (req, res): Promise<void> => 
     `<p>Thank you for signing up for CampusMatch! Your verification OTP is: <strong>${otp}</strong>. It is valid for 10 minutes.</p>`
   );
 
-  await db.insert(profilesTable).values({
-    userId: user.id,
-    name: user.name,
-    avatarUrl: photoUrl ?? null,
-    college: college ?? "",
-    course: course ?? "",
-    branch: branch ?? "",
-    year: year ?? 1,
-    interests: interests ?? [],
-  });
+  try {
+    await db.insert(profilesTable).values({
+      userId: user.id,
+      name: user.name,
+      avatarUrl: normalizedAvatarUrl,
+      college: college ?? "",
+      course: course ?? "",
+      branch: branch ?? "",
+      year: year ?? 1,
+      interests: interests ?? [],
+    });
+  } catch (profileErr) {
+    logger.error({ err: String(profileErr), userId: user.id }, "Failed to insert profile");
+    // Profile insert failed — clean up the user we just created
+    try { await db.delete(usersTable).where(eq(usersTable.id, user.id)); } catch { /* ignore */ }
+    res.status(500).json({ error: "Failed to create profile during registration" });
+    return;
+  }
 
   const token = generateToken();
   const refreshToken = generateRefreshToken();
   const refreshTokenExpiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY_MS);
   await db.update(usersTable).set({ jwtToken: token, refreshToken, refreshTokenExpiresAt }).where(eq(usersTable.id, user.id));
 
-  req.log.info({ userId: user.id }, "User registered");
+  logger.info({ userId: user.id }, "User registered successfully");
   res.status(201).json({
     user: {
       id: user.id,
@@ -359,7 +384,7 @@ router.post("/auth/resend-otp", authRateLimit, async (req, res): Promise<void> =
     `<p>Your new verification OTP is: <strong>${otp}</strong>. It is valid for 10 minutes.</p>`
   );
 
-  req.log.info({ userId: user.id }, "OTP resent");
+  logger.info({ userId: user.id }, "OTP resent");
   res.json({ success: true, message: "OTP sent to your email. Check inbox." });
 });
 
@@ -534,8 +559,6 @@ router.post("/auth/google", authRateLimit, async (req, res): Promise<void> => {
     return;
   }
 
-  const otp = generateOtp();
-  const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
   const verifiedCount = await db.select({ count: sql<number>`count(*)::int` }).from(usersTable).where(eq(usersTable.verificationStatus, "approved"));
   const isFirst100 = (verifiedCount[0]?.count ?? 0) < 100;
 
@@ -544,8 +567,6 @@ router.post("/auth/google", authRateLimit, async (req, res): Promise<void> => {
     email,
     phone: null,
     passwordHash: hashPassword(crypto.randomBytes(16).toString("hex")),
-    emailOtp: hashOtp(otp),
-    otpExpiresAt,
     emailVerified: true,
     isFirst100,
     avatarUrl: picture || null,
@@ -566,10 +587,10 @@ router.post("/auth/google", authRateLimit, async (req, res): Promise<void> => {
   await sendResendEmail(
     email,
     "Welcome to CampusMatch!",
-    `<p>Welcome, ${name || "Student"}! Your account has been created via Google Sign-In. Your email is already verified.</p>`
+    `<p>Welcome, ${escapeHtml(name || "Student")}! Your account has been created via Google Sign-In. Your email is already verified.</p>`
   );
 
-  req.log.info({ userId: user.id }, "User registered via Google");
+  logger.info({ userId: user.id }, "User registered via Google");
   res.status(201).json({
     user: { id: user.id, name: user.name, email: user.email, role: user.role, verificationStatus: user.verificationStatus, emailVerified: true, isFirst100: user.isFirst100, avatarUrl: user.avatarUrl, createdAt: user.createdAt },
     token,

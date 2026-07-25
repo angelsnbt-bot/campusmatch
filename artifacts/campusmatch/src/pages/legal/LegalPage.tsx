@@ -22,7 +22,7 @@ export function LegalPage({ title, lastUpdated = 'July 21, 2026', children }: Le
           {children}
         </div>
         <div className="mt-12 pt-8 border-t border-white/10 text-center">
-          <Link href="/" className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
+          <Link href="/" className="text-pink-400 hover:text-pink-300 text-sm transition-colors">
             Back to CampusMatch
           </Link>
         </div>

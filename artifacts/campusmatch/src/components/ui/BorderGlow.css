@@ -10,7 +10,7 @@
   padding: 1px;
   background: radial-gradient(
     300px circle at var(--glow-x) var(--glow-y),
-    var(--glow-color, rgba(59,130,246,0.5)),
+    var(--glow-color, rgba(244,114,182,0.5)),
     transparent 60%
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);

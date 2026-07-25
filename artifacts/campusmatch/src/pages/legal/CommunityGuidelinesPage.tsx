@@ -45,7 +45,7 @@ export default function CommunityGuidelinesPage() {
       </Section>
 
       <Section title="Reporting">
-        <p>If you encounter content or behavior that violates these guidelines, use the report button on the relevant profile or message. Our moderation team reviews all reports within 24 hours. You can also email <a href="mailto:safety@campusmatch.in" className="text-blue-400 hover:underline">safety@campusmatch.in</a>.</p>
+        <p>If you encounter content or behavior that violates these guidelines, use the report button on the relevant profile or message. Our moderation team reviews all reports within 24 hours. You can also email <a href="mailto:safety@campusmatch.in" className="text-pink-400 hover:underline">safety@campusmatch.in</a>.</p>
       </Section>
 
       <Section title="Consequences">

@@ -24,7 +24,7 @@ export default function AccessibilityPage() {
       </Section>
 
       <Section title="Feedback">
-        <p>If you encounter any accessibility barriers, please let us know at <a href="mailto:accessibility@campusmatch.in" className="text-blue-400 hover:underline">accessibility@campusmatch.in</a>. We take all feedback seriously and will work to address issues promptly.</p>
+        <p>If you encounter any accessibility barriers, please let us know at <a href="mailto:accessibility@campusmatch.in" className="text-pink-400 hover:underline">accessibility@campusmatch.in</a>. We take all feedback seriously and will work to address issues promptly.</p>
       </Section>
     </LegalPage>
   );

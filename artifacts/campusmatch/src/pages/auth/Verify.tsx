@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { ShieldCheck, UploadCloud, Loader2, AlertCircle } from 'lucide-react';
 import { useLocation } from 'wouter';
+import LightPillar from '@/components/ui/LightPillar';
 
 export default function Verify() {
   const { user } = useAuth();
@@ -74,18 +75,24 @@ export default function Verify() {
 
   if (isLoadingStatus) {
     return (
-      <div className="min-h-[calc(100vh-80px)] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      <div className="relative min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0f0515 0%, #150a20 40%, #1a0f2e 100%)' }}>
+        <div className="absolute inset-0 z-0"><LightPillar topColor="#f472b6" bottomColor="#a855f7" intensity={0.5} rotationSpeed={0.15} glowAmount={0.003} pillarWidth={3.0} pillarHeight={0.3} noiseIntensity={0.3} pillarRotation={10} interactive={false} mixBlendMode="screen" quality="medium" /></div>
+        <div className="relative z-10 w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (isPending) {
     return (
-      <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md card-premium p-8 rounded-2xl text-center">
-          <div className="w-20 h-20 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-6">
-            <ShieldCheck className="w-10 h-10 text-blue-400" />
+      <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f0515 0%, #150a20 40%, #1a0f2e 100%)' }}>
+        <div className="absolute inset-0 z-0"><LightPillar topColor="#f472b6" bottomColor="#a855f7" intensity={0.5} rotationSpeed={0.15} glowAmount={0.003} pillarWidth={3.0} pillarHeight={0.3} noiseIntensity={0.3} pillarRotation={10} interactive={false} mixBlendMode="screen" quality="medium" /></div>
+        <div className="absolute inset-0 pointer-events-none z-[1]">
+          <div className="absolute w-[500px] h-[500px] rounded-full opacity-20" style={{ background: 'radial-gradient(circle, rgba(244,114,182,0.25) 0%, transparent 70%)', top: '10%', left: '20%', filter: 'blur(80px)' }} />
+        </div>
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="relative z-10 w-full max-w-md glass-card p-8 rounded-2xl text-center overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-500" />
+          <div className="w-20 h-20 rounded-full bg-pink-500/10 flex items-center justify-center mx-auto mb-6 border border-pink-500/20 shadow-lg shadow-pink-500/10">
+            <ShieldCheck className="w-10 h-10 text-pink-400" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">Under Review</h1>
           <p className="text-white/60 mb-6">
@@ -94,7 +101,7 @@ export default function Verify() {
           <div className="p-4 bg-white/5 rounded-xl border border-white/10 text-left">
             <div className="flex justify-between items-center text-sm mb-2">
               <span className="text-white/50">Status</span>
-              <span className="text-blue-400 font-medium px-2 py-1 bg-blue-500/10 rounded-md">Pending</span>
+              <span className="text-pink-400 font-medium px-2 py-1 bg-pink-500/10 rounded-md">Pending</span>
             </div>
             <div className="flex justify-between items-center text-sm">
               <span className="text-white/50">ERP Number</span>
@@ -107,8 +114,15 @@ export default function Verify() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-lg card-premium p-8 rounded-2xl">
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f0515 0%, #150a20 40%, #1a0f2e 100%)' }}>
+      <div className="absolute inset-0 z-0"><LightPillar topColor="#f472b6" bottomColor="#a855f7" intensity={0.5} rotationSpeed={0.15} glowAmount={0.003} pillarWidth={3.0} pillarHeight={0.3} noiseIntensity={0.3} pillarRotation={10} interactive={false} mixBlendMode="screen" quality="medium" /></div>
+      <div className="absolute inset-0 pointer-events-none z-[1]">
+        <div className="absolute w-[500px] h-[500px] rounded-full opacity-20" style={{ background: 'radial-gradient(circle, rgba(244,114,182,0.25) 0%, transparent 70%)', top: '10%', left: '20%', filter: 'blur(80px)' }} />
+        <div className="absolute w-[400px] h-[400px] rounded-full opacity-15" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%)', bottom: '20%', right: '15%', filter: 'blur(60px)' }} />
+      </div>
+
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="relative z-10 w-full max-w-lg glass-card p-8 rounded-2xl overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-500" />
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white mb-2">ERP Verification</h1>
           <p className="text-white/60 text-sm">
@@ -117,11 +131,11 @@ export default function Verify() {
         </div>
 
         {isRejected && (
-          <div className="mb-6 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 flex gap-3">
-            <AlertCircle className="w-5 h-5 shrink-0 text-blue-400" />
+          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex gap-3">
+            <AlertCircle className="w-5 h-5 shrink-0 text-red-400" />
             <div className="text-sm">
-              <p className="font-semibold text-blue-400">Previous submission rejected</p>
-              <p className="text-blue-300/80 mt-1">{statusData?.rejectionReason || 'Please resubmit with valid details.'}</p>
+              <p className="font-semibold text-red-400">Previous submission rejected</p>
+              <p className="text-red-300/80 mt-1">{statusData?.rejectionReason || 'Please resubmit with valid details.'}</p>
             </div>
           </div>
         )}
@@ -129,12 +143,12 @@ export default function Verify() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="erpNumber" className="text-white/80">ERP Number *</Label>
-            <Input id="erpNumber" placeholder="e.g. 21BXX100XX" value={erpNumber} onChange={(e) => setErpNumber(e.target.value)} required className="bg-white/5 border-white/10 text-white focus-visible:ring-blue-500" />
+            <Input id="erpNumber" placeholder="e.g. 21BXX100XX" value={erpNumber} onChange={(e) => setErpNumber(e.target.value)} required className="input-premium h-12 focus-visible:ring-pink-500/50" />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="collegeEmail" className="text-white/80">College Email *</Label>
-            <Input id="collegeEmail" type="email" placeholder="name.branch@college.ac.in" value={collegeEmail} onChange={(e) => setCollegeEmail(e.target.value)} required className="bg-white/5 border-white/10 text-white focus-visible:ring-blue-500" />
+            <Input id="collegeEmail" type="email" placeholder="name.branch@college.ac.in" value={collegeEmail} onChange={(e) => setCollegeEmail(e.target.value)} required className="input-premium h-12 focus-visible:ring-pink-500/50" />
           </div>
 
           <div className="space-y-2">
@@ -144,11 +158,11 @@ export default function Verify() {
               {idCardPreview ? (
                 <div className="space-y-3">
                   <img src={idCardPreview} alt="ID Card preview" className="max-h-40 mx-auto rounded-lg border border-white/10" />
-                  <p className="text-sm text-blue-300">Click to change</p>
+                  <p className="text-sm text-pink-300">Click to change</p>
                 </div>
               ) : (
                 <>
-                  <UploadCloud className="w-8 h-8 text-white/40 mx-auto mb-3 group-hover:text-blue-400 transition-colors" />
+                  <UploadCloud className="w-8 h-8 text-white/40 mx-auto mb-3 group-hover:text-pink-400 transition-colors" />
                   <p className="text-sm text-white/60 group-hover:text-white/80 transition-colors">
                     Drag and drop your ID card image here, or click to browse
                   </p>
@@ -157,8 +171,8 @@ export default function Verify() {
               )}
             </label>
           </div>
-          
-          <Button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0 py-6 mt-2 shadow-lg shadow-blue-500/25" disabled={submitVerification.isPending}>
+
+          <Button type="submit" className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white border-0 py-6 mt-2 shadow-lg shadow-pink-500/25 rounded-xl transition-all hover:shadow-pink-500/30 hover:scale-[1.02] active:scale-[0.98]" disabled={submitVerification.isPending}>
             {submitVerification.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit for Verification"}
           </Button>
         </form>

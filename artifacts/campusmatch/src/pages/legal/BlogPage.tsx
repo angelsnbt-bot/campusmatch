@@ -15,8 +15,8 @@ export default function BlogPage() {
       <Section title="Latest Posts">
         <div className="space-y-6 mt-4">
           {posts.map((post, i) => (
-            <div key={i} className="p-5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-blue-500/20 transition-colors">
-              <p className="text-xs text-blue-400 mb-2 font-medium">{post.date}</p>
+            <div key={i} className="p-5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-pink-500/20 transition-colors">
+              <p className="text-xs text-pink-400 mb-2 font-medium">{post.date}</p>
               <h3 className="text-lg font-semibold text-white mb-2">{post.title}</h3>
               <p className="text-sm text-white/50 leading-relaxed">{post.excerpt}</p>
             </div>
@@ -25,7 +25,7 @@ export default function BlogPage() {
       </Section>
 
       <Section title="Subscribe">
-        <p>Stay updated with the latest from CampusMatch. Follow us on social media or email us at <a href="mailto:blog@campusmatch.in" className="text-blue-400 hover:underline">blog@campusmatch.in</a> to contribute or suggest topics.</p>
+        <p>Stay updated with the latest from CampusMatch. Follow us on social media or email us at <a href="mailto:blog@campusmatch.in" className="text-pink-400 hover:underline">blog@campusmatch.in</a> to contribute or suggest topics.</p>
       </Section>
     </LegalPage>
   );

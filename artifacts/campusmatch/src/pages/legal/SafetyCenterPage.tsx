@@ -11,7 +11,7 @@ export default function SafetyCenterPage() {
         <p>If you encounter inappropriate behavior, fake profiles, or any content that makes you uncomfortable:</p>
         <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
           <li>Use the <strong className="text-white">Report</strong> button on any profile or message</li>
-          <li>Email <a href="mailto:safety@campusmatch.in" className="text-blue-400 hover:underline">safety@campusmatch.in</a> with details</li>
+          <li>Email <a href="mailto:safety@campusmatch.in" className="text-pink-400 hover:underline">safety@campusmatch.in</a> with details</li>
           <li>For immediate danger, contact local emergency services (100/112)</li>
         </ul>
         <p className="mt-3">All reports are reviewed within 24 hours. Your identity is never revealed to the reported user.</p>
@@ -53,7 +53,7 @@ export default function SafetyCenterPage() {
 
       <Section title="Emergency Contacts">
         <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
-          <li><strong className="text-white">CampusMatch Safety:</strong> <a href="mailto:safety@campusmatch.in" className="text-blue-400 hover:underline">safety@campusmatch.in</a></li>
+          <li><strong className="text-white">CampusMatch Safety:</strong> <a href="mailto:safety@campusmatch.in" className="text-pink-400 hover:underline">safety@campusmatch.in</a></li>
           <li><strong className="text-white">Police:</strong> 100</li>
           <li><strong className="text-white">Emergency:</strong> 112</li>
           <li><strong className="text-white">Women Helpline:</strong> 1091</li>

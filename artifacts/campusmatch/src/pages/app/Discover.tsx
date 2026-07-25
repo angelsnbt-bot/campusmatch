@@ -4,6 +4,7 @@ import { GetDiscoverFeedMode, LikeInputMode } from '@workspace/api-client-react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, X, Star, GraduationCap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { EmptySearch } from '@/components/ui/EmptyStates';
 
 const MODES: { id: GetDiscoverFeedMode; label: string; icon: string }[] = [
   { id: 'dating', label: 'Dating', icon: '💗' },
@@ -46,7 +47,7 @@ export default function Discover() {
             toast({ 
               title: 'It\'s a match! 🎉', 
               description: `You and ${activeProfile.name} liked each other.`,
-              className: 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-none'
+              className: 'bg-gradient-to-r from-pink-500 to-purple-600 text-white border-none'
             });
           }
           refetch();
@@ -66,7 +67,7 @@ export default function Discover() {
             onClick={() => setMode(m.id)}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
               mode === m.id 
-                ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/20' 
+                ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg shadow-pink-500/20' 
                 : 'bg-white/5 text-white/70 border border-white/10 hover:bg-white/10'
             }`}
            
@@ -79,15 +80,9 @@ export default function Discover() {
       {/* Cards Area */}
       <div className="flex-1 w-full relative mt-4 flex items-center justify-center">
         {isLoading ? (
-          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
         ) : !activeProfile ? (
-          <div className="card-premium p-8 rounded-3xl text-center w-full max-w-sm ">
-            <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
-              <span className="text-4xl">📭</span>
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">You've seen everyone!</h3>
-            <p className="text-white/60 text-sm">Check back later for more profiles or try switching modes.</p>
-          </div>
+          <EmptySearch />
         ) : (
           <div className="relative w-full max-w-sm h-full max-h-[600px]">
             <AnimatePresence>
@@ -112,7 +107,7 @@ export default function Discover() {
                   {activeProfile.avatarUrl ? (
                     <img src={activeProfile.avatarUrl} alt={activeProfile.name} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-white/20 text-6xl font-bold bg-gradient-to-br from-blue-500/10 to-purple-500/10">
+                    <div className="w-full h-full flex items-center justify-center text-white/20 text-6xl font-bold bg-gradient-to-br from-pink-500/10 to-purple-500/10">
                       {activeProfile.name.charAt(0)}
                     </div>
                   )}
@@ -129,13 +124,13 @@ export default function Discover() {
                     <div className="flex items-center gap-2 mb-1">
                       <h2 className="text-3xl font-bold text-white">{activeProfile.name}</h2>
                       {activeProfile.isVerified && (
-                        <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                        <div className="w-5 h-5 rounded-full bg-pink-500 flex items-center justify-center">
                           <Check className="w-3 h-3 text-white" />
                         </div>
                       )}
                     </div>
                     <div className="flex items-center gap-2 text-white/80 text-sm">
-                      <GraduationCap className="w-4 h-4 text-blue-400" />
+                      <GraduationCap className="w-4 h-4 text-pink-400" />
                       <span>{activeProfile.branch}, Year {activeProfile.year}</span>
                     </div>
                   </div>
@@ -163,13 +158,13 @@ export default function Discover() {
                     </button>
                     <button 
                       onClick={() => handleAction('superlike')}
-                      className="w-12 h-12 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 hover:bg-blue-500/30 transition-colors"
+                      className="w-12 h-12 rounded-full bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-pink-400 hover:bg-pink-500/30 transition-colors"
                     >
-                      <Star className="w-5 h-5 fill-blue-400" />
+                      <Star className="w-5 h-5 fill-pink-400" />
                     </button>
                     <button 
                       onClick={() => handleAction('like')}
-                      className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 hover:from-blue-600 to-indigo-700 transition-colors"
+                      className="w-14 h-14 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-pink-500/30 hover:from-pink-600 to-purple-700 transition-colors"
                     >
                       <Heart className="w-6 h-6 fill-white" />
                     </button>

@@ -8,9 +8,9 @@ export default function Announcements() {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'text-blue-400 bg-blue-500/10 border-blue-500/20';
-      case 'high': return 'text-blue-300 bg-blue-500/15 border-blue-500/25';
-      case 'medium': return 'text-blue-400/80 bg-blue-500/10 border-blue-500/20';
+      case 'urgent': return 'text-pink-400 bg-pink-500/10 border-pink-500/20';
+      case 'high': return 'text-pink-300 bg-pink-500/15 border-pink-500/25';
+      case 'medium': return 'text-pink-400/80 bg-pink-500/10 border-pink-500/20';
       default: return 'text-white/50 bg-white/5 border-white/10';
     }
   };
@@ -18,14 +18,14 @@ export default function Announcements() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20">
           <Megaphone className="w-5 h-5 text-white" />
         </div>
         <h1 className="text-3xl font-bold text-white">Campus Announcements</h1>
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" /></div>
       ) : announcements?.length === 0 ? (
         <div className="card-premium p-12 text-center rounded-3xl">
           <p className="text-white/50">No announcements at this time.</p>

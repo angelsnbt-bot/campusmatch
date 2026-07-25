@@ -1,6 +1,7 @@
-import { pgTable, serial, integer, text, boolean, timestamp, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, serial, integer, text, boolean, timestamp, pgEnum, foreignKey } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
+import { usersTable } from "./users";
 
 export const connectionStatusEnum = pgEnum("connection_status", ["pending", "accepted", "rejected"]);
 
@@ -11,7 +12,10 @@ export const likesTable = pgTable("likes", {
   mode: text("mode").notNull().default("dating"),
   isSuperLike: boolean("is_super_like").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  foreignKey({ columns: [t.userId], foreignColumns: [usersTable.id], name: "likes_user_id_fk" }),
+  foreignKey({ columns: [t.targetUserId], foreignColumns: [usersTable.id], name: "likes_target_user_id_fk" }),
+]);
 
 export const matchesTable = pgTable("matches", {
   id: serial("id").primaryKey(),
@@ -19,7 +23,10 @@ export const matchesTable = pgTable("matches", {
   matchedUserId: integer("matched_user_id").notNull(),
   mode: text("mode").notNull().default("dating"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  foreignKey({ columns: [t.userId], foreignColumns: [usersTable.id], name: "matches_user_id_fk" }),
+  foreignKey({ columns: [t.matchedUserId], foreignColumns: [usersTable.id], name: "matches_matched_user_id_fk" }),
+]);
 
 export const connectionsTable = pgTable("connections", {
   id: serial("id").primaryKey(),
@@ -27,7 +34,10 @@ export const connectionsTable = pgTable("connections", {
   connectedUserId: integer("connected_user_id").notNull(),
   status: connectionStatusEnum("status").notNull().default("pending"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  foreignKey({ columns: [t.userId], foreignColumns: [usersTable.id], name: "connections_user_id_fk" }),
+  foreignKey({ columns: [t.connectedUserId], foreignColumns: [usersTable.id], name: "connections_connected_user_id_fk" }),
+]);
 
 export const insertLikeSchema = createInsertSchema(likesTable).omit({ id: true, createdAt: true });
 export type InsertLike = z.infer<typeof insertLikeSchema>;

@@ -33,7 +33,7 @@ export default function CookiePolicyPage() {
       </Section>
 
       <Section title="Contact">
-        <p>Questions about cookies? Email <a href="mailto:privacy@campusmatch.in" className="text-blue-400 hover:underline">privacy@campusmatch.in</a></p>
+        <p>Questions about cookies? Email <a href="mailto:privacy@campusmatch.in" className="text-pink-400 hover:underline">privacy@campusmatch.in</a></p>
       </Section>
     </LegalPage>
   );

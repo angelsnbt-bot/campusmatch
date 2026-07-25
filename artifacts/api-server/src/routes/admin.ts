@@ -209,6 +209,13 @@ router.get("/admin/analytics", requireAdmin, async (req: AuthenticatedRequest, r
   const [totalMatches] = await db.select({ count: sql<number>`count(*)::int` }).from(matchesTable);
 
   const dailySignups = [];
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const [todayRegistrations] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(usersTable)
+    .where(and(sql`${usersTable.createdAt} >= ${todayStart}`, sql`${usersTable.createdAt} <= ${new Date()}`));
+
   for (let i = 6; i >= 0; i--) {
     const date = new Date();
     date.setDate(date.getDate() - i);
@@ -232,6 +239,7 @@ router.get("/admin/analytics", requireAdmin, async (req: AuthenticatedRequest, r
     totalEvents: totalEvents?.count ?? 0,
     totalMatches: totalMatches?.count ?? 0,
     dailySignups,
+    todayRegistrations: todayRegistrations?.count ?? 0,
   });
 });
 

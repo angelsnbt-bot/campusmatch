@@ -60,12 +60,12 @@ const socialLinks = [
 export const Footer = () => {
   return (
     <footer className="relative z-10 border-t border-white/[0.04] mt-20 overflow-hidden">
-      <Hyperspeed className="absolute inset-0 opacity-30" effectActive={true} speed={0.4} roadWidth={1.2} colors={['#3b82f6', '#8b5cf6']} quality="medium" />
+      <Hyperspeed className="absolute inset-0 opacity-30" effectActive={true} speed={0.4} roadWidth={1.2} colors={['#f472b6', '#8b5cf6']} quality="medium" />
       <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
         <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-12">
           <div className="max-w-xs">
             <Link href="/" className="flex items-center gap-2.5 mb-4 group">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20">
                 <Zap className="w-4 h-4 text-white" />
               </div>
               <span className="text-lg font-bold text-white tracking-tight">
@@ -108,7 +108,7 @@ export const Footer = () => {
             <span className="hidden md:inline" style={{ fontFamily: "'Space Grotesk', monospace" }}>v1.0.0</span>
           </div>
           <div className="flex items-center gap-1 text-white/20 text-xs">
-            Built with <Heart className="w-3 h-3 text-blue-400 mx-1" fill="currentColor" /> for verified students
+            Built with <Heart className="w-3 h-3 text-pink-400 mx-1" fill="currentColor" /> for verified students
           </div>
         </div>
       </div>

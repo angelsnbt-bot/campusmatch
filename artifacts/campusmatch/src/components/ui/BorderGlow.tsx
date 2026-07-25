@@ -15,7 +15,7 @@ export const BorderGlow: React.FC<BorderGlowProps> = ({
   className = '',
   borderRadius = 28,
   glowColor,
-  glowColors = ['rgba(59,130,246,0.5)', 'rgba(139,92,246,0.5)', 'rgba(6,182,212,0.5)'],
+  glowColors = ['rgba(244,114,182,0.5)', 'rgba(139,92,246,0.5)', 'rgba(6,182,212,0.5)'],
   intensity = 0.6,
 }) => {
   const ref = useRef<HTMLDivElement>(null);

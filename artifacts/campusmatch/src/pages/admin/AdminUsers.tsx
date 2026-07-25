@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useGetAdminUsers, useBanUser } from '@workspace/api-client-react';
 import { GetAdminUsersStatus, AdminUser } from '@workspace/api-client-react';
-import { Search, Ban, Users as UsersIcon, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { Search, Ban, Users as UsersIcon, ShieldCheck, AlertTriangle, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -56,8 +56,8 @@ export default function AdminUsers() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         <div className="card-premium p-4 rounded-xl flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-blue-500/10">
-            <UsersIcon className="w-4 h-4 text-blue-400" />
+          <div className="p-2 rounded-lg bg-pink-500/10">
+            <UsersIcon className="w-4 h-4 text-pink-400" />
           </div>
           <div>
             <p className="text-lg font-bold text-white">{totalUsers}</p>
@@ -151,7 +151,7 @@ export default function AdminUsers() {
               {isLoading ? (
                 <tr>
                   <td colSpan={5} className="px-5 py-12 text-center">
-                    <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full border-spinner mx-auto" />
+                    <div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full border-spinner mx-auto" />
                   </td>
                 </tr>
               ) : users?.length === 0 ? (
@@ -191,7 +191,24 @@ export default function AdminUsers() {
                       {format(new Date(u.createdAt), 'MMM d, yyyy')}
                     </td>
                     <td className="px-5 py-3.5 text-right">
-                      {!u.isBanned && u.role !== 'super_admin' && (
+                      {u.isBanned ? (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-green-400 hover:text-green-300 hover:bg-green-500/10 text-xs"
+                          onClick={async () => {
+                            const API_URL = import.meta.env.VITE_API_URL || '';
+                            await fetch(`${API_URL}/api/admin/users/${u.id}/unban`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('cm_token')}` },
+                            });
+                            queryClient.invalidateQueries({ queryKey: getGetAdminUsersQueryKey({ search: debouncedSearch, status: statusFilter }) });
+                            toast({ title: 'User unbanned' });
+                          }}
+                        >
+                          <CheckCircle className="w-3.5 h-3.5 mr-1" /> Unban
+                        </Button>
+                      ) : u.role !== 'super_admin' ? (
                         <Button
                           size="sm"
                           variant="ghost"
@@ -200,7 +217,7 @@ export default function AdminUsers() {
                         >
                           <Ban className="w-3.5 h-3.5 mr-1" /> Ban
                         </Button>
-                      )}
+                      ) : null}
                     </td>
                   </tr>
                 ))
